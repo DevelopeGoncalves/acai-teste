@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roots Açaí - Monte seu Pedido</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --neon-purple: #7b1fa2; /* Cor mais próxima da identidade Roots */
+            --neon-pink: #c2185b;
+            --neon-blue: #3f51b5;
+            --neon-green: #25D366;
+            --neon-light: #f5f5f5;
+            --dark-bg: #1a0033;
+            --dark-card: #200040;
+            --neon-cyan: #00bcd4;
+            --roots-primary: #512da8; /* Roxo mais escuro do logo */
+        }
+
+        body {
+            background: var(--dark-bg);
+            background: radial-gradient(circle at 50% 10%, rgba(123, 31, 162, 0.2) 0%, rgba(0, 0, 0, 0.8) 70%, var(--dark-bg) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .phone-container {
+            max-width: 420px;
+            width: 100%;
+            background: var(--dark-card);
+            border-radius: 35px;
+            box-shadow: 0 0 30px rgba(123, 31, 162, 0.5), 0 0 60px rgba(194, 24, 91, 0.3);
+            overflow: hidden;
+            border: 4px solid var(--neon-purple);
+            position: relative;
+        }
+
+        header {
+            padding: 25px 20px;
+            text-align: center;
+            color: var(--neon-light);
+            background: linear-gradient(135deg, var(--dark-card) 0%, var(--roots-primary) 100%);
+            border-bottom: 2px solid var(--neon-pink);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--neon-pink);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            background-color: var(--neon-purple);
+            box-shadow: 0 0 8px var(--neon-pink);
+        }
+
+        .logo-icon span {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--neon-light);
+            text-shadow: 0 0 5px var(--neon-light);
+        }
+
+        h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--neon-purple);
+            color: var(--neon-light);
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            color: #ccc;
+            margin-top: 5px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            color: var(--neon-pink);
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed rgba(233, 30, 99, 0.3);
+            font-weight: 700;
+        }
+        
+        .section-title.cyan-title {
+            color: var(--neon-cyan);
+            border-bottom: 1px dashed rgba(0, 188, 212, 0.5);
+        }
+        
+        .section-title.purple-title {
+            color: var(--roots-primary);
+            border-bottom: 1px dashed rgba(81, 45, 168, 0.5);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--neon-light);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 10px rgba(233, 30, 99, 0.5);
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .size-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 colunas para 4 tamanhos */
+            gap: 10px;
+        }
+
+        .size-card {
+            background: #1a0033;
+            color: var(--neon-light);
+            padding: 15px 10px;
+            border-radius: 15px;
+            border: 2px solid #1a0033;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .size-card.selected {
+            background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-purple) 100%);
+            border-color: var(--neon-light);
+            box-shadow: 0 0 15px var(--neon-pink), 0 0 25px rgba(123, 31, 162, 0.5);
+            transform: scale(1.05);
+        }
+
+        .size-card h3 {
+            font-size: 1.1em;
+            margin: 0 0 5px 0;
+            font-weight: 600;
+        }
+
+        .size-card .price {
+            font-size: 1.3em;
+            font-weight: 700;
+            text-shadow: 0 0 5px var(--neon-light);
+            margin: 0;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .toggle-option {
+            background: #1a0033;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            color: var(--neon-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            font-size: 0.9em;
+        }
+
+        .toggle-option:hover {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 8px rgba(123, 31, 162, 0.7);
+        }
+
+        .toggle-option.selected {
+            background: var(--neon-blue);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 15px var(--neon-blue);
+            color: var(--neon-light);
+        }
+
+        .toggle-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .toggle-option-content {
+            flex-grow: 1;
+        }
+
+        .toggle-option-name {
+            font-weight: 600;
+        }
+
+        .extra-price {
+            font-size: 0.85em;
+            color: #ccc;
+            margin-top: 2px;
+        }
+
+        .toggle-option.selected .extra-price {
+            color: var(--neon-light);
+            font-weight: 600;
+        }
+
+        .toggle-switch {
+            width: 30px;
+            height: 18px;
+            background: #444;
+            border-radius: 9px;
+            position: relative;
+            transition: background 0.2s;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            background: var(--neon-light);
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+
+        .toggle-option.selected .toggle-switch {
+            background: var(--neon-pink);
+        }
+
+        .toggle-option.selected .toggle-switch::before {
+            transform: translateX(12px);
+        }
+
+        .alert-message {
+            background: #4a148c;
+            color: var(--neon-light);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid var(--neon-pink);
+            font-size: 0.9em;
+            display: none;
+        }
+
+        .alert-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .summary {
+            background: #100020;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 25px;
+            border: 2px solid var(--neon-purple);
+            box-shadow: 0 0 10px rgba(123, 31, 162, 0.5);
+        }
+
+        .summary h3 {
+            color: var(--neon-pink);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(233, 30, 99, 0.5);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            color: var(--neon-light);
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            font-size: 0.9em;
+        }
+        
+        .summary-item:last-of-type {
+            border-bottom: none;
+        }
+        
+        .summary-item.indent {
+            padding-left: 15px;
+            font-size: 0.85em;
+            color: #ddd;
+        }
+        
+        .price-detail {
+            color: var(--neon-cyan);
+            font-weight: 600;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0 0;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--neon-green);
+            text-shadow: 0 0 5px rgba(37, 211, 102, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 10px;
+        }
+
+        .btn-send {
+            background: var(--neon-green);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border-radius: 15px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.5);
+            font-weight: 600;
+        }
+
+        .btn-send:hover:not(:disabled) {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+
+        .btn-send:disabled {
+            background: #444;
+            color: #999;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .limit-counter {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--neon-light);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            text-align: center;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .limit-counter.warning {
+            background: rgba(233, 30, 99, 0.2);
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            font-weight: 600;
+        }
+
+        @media (max-width: 450px) {
+            .phone-container {
+                border-radius: 0;
+            }
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon"><span>R</span></div>
+                <h1>ROOTS AÇAÍ</h1>
+            </div>
+            <p class="subtitle">AÇAÍ DE VERDADE TEM QUE SER ROOTS!! ✨</p>
+        </header>
+
+        <div class="content">
+            <div class="section">
+                <h2 class="section-title">👤 Seus Dados</h2>
+                <input type="text" id="customer-name" class="input-field" placeholder="Nome:" style="margin-bottom: 10px;" oninput="updateSummary()">
+                <input type="text" id="table-number" class="input-field" placeholder="Número da mesa (ou Endereço):" oninput="updateSummary()">
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">1️⃣ Escolha o Tamanho</h2>
+                <div class="size-cards-grid">
+                    <div class="size-card" data-size="p" data-price="8.00" onclick="selectSize('p', 8.00, '300ml')">
+                        <h3>300ml</h3>
+                        <p class="price">R$ 8,00</p>
+                    </div>
+                    <div class="size-card" data-size="m" data-price="10.00" onclick="selectSize('m', 10.00, '500ml')">
+                        <h3>500ml</h3>
+                        <p class="price">R$ 10,00</p>
+                    </div>
+                    <div class="size-card" data-size="g" data-price="14.00" onclick="selectSize('g', 14.00, '700ml')">
+                        <h3>700ml</h3>
+                        <p class="price">R$ 14,00</p>
+                    </div>
+                    <div class="size-card" data-size="gg" data-price="18.00" onclick="selectSize('gg', 18.00, '1 Litro')">
+                        <h3>1 Litro</h3>
+                        <p class="price">R$ 18,00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-message" id="size-warning">
+                ⚠️ Por favor, escolha o tamanho do açaí primeiro.
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title cyan-title">2️⃣ Coberturas (3x)</h2>
+                <div class="limit-counter" id="syrups-counter">
+                    Coberturas selecionadas: <strong>0/3</strong>
+                </div>
+                <div class="menu-grid" id="syrups-grid"></div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">3️⃣ Complementos (5x)</h2>
+                <div class="limit-counter" id="complements-counter">
+                    Complementos selecionados: <strong>0/5</strong>
+                </div>
+                <div class="menu-grid" id="complements-grid"></div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title purple-title">4️⃣ Frutas (3x)</h2>
+                <div class="limit-counter" id="fruits-counter">
+                    Frutas selecionadas: <strong>0/3</strong>
+                </div>
+                <div class="menu-grid" id="fruits-grid"></div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title cyan-title">5️⃣ Adicionais</h2>
+                <p class="subtitle" style="margin-bottom: 10px; color: #aaa;">Itens pagos à parte, sem limite de seleção.</p>
+                <div class="menu-grid" id="add-ons-grid"></div>
+            </div>
+
+            <div class="summary">
+                <h3>📋 Resumo do Pedido</h3>
+                <div id="summary-content">
+                    <p style="color: #999; text-align: center; font-style: italic; padding: 10px 0;">
+                        Preencha todos os dados para ver o resumo.
+                    </p>
+                </div>
+                <div class="summary-total" id="total-section" style="display: none;">
+                    <span>TOTAL:</span>
+                    <span id="total-price">R$ 0,00</span>
+                </div>
+                <button class="btn-send" id="send-btn" onclick="sendOrder()" disabled>
+                    <span>📤</span> Fazer Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MAX_SYRUPS = 3;
+        const MAX_COMPLEMENTS = 5;
+        const MAX_FRUITS = 3;
+
+        const allOptions = {
+            syrups: [ // Corresponde a Coberturas 3x
+                { id: 'syrup-1', name: 'Morango', price: 0.00, limit: MAX_SYRUPS },
+                { id: 'syrup-2', name: 'Caramelo', price: 0.00, limit: MAX_SYRUPS },
+                { id: 'syrup-3', name: 'Kiwi', price: 0.00, limit: MAX_SYRUPS },
+                { id: 'syrup-4', name: 'Chocolate', price: 0.00, limit: MAX_SYRUPS },
+                { id: 'syrup-5', name: 'Leite Condensado', price: 0.00, limit: MAX_SYRUPS },
+                { id: 'syrup-6', name: 'Uva', price: 0.00, limit: MAX_SYRUPS }
+            ],
+            complements: [ // Corresponde a Complementos 5x
+                { id: 'comp-1', name: 'Granola', price: 0.00, limit: MAX_COMPLEMENTS },
+                { id: 'comp-2', name: 'Ovomaltine', price: 0.00, limit: MAX_COMPLEMENTS },
+                { id: 'comp-3', name: 'Sucrilhos', price: 0.00, limit: MAX_COMPLEMENTS },
+                { id: 'comp-4', name: 'Flocos de arroz', price: 0.00, limit: MAX_COMPLEMENTS },
+                { id: 'comp-5', name: 'Paçoca', price: 0.00, limit: MAX_COMPLEMENTS },
+                { id: 'comp-6', name: 'Confete', price: 0.00, limit: MAX_COMPLEMENTS },
+                { id: 'comp-7', name: 'ChocoBall', price: 0.00, limit: MAX_COMPLEMENTS },
+                { id: 'comp-8', name: 'Amendoim', price: 0.00, limit: MAX_COMPLEMENTS },
+                { id: 'comp-9', name: 'Leite em Pó', price: 0.00, limit: MAX_COMPLEMENTS },
+                { id: 'comp-10', name: 'Gotas de Choc.', price: 0.00, limit: MAX_COMPLEMENTS }
+            ],
+            fruits: [ // Corresponde a Frutas 3x
+                { id: 'fruit-1', name: 'Uva', price: 0.00, limit: MAX_FRUITS },
+                { id: 'fruit-2', name: 'Morango', price: 0.00, limit: MAX_FRUITS },
+                { id: 'fruit-3', name: 'Kiwi', price: 0.00, limit: MAX_FRUITS },
+                { id: 'fruit-4', name: 'Maçã', price: 0.00, limit: MAX_FRUITS },
+                { id: 'fruit-5', name: 'Banana', price: 0.00, limit: MAX_FRUITS },
+                { id: 'fruit-6', name: 'Manga', price: 0.00, limit: MAX_FRUITS },
+                { id: 'fruit-7', name: 'Abacaxi', price: 0.00, limit: MAX_FRUITS },
+                { id: 'fruit-8', name: 'Coco', price: 0.00, limit: MAX_FRUITS }
+            ],
+            addOns: [ // Corresponde a Adicionais
+                { id: 'add-1', name: 'Chantilly', price: 2.00, limit: Infinity },
+                { id: 'add-2', name: 'Nutella', price: 3.00, limit: Infinity },
+                { id: 'add-3', name: 'Doce de leite', price: 2.00, limit: Infinity },
+                { id: 'add-4', name: 'Bis de Oreo', price: 2.00, limit: Infinity }
+            ]
+        };
+
+        let cart = {
+            size: '',
+            sizePrice: 0,
+            sizeName: '',
+            syrups: [],
+            complements: [],
+            fruits: [],
+            addOns: [],
+            customerName: '',
+            tableNumber: ''
+        };
+
+        function renderOptions(containerId, options, type) {
+            const grid = document.getElementById(containerId);
+            const html = options.map(opt => `
+                <div class="toggle-option" data-id="${opt.id}" data-price="${opt.price.toFixed(2)}" data-type="${type}" onclick="toggleOption('${opt.id}', '${type}')">
+                    <div class="toggle-option-content">
+                        <div class="toggle-option-name">${opt.name}</div>
+                        <div class="extra-price">
+                            ${opt.price > 0 ? `+R$ ${opt.price.toFixed(2).replace('.', ',')}` : 'Grátis'}
+                        </div>
+                    </div>
+                    <div class="toggle-switch"></div>
+                </div>
+            `).join('');
+            grid.innerHTML = html;
+        }
+
+        function init() {
+            renderOptions('syrups-grid', allOptions.syrups, 'syrup');
+            renderOptions('complements-grid', allOptions.complements, 'complement');
+            renderOptions('fruits-grid', allOptions.fruits, 'fruit');
+            renderOptions('add-ons-grid', allOptions.addOns, 'addOn');
+            updateAllCounters();
+            updateSummary();
+        }
+
+        function selectSize(size, price, name) {
+            document.querySelectorAll('.size-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            const selectedCard = document.querySelector(`[data-size="${size}"]`);
+            selectedCard.classList.add('selected');
+            
+            cart.size = size;
+            cart.sizePrice = price;
+            cart.sizeName = name;
+            
+            document.getElementById('size-warning').classList.remove('show');
+            updateSummary();
+        }
+
+        function toggleOption(id, type) {
+            if (!cart.size && type !== 'addOn') {
+                document.getElementById('size-warning').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('size-warning').classList.remove('show');
+                }, 3000);
+                return;
+            }
+
+            const element = document.querySelector(`.toggle-option[data-id="${id}"]`);
+            const optionTypeKey = type + (type === 'syrup' ? 's' : (type === 'addOn' ? 's' : 's')); // Mapeamento para as chaves do cart
+            const allOptionsKey = type + (type === 'syrup' ? 's' : (type === 'addOn' ? 's' : 's')); // Mapeamento para as chaves do allOptions
+
+            const optionsList = allOptions[allOptionsKey];
+            const option = optionsList.find(o => o.id === id);
+            const cartList = cart[optionTypeKey];
+            const index = cartList.findIndex(o => o.id === id);
+            const maxLimit = option.limit;
+
+            if (index > -1) {
+                cartList.splice(index, 1);
+                element.classList.remove('selected');
+            } else {
+                if (cartList.length >= maxLimit) {
+                    const warningElementId = type === 'syrup' ? 'syrup-limit-warning' : (type === 'complement' ? 'limit-warning' : (type === 'fruit' ? 'fruit-limit-warning' : null));
+                    
+                    if (warningElementId) {
+                        // O alerta de limite para complementos é o único que estava no HTML
+                        const limitWarning = document.getElementById('limit-warning'); 
+                        limitWarning.textContent = `⚠️ Você atingiu o limite máximo de ${maxLimit} ${type === 'syrup' ? 'Coberturas' : (type === 'complement' ? 'Complementos' : 'Frutas')}!`;
+                        limitWarning.classList.add('show');
+                        setTimeout(() => {
+                            limitWarning.classList.remove('show');
+                        }, 3000);
+                    }
+                    return;
+                }
+                cartList.push(option);
+                element.classList.add('selected');
+            }
+            
+            updateAllCounters();
+            updateSummary();
+        }
+
+        function updateCounter(type, maxLimit, counterId) {
+            const counter = document.getElementById(counterId);
+            const count = cart[type].length;
+            const name = type === 'syrups' ? 'Coberturas' : (type === 'complements' ? 'Complementos' : 'Frutas');
+            
+            counter.innerHTML = `${name} selecionadas: <strong>${count}/${maxLimit}</strong>`;
+            
+            const typeSelector = `.toggle-option[data-type="${type.slice(0, -1)}"]`; // 'syrups' -> 'syrup'
+            
+            if (count >= maxLimit) {
+                counter.classList.add('warning');
+                document.querySelectorAll(`${typeSelector}:not(.selected)`).forEach(el => {
+                    el.classList.add('disabled');
+                });
+            } else {
+                counter.classList.remove('warning');
+                document.querySelectorAll(typeSelector).forEach(el => {
+                    el.classList.remove('disabled');
+                });
+            }
+        }
+        
+        function updateAllCounters() {
+            updateCounter('syrups', MAX_SYRUPS, 'syrups-counter');
+            updateCounter('complements', MAX_COMPLEMENTS, 'complements-counter');
+            updateCounter('fruits', MAX_FRUITS, 'fruits-counter');
+        }
+
+        function updateSummary() {
+            const summaryContent = document.getElementById('summary-content');
+            const totalSection = document.getElementById('total-section');
+            const totalPriceElement = document.getElementById('total-price');
+            const sendBtn = document.getElementById('send-btn');
+            
+            const customerName = document.getElementById('customer-name').value.trim();
+            const tableNumber = document.getElementById('table-number').value.trim();
+            
+            cart.customerName = customerName;
+            cart.tableNumber = tableNumber;
+
+            let total = cart.sizePrice;
+            let html = '';
+            
+            if (cart.size && customerName && tableNumber) {
+                // 1. Tamanho
+                html += `<div class="summary-item">
+                    <span>Açaí ${cart.sizeName}</span>
+                    <span class="price-detail">R$ ${cart.sizePrice.toFixed(2).replace('.', ',')}</span>
+                </div>`;
+                
+                // 2. Coberturas
+                if (cart.syrups.length > 0) {
+                    html += `<div class="summary-item">
+                        <span>Coberturas (${cart.syrups.length} / ${MAX_SYRUPS})</span>
+                        <span class="price-detail">Grátis</span>
+                    </div>`;
+                    cart.syrups.forEach(o => {
+                        html += `<div class="summary-item indent">
+                            <span>• ${o.name}</span>
+                            <span class="price-detail">Grátis</span>
+                        </div>`;
+                    });
+                }
+                
+                // 3. Complementos
+                if (cart.complements.length > 0) {
+                    html += `<div class="summary-item">
+                        <span>Complementos (${cart.complements.length} / ${MAX_COMPLEMENTS})</span>
+                        <span class="price-detail">Grátis</span>
+                    </div>`;
+                    cart.complements.forEach(o => {
+                        html += `<div class="summary-item indent">
+                            <span>• ${o.name}</span>
+                            <span class="price-detail">Grátis</span>
+                        </div>`;
+                    });
+                }
+                
+                // 4. Frutas
+                if (cart.fruits.length > 0) {
+                    html += `<div class="summary-item">
+                        <span>Frutas (${cart.fruits.length} / ${MAX_FRUITS})</span>
+                        <span class="price-detail">Grátis</span>
+                    </div>`;
+                    cart.fruits.forEach(o => {
+                        html += `<div class="summary-item indent">
+                            <span>• ${o.name}</span>
+                            <span class="price-detail">Grátis</span>
+                        </div>`;
+                    });
+                }
+                
+                // 5. Adicionais
+                if (cart.addOns.length > 0) {
+                    html += `<div class="summary-item">
+                        <span>Adicionais</span>
+                        <span class="price-detail"></span>
+                    </div>`;
+                    cart.addOns.forEach(o => {
+                        html += `<div class="summary-item indent">
+                            <span>• ${o.name}</span>
+                            <span class="price-detail">+R$ ${o.price.toFixed(2).replace('.', ',')}</span>
+                        </div>`;
+                        total += o.price;
+                    });
+                }
+                
+                summaryContent.innerHTML = html;
+                totalPriceElement.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+                totalSection.style.display = 'flex';
+                sendBtn.disabled = false;
+            } else {
+                summaryContent.innerHTML = '<p style="color: #999; text-align: center; font-style: italic; padding: 10px 0;">Preencha todos os dados (Nome, Mesa/Endereço e Tamanho) para ver o resumo.</p>';
+                totalSection.style.display = 'none';
+                sendBtn.disabled = true;
+            }
+        }
+
+        function sendOrder() {
+            if (!cart.size || !cart.customerName || !cart.tableNumber) {
+                alert('⚠️ Por favor, preencha todos os campos obrigatórios (Nome, Mesa/Endereço e Tamanho)!');
+                return;
+            }
+            
+            const total = cart.sizePrice + cart.addOns.reduce((sum, o) => sum + o.price, 0);
+            
+            const order = {
+                id: Date.now(),
+                customerName: cart.customerName,
+                tableNumber: cart.tableNumber,
+                size: cart.sizeName,
+                sizePrice: cart.sizePrice,
+                syrups: cart.syrups.map(s => s.name),
+                complements: cart.complements.map(c => c.name),
+                fruits: cart.fruits.map(f => f.name),
+                addOns: cart.addOns.map(a => ({ name: a.name, price: a.price })),
+                total: total,
+                timestamp: new Date().toLocaleString('pt-BR'),
+                status: 'pending'
+            };
+            
+            let orderDetails = `*🎉 Novo Pedido Roots Açaí 🎉*\n\n`;
+            orderDetails += `*Mesa/Endereço:* ${order.tableNumber}\n`;
+            orderDetails += `*Cliente:* ${order.customerName}\n\n`;
+            
+            orderDetails += `*1. Tamanho:*\n`;
+            orderDetails += `  - ${order.size}: R$ ${order.sizePrice.toFixed(2).replace('.', ',')}\n\n`;
+            
+            if (order.syrups.length > 0) {
+                orderDetails += `*2. Coberturas (${order.syrups.length}/${MAX_SYRUPS}):*\n`;
+                order.syrups.forEach(s => {
+                    orderDetails += `  - ${s} (Grátis)\n`;
+                });
+                orderDetails += `\n`;
+            }
+            
+            if (order.complements.length > 0) {
+                orderDetails += `*3. Complementos (${order.complements.length}/${MAX_COMPLEMENTS}):*\n`;
+                order.complements.forEach(c => {
+                    orderDetails += `  - ${c} (Grátis)\n`;
+                });
+                orderDetails += `\n`;
+            }
+            
+            if (order.fruits.length > 0) {
+                orderDetails += `*4. Frutas (${order.fruits.length}/${MAX_FRUITS}):*\n`;
+                order.fruits.forEach(f => {
+                    orderDetails += `  - ${f} (Grátis)\n`;
+                });
+                orderDetails += `\n`;
+            }
+            
+            if (order.addOns.length > 0) {
+                orderDetails += `*5. Adicionais:*\n`;
+                order.addOns.forEach(a => {
+                    orderDetails += `  - ${a.name}: +R$ ${a.price.toFixed(2).replace('.', ',')}\n`;
+                });
+                orderDetails += `\n`;
+            }
+            
+            orderDetails += `*💰 TOTAL DO PEDIDO: R$ ${order.total.toFixed(2).replace('.', ',')}*\n`;
+            orderDetails += `_Data/Hora: ${order.timestamp}_`;
+            
+            // Simula o envio via WhatsApp (adapte o número de telefone e URL conforme necessário)
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(orderDetails)}`;
+
+            window.open(whatsappUrl, '_blank');
+            
+            alert('✅ Pedido enviado com sucesso!\n\nUm resumo do pedido foi aberto no WhatsApp. Por favor, envie a mensagem para finalizar.\n\nMesa/Endereço: ' + order.tableNumber + '\nTotal: R$ ' + order.total.toFixed(2).replace('.', ','));
+            
+            // Limpa o carrinho
+            cart = {
+                size: '',
+                sizePrice: 0,
+                sizeName: '',
+                syrups: [],
+                complements: [],
+                fruits: [],
+                addOns: [],
+                customerName: '',
+                tableNumber: ''
+            };
+            
+            // Reseta a UI
+            document.getElementById('customer-name').value = '';
+            document.getElementById('table-number').value = '';
+            document.querySelectorAll('.size-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.toggle-option').forEach(o => o.classList.remove('selected'));
+            
+            updateAllCounters();
+            updateSummary();
+        }
+
+        init();
+    </script>
+</body>
+</html>
