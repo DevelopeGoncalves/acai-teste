@@ -3,172 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cardápio Digital | Açaí Flow</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Cardápio Digital | Açaí Victorino</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        /* --- TEMA NEON PROFISSIONAL --- */
         :root {
-            --bg: #0f0a1e; 
-            --card-bg: #1a122e;
-            --primary: #8A2BE2; /* Roxo Neon */
-            --accent: #00ff88;  /* Verde Neon */
+            --bg: #0d0d12; 
+            --card-bg: rgba(30, 30, 40, 0.6);
+            --primary: #a855f7;
+            --accent: #10b981;
             --text: #ffffff;
-            --gray: #8f8f8f;
+            --gray: #9ca3af;
+            --glass: blur(12px) saturate(180%);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding-bottom: 100px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 120px; background-image: radial-gradient(circle at top right, #2e1065 0%, transparent 40%); }
 
-        /* HEADER */
+        /* HEADER COM FOTO */
         header {
-            background: linear-gradient(180deg, rgba(26,18,46,1) 0%, rgba(15,10,30,0) 100%);
-            padding: 25px 20px; text-align: center; position: sticky; top: 0; z-index: 100;
-            backdrop-filter: blur(8px);
+            height: 220px; position: relative; overflow: hidden;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .logo { 
-            font-size: 1.8rem; font-weight: 800; color: var(--primary); 
-            text-transform: uppercase; letter-spacing: 2px;
-            text-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
-        }
-
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-
-        /* IDENTIFICAÇÃO INTELIGENTE */
-        .mesa-badge {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--primary);
-            padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px;
-            margin-bottom: 25px; box-shadow: 0 0 15px rgba(138, 43, 226, 0.1);
-        }
-        .mesa-numero { font-size: 1.5rem; font-weight: bold; color: var(--accent); }
-        .mesa-label { font-size: 0.8rem; color: var(--gray); text-transform: uppercase; }
-
-        /* FORMULÁRIO */
-        .input-group { margin-bottom: 20px; }
-        .neon-input {
-            width: 100%; padding: 15px; background: var(--card-bg); border: 1px solid #333;
-            border-radius: 10px; color: white; font-size: 1rem; outline: none; transition: 0.3s;
-        }
-        .neon-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(138, 43, 226, 0.3); }
-
-        /* SELEÇÃO DE TAMANHO (CARDS) */
-        h3.section-title { 
-            margin: 30px 0 15px; font-size: 1.1rem; color: var(--gray); 
-            border-left: 3px solid var(--accent); padding-left: 10px; 
-        }
-
-        .grid-sizes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .size-card {
-            background: var(--card-bg); padding: 20px; border-radius: 15px; text-align: center;
-            border: 2px solid transparent; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
-        }
-        .size-card:active { transform: scale(0.98); }
-        .size-card.selected { 
-            border-color: var(--accent); background: rgba(0, 255, 136, 0.05);
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.1); 
-        }
-        .size-card h4 { font-size: 1.2rem; margin-bottom: 5px; }
-        .size-card p { color: var(--accent); font-weight: bold; }
-
-        /* LISTA DE ITENS */
-        .item-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background: var(--card-bg); margin-bottom: 10px; border-radius: 10px;
-            cursor: pointer; border: 1px solid transparent; transition: 0.2s;
-        }
-        .item-row.selected { border-color: var(--primary); background: rgba(138, 43, 226, 0.1); }
-        .check-icon { 
-            width: 24px; height: 24px; border-radius: 50%; border: 2px solid #444; 
-            display: flex; align-items: center; justify-content: center; transition: 0.2s;
-        }
-        .item-row.selected .check-icon { background: var(--primary); border-color: var(--primary); }
-        .item-row.selected .check-icon::after { content: '✓'; color: white; font-weight: bold; font-size: 0.8rem; }
-
-        /* RODAPÉ FLUTUANTE */
-        .bottom-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #150f26;
-            padding: 20px; border-top: 1px solid #333; display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 -5px 30px rgba(0,0,0,0.5); z-index: 999;
-        }
-        .total-info span { display: block; font-size: 0.8rem; color: var(--gray); }
-        .total-info strong { font-size: 1.5rem; color: var(--accent); }
         
-        .btn-order {
-            background: var(--primary); color: white; border: none; padding: 15px 30px;
-            border-radius: 50px; font-weight: bold; font-size: 1rem; cursor: pointer;
-            box-shadow: 0 0 20px rgba(138, 43, 226, 0.4); transition: 0.3s;
+        /* IMAGEM DE CAPA (ALTERADA AQUI) */
+        .header-bg {
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.7;
+            /* Caminho da imagem local: img/capa.jpg */
+            background: url('img/capa.webp') center/cover no-repeat;
         }
-        .btn-order:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
+        
+        .header-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, var(--bg) 100%);
+            display: flex; flex-direction: column; 
+            justify-content: center; /* Centraliza verticalmente */
+            align-items: center; 
+        }
+        
+        .logo { 
+            font-size: 2.2rem; font-weight: 800; color: #fff; 
+            text-transform: uppercase; letter-spacing: 2px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8); margin-bottom: 5px;
+            text-align: center;
+        }
+        .subtitle { font-size: 1rem; color: #e0e0e0; font-weight: 400; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
 
-        /* Notification Toast */
+        .container { max-width: 600px; margin: -30px auto 0; padding: 0 20px; position: relative; z-index: 10; }
+
+        /* MESA BADGE */
+        .mesa-badge {
+            background: rgba(255,255,255,0.08); backdrop-filter: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 25px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .mesa-info { display: flex; align-items: center; gap: 10px; }
+        .mesa-numero { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
+
+        /* INPUT */
+        .neon-input {
+            width: 100%; padding: 18px; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px; color: white; font-size: 1rem; outline: none; transition: 0.3s;
+            margin-bottom: 30px;
+        }
+        .neon-input:focus { border-color: var(--primary); background: rgba(168, 85, 247, 0.1); }
+
+        /* TITULOS */
+        h3.section-title { 
+            font-size: 1.1rem; color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;
+        }
+        h3.section-title::before { content:''; width: 6px; height: 24px; background: var(--primary); border-radius: 4px; }
+
+        /* GRID TAMANHOS */
+        .grid-sizes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .size-card {
+            background: var(--card-bg); padding: 25px 15px; border-radius: 20px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; position: relative;
+        }
+        .size-card h4 { font-size: 1.3rem; margin-bottom: 5px; font-weight: 600; }
+        .size-card p { color: var(--gray); font-size: 0.9rem; }
+        .size-card.selected { 
+            border-color: var(--primary); background: rgba(168, 85, 247, 0.15);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); transform: translateY(-3px);
+        }
+        .size-card.selected h4 { color: var(--primary); }
+
+        /* CHIPS */
+        .chips-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+        .chip {
+            padding: 10px 18px; background: rgba(255,255,255,0.05); border-radius: 50px;
+            font-size: 0.9rem; color: #ddd; border: 1px solid transparent; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .chip i { font-size: 1rem; opacity: 0.5; transition: 0.2s; }
+        .chip.selected { background: var(--accent); color: #003320; border-color: var(--accent); font-weight: 600; }
+        .chip.selected i { opacity: 1; }
+
+        /* LISTA PAGOS */
+        .premium-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; background: var(--card-bg); margin-bottom: 10px; border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s;
+        }
+        .premium-item:hover { background: rgba(255,255,255,0.1); }
+        .premium-item.selected { border-color: var(--primary); background: rgba(168, 85, 247, 0.1); }
+        .plus-btn {
+            width: 28px; height: 28px; background: rgba(255,255,255,0.1); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white; transition: 0.2s;
+        }
+        .premium-item.selected .plus-btn { background: var(--primary); transform: rotate(45deg); }
+
+        /* FOOTER FLUTUANTE */
+        .bottom-bar {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 550px;
+            background: rgba(20, 20, 25, 0.9); backdrop-filter: blur(15px);
+            padding: 15px 20px; border-radius: 60px; border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 100;
+        }
+        .total-box { display: flex; flex-direction: column; padding-left: 10px; }
+        .total-box span { font-size: 0.75rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+        .total-box strong { font-size: 1.4rem; color: #fff; }
+
+        .btn-order {
+            background: var(--primary); color: white; border: none; padding: 15px 35px;
+            border-radius: 40px; font-weight: 600; font-size: 1rem; cursor: pointer;
+            box-shadow: 0 5px 20px rgba(168, 85, 247, 0.4); transition: 0.3s;
+        }
+        .btn-order:disabled { background: #333; color: #555; box-shadow: none; cursor: not-allowed; }
+
+        /* DEV FOOTER */
+        .dev-footer { text-align: center; margin-bottom: 40px; opacity: 0.6; padding-bottom: 20px; }
+        .dev-link { text-decoration: none; color: var(--gray); display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+        .dev-link img { width: 25px; height: 25px; border-radius: 50%; border: 1px solid var(--accent); }
+
+        /* ANIMAÇÃO */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-up { animation: fadeUp 0.5s ease forwards; opacity: 0; }
+        
+        /* Toast */
         .toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--accent); color: #004d26; padding: 12px 25px; border-radius: 50px;
-            font-weight: bold; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 1000;
-            box-shadow: 0 5px 15px rgba(0,255,136,0.3);
+            background: #fff; color: #000; padding: 12px 30px; border-radius: 50px;
+            font-weight: 600; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 2000;
+            box-shadow: 0 10px 30px rgba(255,255,255,0.2);
         }
         .toast.show { opacity: 1; top: 40px; }
+
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">AÇAÍ FLOW</div>
+        <div class="header-bg"></div>
+        <div class="header-overlay">
+            <div class="logo">AÇAÍ VICTORINO</div>
+            <div class="subtitle">O melhor açaí da região</div>
+        </div>
     </header>
 
     <div class="container">
         
-        <div class="mesa-badge">
-            <i class="material-icons" style="font-size: 2.5rem; color: var(--primary);">table_restaurant</i>
-            <div>
-                <span class="mesa-label">Você está na</span>
-                <div class="mesa-numero" id="display-mesa">Detectando...</div>
+        <div class="mesa-badge animate-up" style="animation-delay: 0.1s;">
+            <div class="mesa-info">
+                <i class="material-icons" style="color: var(--primary);">table_restaurant</i>
+                <span style="color: #ddd;">Você está na</span>
             </div>
+            <div class="mesa-numero" id="display-mesa">--</div>
         </div>
 
-        <div class="input-group">
-            <input type="text" id="cliente-nome" class="neon-input" placeholder="Digite seu nome (Obrigatório)" onkeyup="validar()">
-        </div>
+        <input type="text" id="cliente-nome" class="neon-input animate-up" style="animation-delay: 0.2s;" placeholder="Qual seu nome?" onkeyup="validar()">
 
-        <h3 class="section-title">1. Escolha o Tamanho</h3>
-        <div class="grid-sizes">
+        <h3 class="section-title animate-up" style="animation-delay: 0.3s;">1. Escolha o Tamanho</h3>
+        <div class="grid-sizes animate-up" style="animation-delay: 0.4s;">
             <div class="size-card" onclick="selectSize('300ml', 12)">
+                <i class="material-icons" style="font-size: 2rem; color:var(--gray); margin-bottom:5px;">local_cafe</i>
                 <h4>300ml</h4> <p>R$ 12,00</p>
             </div>
             <div class="size-card" onclick="selectSize('500ml', 18)">
+                <i class="material-icons" style="font-size: 2.2rem; color:var(--gray); margin-bottom:5px;">local_cafe</i>
                 <h4>500ml</h4> <p>R$ 18,00</p>
             </div>
             <div class="size-card" onclick="selectSize('700ml', 24)">
+                <i class="material-icons" style="font-size: 2.4rem; color:var(--gray); margin-bottom:5px;">local_cafe</i>
                 <h4>700ml</h4> <p>R$ 24,00</p>
             </div>
             <div class="size-card" onclick="selectSize('1 Litro', 32)">
+                <i class="material-icons" style="font-size: 2.6rem; color:var(--gray); margin-bottom:5px;">local_cafe</i>
                 <h4>1 Litro</h4> <p>R$ 32,00</p>
             </div>
         </div>
 
-        <h3 class="section-title">2. Grátis (Max 3)</h3>
-        <div id="lista-gratis"></div>
+        <h3 class="section-title animate-up" style="animation-delay: 0.5s;">2. Grátis (Max 3)</h3>
+        <div class="chips-container animate-up" style="animation-delay: 0.6s;" id="lista-gratis"></div>
 
-        <h3 class="section-title">3. Turbinar (Pago)</h3>
-        <div id="lista-pagos"></div>
+        <h3 class="section-title animate-up" style="animation-delay: 0.7s;">3. Turbinar (Pago)</h3>
+        <div class="animate-up" style="animation-delay: 0.8s;" id="lista-pagos"></div>
 
-        <div style="height: 60px;"></div> </div>
+        <div class="dev-footer animate-up" style="animation-delay: 0.9s;">
+            <a href="https://victorinoeng.com.br/" target="_blank" class="dev-link">
+                <img src="img/logo.png" alt="Victorino.eng">
+                <span>Desenvolvido por <strong>Victorino.eng</strong></span>
+            </a>
+        </div>
+    </div>
 
     <div class="bottom-bar">
-        <div class="total-info">
-            <span>Total do Pedido</span>
+        <div class="total-box">
+            <span>Total</span>
             <strong id="display-total">R$ 0,00</strong>
         </div>
         <button class="btn-order" id="btn-enviar" onclick="enviarPedido()" disabled>
-            ENVIAR PEDIDO <i class="material-icons" style="font-size: 1rem; vertical-align: middle;">send</i>
+            ENVIAR <i class="material-icons" style="font-size: 1.1rem; margin-left:5px;">arrow_forward</i>
         </button>
     </div>
 
-    <div class="toast" id="toast">Item Adicionado!</div>
+    <div class="toast" id="toast">Adicionado!</div>
 
     <script>
-        // --- DADOS ---
-        const itensGratis = ['Leite Condensado', 'Banana', 'Morango', 'Kiwi', 'Granola', 'Paçoca', 'Mel', 'Calda Chocolate'];
+        const itensGratis = [
+            {nome: 'Leite Cond.', icon: 'opacity'},
+            {nome: 'Banana', icon: 'lunch_dining'}, 
+            {nome: 'Morango', icon: 'favorite'}, 
+            {nome: 'Kiwi', icon: 'eco'}, 
+            {nome: 'Granola', icon: 'grain'}, 
+            {nome: 'Paçoca', icon: 'cookie'}, 
+            {nome: 'Mel', icon: 'water_drop'}, 
+            {nome: 'Calda Choc.', icon: 'water_drop'}, 
+            {nome: 'Leite em pó', icon: 'cloud'}
+        ];
+        
         const itensPagos = [
             { nome: 'Nutella', preco: 5.00 },
             { nome: 'Leite Ninho', preco: 3.00 },
@@ -177,94 +244,55 @@
             { nome: 'KitKat', preco: 3.50 }
         ];
 
-        // --- ESTADO ---
-        let pedido = {
-            mesa: '',
-            cliente: '',
-            tamanho: null,
-            precoBase: 0,
-            gratis: [],
-            pagos: [] // {nome, preco}
-        };
+        let pedido = { mesa: '', cliente: '', tamanho: null, precoBase: 0, gratis: [], pagos: [] };
 
-        // --- INICIALIZAÇÃO INTELIGENTE ---
         window.onload = () => {
             detectarMesa();
             renderItens();
         };
 
         function detectingFileName() {
-            // Pega o caminho da URL (ex: /pasta/mesa01.html)
-            const path = window.location.pathname;
-            // Pega apenas o nome do arquivo (ex: mesa01.html)
-            const file = path.split("/").pop();
-            
-            // Tenta achar números no nome do arquivo
-            const match = file.match(/\d+/);
-            
-            if (match) {
-                return match[0]; // Retorna "01", "02", "12"
-            }
-            return null;
-        }
-
-        function detectingFileName() {
-            // Lógica melhorada para garantir que pega "01" de "mesa01.html"
             const path = window.location.pathname; 
             const file = path.substring(path.lastIndexOf('/')+1);
-            
-            // Expressão regular para pegar números logo após "mesa"
-            // Ex: mesa01.html -> 01
             const match = file.match(/mesa(\d+)/i);
-            
             if(match) return match[1];
             return null;
         }
 
         function detectarMesa() {
             let numMesa = detectingFileName();
-
-            if (!numMesa) {
-                // Fallback: Se abrir como index.html ou sem número
-                numMesa = prompt("Número da mesa não detectado no arquivo.\nPor favor, digite o número da mesa (ex: 01):") || "00";
-            }
-
+            if (!numMesa) numMesa = prompt("Digite o número da mesa (ex: 01):") || "00";
             pedido.mesa = numMesa;
-            document.getElementById('display-mesa').innerText = `MESA ${numMesa}`;
+            document.getElementById('display-mesa').innerText = numMesa;
         }
 
         function renderItens() {
-            // Render Grátis
             const divGratis = document.getElementById('lista-gratis');
             divGratis.innerHTML = itensGratis.map(item => `
-                <div class="item-row" onclick="toggleGratis(this, '${item}')">
-                    <span>${item}</span>
-                    <div class="check-icon"></div>
+                <div class="chip" onclick="toggleGratis(this, '${item.nome}')">
+                    <i class="material-icons" style="font-size:1rem;">${item.icon}</i>
+                    ${item.nome}
                 </div>
             `).join('');
 
-            // Render Pagos
             const divPagos = document.getElementById('lista-pagos');
             divPagos.innerHTML = itensPagos.map(item => `
-                <div class="item-row" onclick="togglePago(this, '${item.nome}', ${item.preco})">
-                    <div style="display:flex; flex-direction:column;">
-                        <span>${item.nome}</span>
+                <div class="premium-item" onclick="togglePago(this, '${item.nome}', ${item.preco})">
+                    <div>
+                        <div style="font-weight:600;">${item.nome}</div>
                         <small style="color: var(--accent);">+ R$ ${item.preco.toFixed(2)}</small>
                     </div>
-                    <div class="check-icon"></div>
+                    <div class="plus-btn"><i class="material-icons">add</i></div>
                 </div>
             `).join('');
         }
 
-        // --- LÓGICA DO PEDIDO ---
         function selectSize(tamanho, preco) {
             document.querySelectorAll('.size-card').forEach(c => c.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
-            
             pedido.tamanho = tamanho;
             pedido.precoBase = preco;
             calcularTotal();
-            showToast(`Tamanho ${tamanho} selecionado`);
         }
 
         function toggleGratis(el, nome) {
@@ -272,7 +300,7 @@
                 pedido.gratis = pedido.gratis.filter(i => i !== nome);
                 el.classList.remove('selected');
             } else {
-                if(pedido.gratis.length >= 3) return showToast("Máximo de 3 itens grátis!", true);
+                if(pedido.gratis.length >= 3) return showToast("Máximo de 3 itens!", true);
                 pedido.gratis.push(nome);
                 el.classList.add('selected');
             }
@@ -295,42 +323,28 @@
             pedido.pagos.forEach(p => total += p.preco);
             document.getElementById('display-total').innerText = total.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
             validar();
-            return total;
         }
 
         function validar() {
             const nome = document.getElementById('cliente-nome').value.trim();
-            const btn = document.getElementById('btn-enviar');
-            
             pedido.cliente = nome;
-            
-            if (nome.length > 2 && pedido.tamanho) {
-                btn.disabled = false;
-            } else {
-                btn.disabled = true;
-            }
+            document.getElementById('btn-enviar').disabled = !(nome.length > 2 && pedido.tamanho);
         }
 
         function showToast(msg, isError = false) {
             const t = document.getElementById('toast');
             t.innerText = msg;
-            t.style.background = isError ? '#ff4747' : 'var(--accent)';
-            t.style.color = isError ? 'white' : '#004d26';
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2000);
         }
 
-        // --- ENVIAR ---
         function enviarPedido() {
-            const total = calcularTotal();
-            
-            // Prepara string bonita para o admin
             let listaItens = [...pedido.gratis];
             pedido.pagos.forEach(p => listaItens.push(`${p.nome} (+R$${p.preco})`));
 
             const novoPedido = {
                 id: Date.now(),
-                mesa: pedido.mesa, // Pega da identificação automática
+                mesa: pedido.mesa,
                 cliente: pedido.cliente,
                 tamanho: pedido.tamanho,
                 itens: listaItens,
@@ -338,18 +352,25 @@
                 hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})
             };
 
-            // Salva no Navegador (para o Admin ler)
             let ativos = JSON.parse(localStorage.getItem('acaiPedidosAtivos')) || [];
             ativos.push(novoPedido);
             localStorage.setItem('acaiPedidosAtivos', JSON.stringify(ativos));
 
-            // Feedback
             document.body.innerHTML = `
-                <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:20px;">
-                    <i class="material-icons" style="font-size: 5rem; color: var(--accent); margin-bottom:20px;">check_circle</i>
-                    <h1 style="color:white;">Pedido Enviado!</h1>
-                    <p style="color:#ccc; margin-top:10px;">Aguarde na mesa ${pedido.mesa}, logo levaremos seu açaí.</p>
-                    <button onclick="window.location.reload()" style="margin-top:30px; padding:15px 30px; background:transparent; border:1px solid var(--primary); color:white; border-radius:50px; cursor:pointer;">Fazer outro pedido</button>
+                <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px; background:var(--bg);">
+                    <div style="width:80px; height:80px; background:rgba(16, 185, 129, 0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:20px;">
+                        <i class="material-icons" style="font-size: 3rem; color: var(--accent);">check</i>
+                    </div>
+                    <h2 style="color:white; margin-bottom:10px;">Pedido Recebido!</h2>
+                    <p style="color:var(--gray);">Fique tranquilo(a) na <strong>Mesa ${pedido.mesa}</strong>.<br>Logo seu açaí chega.</p>
+                    
+                    <div style="margin-top:50px;">
+                         <a href="https://victorinoeng.com.br/" target="_blank" style="text-decoration:none; opacity:0.7;">
+                            <img src="img/logo.png" style="width:40px; border-radius:50%; margin-bottom:5px;">
+                            <br><span style="color:#666; font-size:0.8rem;">Victorino.eng</span>
+                        </a>
+                    </div>
+                    <button onclick="window.location.reload()" style="margin-top:30px; padding:12px 25px; background:transparent; border:1px solid #333; color:#fff; border-radius:50px; cursor:pointer;">Novo Pedido</button>
                 </div>
             `;
         }
