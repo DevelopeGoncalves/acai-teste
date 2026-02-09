@@ -100,12 +100,34 @@
         .chip i { font-size: 1rem; opacity: 0.5; transition: 0.2s; }
         .chip.selected { background: var(--accent); color: #003320; border-color: var(--accent); font-weight: 600; }
         .chip.selected i { opacity: 1; }
+        
+        /* ESTILO PARA ITEM ESGOTADO (Bloqueado) */
+        .chip.disabled, .premium-item.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(1);
+            position: relative;
+            border: 1px dashed #555;
+        }
+        .chip.disabled::after, .premium-item.disabled::after {
+            content: 'ESGOTADO';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-10deg);
+            background: #d32f2f;
+            color: white;
+            padding: 2px 5px;
+            font-size: 0.6rem;
+            border-radius: 4px;
+            font-weight: bold;
+            z-index: 10;
+        }
 
         /* LISTA PAGOS */
         .premium-item {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 20px; background: var(--card-bg); margin-bottom: 10px; border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s;
+            border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s; position: relative;
         }
         .premium-item:hover { background: rgba(255,255,255,0.1); }
         .premium-item.selected { border-color: var(--primary); background: rgba(168, 85, 247, 0.1); }
@@ -245,9 +267,12 @@
         ];
 
         let pedido = { mesa: '', cliente: '', tamanho: null, precoBase: 0, gratis: [], pagos: [] };
+        let bloqueados = [];
 
         window.onload = () => {
             detectarMesa();
+            // Carrega lista de bloqueios
+            bloqueados = JSON.parse(localStorage.getItem('acaiBloqueios')) || [];
             renderItens();
         };
 
@@ -268,23 +293,27 @@
 
         function renderItens() {
             const divGratis = document.getElementById('lista-gratis');
-            divGratis.innerHTML = itensGratis.map(item => `
-                <div class="chip" onclick="toggleGratis(this, '${item.nome}')">
+            divGratis.innerHTML = itensGratis.map(item => {
+                const isBlocked = bloqueados.includes(item.nome);
+                return `
+                <div class="chip ${isBlocked ? 'disabled' : ''}" onclick="toggleGratis(this, '${item.nome}')">
                     <i class="material-icons" style="font-size:1rem;">${item.icon}</i>
                     ${item.nome}
                 </div>
-            `).join('');
+            `}).join('');
 
             const divPagos = document.getElementById('lista-pagos');
-            divPagos.innerHTML = itensPagos.map(item => `
-                <div class="premium-item" onclick="togglePago(this, '${item.nome}', ${item.preco})">
+            divPagos.innerHTML = itensPagos.map(item => {
+                const isBlocked = bloqueados.includes(item.nome);
+                return `
+                <div class="premium-item ${isBlocked ? 'disabled' : ''}" onclick="togglePago(this, '${item.nome}', ${item.preco})">
                     <div>
                         <div style="font-weight:600;">${item.nome}</div>
                         <small style="color: var(--accent);">+ R$ ${item.preco.toFixed(2)}</small>
                     </div>
                     <div class="plus-btn"><i class="material-icons">add</i></div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function selectSize(tamanho, preco) {
@@ -296,6 +325,8 @@
         }
 
         function toggleGratis(el, nome) {
+            if(el.classList.contains('disabled')) return; // Previne clique se bloqueado
+
             if (pedido.gratis.includes(nome)) {
                 pedido.gratis = pedido.gratis.filter(i => i !== nome);
                 el.classList.remove('selected');
@@ -307,6 +338,8 @@
         }
 
         function togglePago(el, nome, preco) {
+            if(el.classList.contains('disabled')) return; // Previne clique se bloqueado
+
             const exists = pedido.pagos.find(p => p.nome === nome);
             if (exists) {
                 pedido.pagos = pedido.pagos.filter(p => p.nome !== nome);
