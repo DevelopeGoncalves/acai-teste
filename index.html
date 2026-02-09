@@ -1,821 +1,626 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Açaí - Monte seu Pedido</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Sistema Gestão Açaí Pro</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
         :root {
-            --neon-purple: #7b1fa2; /* Cor mais próxima da identidade Roots */
-            --neon-pink: #c2185b;
-            --neon-blue: #3f51b5;
-            --neon-green: #25D366;
-            --neon-light: #f5f5f5;
-            --dark-bg: #1a0033;
-            --dark-card: #200040;
-            --neon-cyan: #00bcd4;
-            --roots-primary: #512da8; /* Roxo mais escuro do logo */
+            --primary: #2c3e50;
+            --secondary: #8e44ad; /* Roxo Açaí */
+            --accent: #27ae60;    /* Verde Sucesso */
+            --danger: #c0392b;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --white: #ffffff;
         }
 
-        body {
-            background: var(--dark-bg);
-            background: radial-gradient(circle at 50% 10%, rgba(123, 31, 162, 0.2) 0%, rgba(0, 0, 0, 0.8) 70%, var(--dark-bg) 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 20px 0;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { display: flex; background-color: #f4f6f9; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        aside { 
+            width: 260px; background: var(--primary); color: white; 
+            display: flex; flex-direction: column; transition: 0.3s; 
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .brand { 
+            padding: 25px; text-align: center; background: rgba(0,0,0,0.2); 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .brand h2 { font-size: 1.4rem; color: var(--secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .brand span { color: #fff; font-size: 0.8rem; letter-spacing: normal; }
+
+        nav { flex: 1; padding: 20px 10px; }
+        nav button { 
+            width: 100%; background: transparent; border: none; color: #bdc3c7; 
+            padding: 15px; text-align: left; cursor: pointer; border-radius: 8px; 
+            margin-bottom: 5px; display: flex; align-items: center; gap: 15px; 
+            font-size: 1rem; transition: 0.3s; font-weight: 500;
+        }
+        nav button:hover, nav button.active { 
+            background: var(--secondary); color: white; padding-left: 20px; 
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);
         }
 
-        .phone-container {
-            max-width: 420px;
-            width: 100%;
-            background: var(--dark-card);
-            border-radius: 35px;
-            box-shadow: 0 0 30px rgba(123, 31, 162, 0.5), 0 0 60px rgba(194, 24, 91, 0.3);
-            overflow: hidden;
-            border: 4px solid var(--neon-purple);
-            position: relative;
-        }
-
-        header {
-            padding: 25px 20px;
-            text-align: center;
-            color: var(--neon-light);
-            background: linear-gradient(135deg, var(--dark-card) 0%, var(--roots-primary) 100%);
-            border-bottom: 2px solid var(--neon-pink);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            border: 2px solid var(--neon-pink);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            background-color: var(--neon-purple);
-            box-shadow: 0 0 8px var(--neon-pink);
-        }
-
-        .logo-icon span {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--neon-light);
-            text-shadow: 0 0 5px var(--neon-light);
-        }
-
-        h1 {
-            font-size: 1.8em;
-            font-weight: 700;
-            text-shadow: 0 0 10px var(--neon-purple);
-            color: var(--neon-light);
-        }
-
-        .subtitle {
-            font-size: 0.9em;
-            color: #ccc;
-            margin-top: 5px;
-        }
-
-        .content {
-            padding: 20px;
-        }
-
-        .section {
-            margin-bottom: 25px;
-        }
-
-        .section-title {
-            color: var(--neon-pink);
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-bottom: 5px;
-            border-bottom: 1px dashed rgba(233, 30, 99, 0.3);
-            font-weight: 700;
-        }
+        /* --- CONTEÚDO PRINCIPAL --- */
+        main { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
         
-        .section-title.cyan-title {
-            color: var(--neon-cyan);
-            border-bottom: 1px dashed rgba(0, 188, 212, 0.5);
+        header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 30px; 
         }
+        header h1 { color: var(--dark); font-weight: 300; font-size: 2rem; }
+
+        /* SEÇÕES */
+        .view-section { display: none; animation: fadeIn 0.4s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- CARDS DASHBOARD --- */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .kpi-card { 
+            background: white; padding: 25px; border-radius: 12px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; 
+            justify-content: space-between; align-items: center; 
+            border-bottom: 4px solid transparent;
+        }
+        .kpi-card.blue { border-color: #3498db; }
+        .kpi-card.green { border-color: #27ae60; }
+        .kpi-card.purple { border-color: #9b59b6; }
+        .kpi-info h3 { font-size: 0.9rem; color: #7f8c8d; margin-bottom: 5px; text-transform: uppercase; }
+        .kpi-info span { font-size: 1.8rem; font-weight: bold; color: var(--dark); }
+        .kpi-icon { font-size: 2.5rem; opacity: 0.2; }
+
+        /* --- PDV (CAIXA) --- */
+        .pdv-container { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; height: calc(100vh - 150px); }
+        .pdv-products { background: white; padding: 20px; border-radius: 12px; overflow-y: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .pdv-cart { background: white; padding: 20px; border-radius: 12px; display: flex; flex-direction: column; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         
-        .section-title.purple-title {
-            color: var(--roots-primary);
-            border-bottom: 1px dashed rgba(81, 45, 168, 0.5);
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .prod-item { 
+            background: #f8f9fa; border: 1px solid #e1e1e1; border-radius: 8px; 
+            padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; 
         }
+        .prod-item:hover { border-color: var(--secondary); transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.05); }
+        .prod-item h4 { font-size: 0.95rem; margin-bottom: 5px; color: var(--dark); }
+        .prod-item span { color: var(--secondary); font-weight: bold; }
+        .prod-item small { display: block; font-size: 0.75rem; color: #999; margin-top: 5px; }
 
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--neon-light);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .input-field:focus {
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 10px rgba(233, 30, 99, 0.5);
-        }
-
-        .input-field::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .size-cards-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 colunas para 4 tamanhos */
-            gap: 10px;
-        }
-
-        .size-card {
-            background: #1a0033;
-            color: var(--neon-light);
-            padding: 15px 10px;
-            border-radius: 15px;
-            border: 2px solid #1a0033;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .size-card.selected {
-            background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-purple) 100%);
-            border-color: var(--neon-light);
-            box-shadow: 0 0 15px var(--neon-pink), 0 0 25px rgba(123, 31, 162, 0.5);
-            transform: scale(1.05);
-        }
-
-        .size-card h3 {
-            font-size: 1.1em;
-            margin: 0 0 5px 0;
-            font-weight: 600;
-        }
-
-        .size-card .price {
-            font-size: 1.3em;
-            font-weight: 700;
-            text-shadow: 0 0 5px var(--neon-light);
-            margin: 0;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .toggle-option {
-            background: #1a0033;
-            padding: 12px 15px;
-            border-radius: 10px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            color: var(--neon-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-            font-size: 0.9em;
-        }
-
-        .toggle-option:hover {
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 8px rgba(123, 31, 162, 0.7);
-        }
-
-        .toggle-option.selected {
-            background: var(--neon-blue);
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 15px var(--neon-blue);
-            color: var(--neon-light);
-        }
-
-        .toggle-option.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .toggle-option-content {
-            flex-grow: 1;
-        }
-
-        .toggle-option-name {
-            font-weight: 600;
-        }
-
-        .extra-price {
-            font-size: 0.85em;
-            color: #ccc;
-            margin-top: 2px;
-        }
-
-        .toggle-option.selected .extra-price {
-            color: var(--neon-light);
-            font-weight: 600;
-        }
-
-        .toggle-switch {
-            width: 30px;
-            height: 18px;
-            background: #444;
-            border-radius: 9px;
-            position: relative;
-            transition: background 0.2s;
-            flex-shrink: 0;
-            margin-left: 10px;
-        }
-
-        .toggle-switch::before {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 14px;
-            height: 14px;
-            background: var(--neon-light);
-            border-radius: 50%;
-            transition: transform 0.2s;
-        }
-
-        .toggle-option.selected .toggle-switch {
-            background: var(--neon-pink);
-        }
-
-        .toggle-option.selected .toggle-switch::before {
-            transform: translateX(12px);
-        }
-
-        .alert-message {
-            background: #4a148c;
-            color: var(--neon-light);
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid var(--neon-pink);
-            font-size: 0.9em;
-            display: none;
-        }
-
-        .alert-message.show {
-            display: block;
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .summary {
-            background: #100020;
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 25px;
-            border: 2px solid var(--neon-purple);
-            box-shadow: 0 0 10px rgba(123, 31, 162, 0.5);
-        }
-
-        .summary h3 {
-            color: var(--neon-pink);
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid rgba(233, 30, 99, 0.5);
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            color: var(--neon-light);
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-            font-size: 0.9em;
-        }
+        .cart-items { flex: 1; overflow-y: auto; margin: 15px 0; border-top: 1px dashed #ddd; border-bottom: 1px dashed #ddd; }
+        .cart-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .cart-total { font-size: 2rem; font-weight: bold; text-align: right; color: var(--dark); margin: 10px 0; }
         
-        .summary-item:last-of-type {
-            border-bottom: none;
+        .btn-pay { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-pay:hover { background: #219150; }
+
+        /* --- MESAS --- */
+        .mesas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
+        .mesa-box { 
+            background: white; border-radius: 15px; padding: 20px; text-align: center; 
+            cursor: pointer; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            border: 2px solid transparent; transition: 0.3s;
         }
+        .mesa-box:hover { transform: translateY(-5px); }
+        .mesa-box.livre { border-color: #27ae60; }
+        .mesa-box.ocupada { border-color: #c0392b; background: #fff5f5; }
+        .mesa-badge { 
+            position: absolute; top: 10px; right: 10px; padding: 4px 8px; 
+            border-radius: 20px; font-size: 0.7rem; font-weight: bold; color: white; 
+        }
+        .bg-livre { background: #27ae60; }
+        .bg-ocupada { background: #c0392b; animation: pulse 2s infinite; }
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(192, 57, 43, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0); } }
+
+        /* --- ESTOQUE (TABLE) --- */
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; color: #7f8c8d; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; }
+        tr:hover { background: #f1f1f1; }
+        .stock-input { width: 80px; padding: 5px; border: 1px solid #ddd; border-radius: 4px; }
+
+        /* --- MODAL --- */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 500px; max-width: 90%; animation: zoomIn 0.3s; }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
-        .summary-item.indent {
-            padding-left: 15px;
-            font-size: 0.85em;
-            color: #ddd;
-        }
+        .modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .comanda-list { max-height: 300px; overflow-y: auto; background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         
-        .price-detail {
-            color: var(--neon-cyan);
-            font-weight: 600;
-        }
-
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 0 0;
-            font-size: 1.4em;
-            font-weight: 700;
-            color: var(--neon-green);
-            text-shadow: 0 0 5px rgba(37, 211, 102, 0.5);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 10px;
-        }
-
-        .btn-send {
-            background: var(--neon-green);
-            color: white;
-            border: none;
-            padding: 15px 20px;
-            font-size: 1.1em;
-            border-radius: 15px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(37, 211, 102, 0.5);
-            font-weight: 600;
-        }
-
-        .btn-send:hover:not(:disabled) {
-            background: #128C7E;
-            transform: translateY(-2px);
-        }
-
-        .btn-send:disabled {
-            background: #444;
-            color: #999;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .limit-counter {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--neon-light);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.85em;
-            text-align: center;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .limit-counter.warning {
-            background: rgba(233, 30, 99, 0.2);
-            border-color: var(--neon-pink);
-            color: var(--neon-pink);
-            font-weight: 600;
-        }
-
-        @media (max-width: 450px) {
-            .phone-container {
-                border-radius: 0;
-            }
-            body {
-                padding: 0;
-            }
-        }
+        /* Utility */
+        .badge-notif { background: var(--danger); color: white; padding: 2px 6px; border-radius: 50%; font-size: 0.75rem; margin-left: auto; display: none; }
     </style>
 </head>
 <body>
-    <div class="phone-container">
-        <header>
-            <div class="logo">
-                <div class="logo-icon"><span>R</span></div>
-                <h1>AÇAÍ VICTORINO</h1>
-            </div>
-            <p class="subtitle">AÇAÍ DE VERDADE TEM QUE SER VICTORINO!! ✨</p>
-        </header>
 
-        <div class="content">
-            <div class="section">
-                <h2 class="section-title">👤 Seus Dados</h2>
-                <input type="text" id="customer-name" class="input-field" placeholder="Nome:" style="margin-bottom: 10px;" oninput="updateSummary()">
-                <input type="text" id="table-number" class="input-field" placeholder="Número da mesa (ou Endereço):" oninput="updateSummary()">
-            </div>
+    <aside>
+        <div class="brand">
+            <h2>Açaí Flow</h2>
+            <span>Painel Administrativo v3.0</span>
+        </div>
+        <nav>
+            <button onclick="nav('dashboard')" class="active">
+                <i class="material-icons">dashboard</i> Visão Geral
+            </button>
+            <button onclick="nav('pdv')">
+                <i class="material-icons">point_of_sale</i> PDV / Caixa
+            </button>
+            <button onclick="nav('mesas')">
+                <i class="material-icons">table_restaurant</i> Mesas & Pedidos <span id="alert-mesas" class="badge-notif">!</span>
+            </button>
+            <button onclick="nav('estoque')">
+                <i class="material-icons">inventory</i> Estoque & Preços
+            </button>
+        </nav>
+    </aside>
 
-            <div class="section">
-                <h2 class="section-title">1️⃣ Escolha o Tamanho</h2>
-                <div class="size-cards-grid">
-                    <div class="size-card" data-size="p" data-price="8.00" onclick="selectSize('p', 8.00, '300ml')">
-                        <h3>300ml</h3>
-                        <p class="price">R$ 8,00</p>
+    <main>
+        <section id="view-dashboard" class="view-section active">
+            <header>
+                <h1>Visão Geral</h1>
+                <div style="font-size: 0.9rem; color: #666;">Hoje: <span id="data-hoje"></span></div>
+            </header>
+
+            <div class="kpi-grid">
+                <div class="kpi-card purple">
+                    <div class="kpi-info">
+                        <h3>Vendas Hoje</h3>
+                        <span id="kpi-vendas">R$ 0,00</span>
                     </div>
-                    <div class="size-card" data-size="m" data-price="10.00" onclick="selectSize('m', 10.00, '500ml')">
-                        <h3>500ml</h3>
-                        <p class="price">R$ 10,00</p>
+                    <i class="material-icons kpi-icon">attach_money</i>
+                </div>
+                <div class="kpi-card green">
+                    <div class="kpi-info">
+                        <h3>Pedidos</h3>
+                        <span id="kpi-pedidos">0</span>
                     </div>
-                    <div class="size-card" data-size="g" data-price="14.00" onclick="selectSize('g', 14.00, '700ml')">
-                        <h3>700ml</h3>
-                        <p class="price">R$ 14,00</p>
+                    <i class="material-icons kpi-icon">receipt</i>
+                </div>
+                <div class="kpi-card blue">
+                    <div class="kpi-info">
+                        <h3>Mesas Ocupadas</h3>
+                        <span id="kpi-mesas">0 / 12</span>
                     </div>
-                    <div class="size-card" data-size="gg" data-price="18.00" onclick="selectSize('gg', 18.00, '1 Litro')">
-                        <h3>1 Litro</h3>
-                        <p class="price">R$ 18,00</p>
-                    </div>
+                    <i class="material-icons kpi-icon">people</i>
                 </div>
             </div>
 
-            <div class="alert-message" id="size-warning">
-                ⚠️ Por favor, escolha o tamanho do açaí primeiro.
+            <div style="background: white; padding: 20px; border-radius: 10px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark);">Últimas Vendas</h3>
+                <table id="tabela-historico">
+                    <thead><tr><th>Hora</th><th>Tipo</th><th>Valor</th><th>Pagamento</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="view-pdv" class="view-section">
+            <header><h1>Frente de Caixa (PDV)</h1></header>
+            <div class="pdv-container">
+                <div class="pdv-products">
+                    <input type="text" placeholder="🔍 Buscar produto..." onkeyup="filtrarPDV(this.value)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px;">
+                    <div class="product-grid" id="pdv-grid">
+                        </div>
+                </div>
+                <div class="pdv-cart">
+                    <h3 style="color: var(--primary);">Cesta de Compras</h3>
+                    <div class="cart-items" id="pdv-carrinho-lista">
+                        <p style="text-align: center; color: #999; margin-top: 20px;">Cesta vazia</p>
+                    </div>
+                    <div class="cart-total" id="pdv-total">R$ 0,00</div>
+                    <select id="pagamento-tipo" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                        <option value="Dinheiro">💵 Dinheiro</option>
+                        <option value="Pix">💠 Pix</option>
+                        <option value="Cartão">💳 Cartão</option>
+                    </select>
+                    <button class="btn-pay" onclick="finalizarVendaPDV()">FINALIZAR VENDA</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-mesas" class="view-section">
+            <header><h1>Mapa de Mesas</h1></header>
+            <p style="margin-bottom: 20px; color: #666;">Clique em uma mesa ocupada (vermelha) para ver a comanda e fechar a conta.</p>
+            <div class="mesas-grid" id="mesas-container">
+                </div>
+        </section>
+
+        <section id="view-estoque" class="view-section">
+            <header>
+                <h1>Gestão de Estoque</h1>
+                <button onclick="renderEstoque()" style="background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Atualizar</button>
+            </header>
+            <table id="estoque-tabela">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Categoria</th>
+                        <th>Preço (R$)</th>
+                        <th>Em Estoque</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="modal-mesa">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Mesa 00</h2>
+                <button onclick="fecharModal()" style="border:none; background:transparent; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
             
-            <div class="section">
-                <h2 class="section-title cyan-title">2️⃣ Coberturas (3x)</h2>
-                <div class="limit-counter" id="syrups-counter">
-                    Coberturas selecionadas: <strong>0/3</strong>
+            <div class="comanda-list" id="modal-itens" style="max-height: 400px; overflow-y: auto;">
                 </div>
-                <div class="menu-grid" id="syrups-grid"></div>
-            </div>
 
-            <div class="section">
-                <h2 class="section-title">3️⃣ Complementos (5x)</h2>
-                <div class="limit-counter" id="complements-counter">
-                    Complementos selecionados: <strong>0/5</strong>
-                </div>
-                <div class="menu-grid" id="complements-grid"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 1.5rem; font-weight: bold; border-top: 2px solid #eee; padding-top: 15px;">
+                <span>Total Geral:</span>
+                <span id="modal-total" style="color: var(--secondary);">R$ 0,00</span>
             </div>
             
-            <div class="section">
-                <h2 class="section-title purple-title">4️⃣ Frutas (3x)</h2>
-                <div class="limit-counter" id="fruits-counter">
-                    Frutas selecionadas: <strong>0/3</strong>
-                </div>
-                <div class="menu-grid" id="fruits-grid"></div>
-            </div>
-
-            <div class="section">
-                <h2 class="section-title cyan-title">5️⃣ Adicionais</h2>
-                <p class="subtitle" style="margin-bottom: 10px; color: #aaa;">Itens pagos à parte, sem limite de seleção.</p>
-                <div class="menu-grid" id="add-ons-grid"></div>
-            </div>
-
-            <div class="summary">
-                <h3>📋 Resumo do Pedido</h3>
-                <div id="summary-content">
-                    <p style="color: #999; text-align: center; font-style: italic; padding: 10px 0;">
-                        Preencha todos os dados para ver o resumo.
-                    </p>
-                </div>
-                <div class="summary-total" id="total-section" style="display: none;">
-                    <span>TOTAL:</span>
-                    <span id="total-price">R$ 0,00</span>
-                </div>
-                <button class="btn-send" id="send-btn" onclick="sendOrder()" disabled>
-                    <span>📤</span> Fazer Pedido
-                </button>
+            <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button onclick="fecharContaMesa()" style="background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">✅ Fechar Conta</button>
+                <button onclick="fecharModal()" style="background: #e74c3c; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">Voltar</button>
             </div>
         </div>
     </div>
 
     <script>
-        const MAX_SYRUPS = 3;
-        const MAX_COMPLEMENTS = 5;
-        const MAX_FRUITS = 3;
+        // --- DADOS INICIAIS (SIMULANDO BANCO DE DADOS) ---
+        const produtosPadrao = [
+            { id: 1, nome: "Açaí 300ml", preco: 12.00, cat: "Copo", estoque: 50 },
+            { id: 2, nome: "Açaí 500ml", preco: 18.00, cat: "Copo", estoque: 45 },
+            { id: 3, nome: "Açaí 700ml", preco: 24.00, cat: "Copo", estoque: 30 },
+            { id: 4, nome: "Açaí 1 Litro", preco: 32.00, cat: "Copo", estoque: 20 },
+            { id: 5, nome: "Água Mineral", preco: 4.00, cat: "Bebida", estoque: 100 },
+            { id: 6, nome: "Refrigerante", preco: 6.00, cat: "Bebida", estoque: 60 },
+            { id: 7, nome: "Paçoca Extra", preco: 2.00, cat: "Adicional", estoque: 200 },
+            { id: 8, nome: "Leite Ninho", preco: 3.00, cat: "Adicional", estoque: 50 }
+        ];
 
-        const allOptions = {
-            syrups: [ // Corresponde a Coberturas 3x (Grátis)
-                { id: 'syrup-1', name: 'Morango', price: 0.00, limit: MAX_SYRUPS },
-                { id: 'syrup-2', name: 'Caramelo', price: 0.00, limit: MAX_SYRUPS },
-                { id: 'syrup-3', name: 'Kiwi', price: 0.00, limit: MAX_SYRUPS },
-                { id: 'syrup-4', name: 'Chocolate', price: 0.00, limit: MAX_SYRUPS },
-                { id: 'syrup-5', name: 'Leite Condensado', price: 0.00, limit: MAX_SYRUPS },
-                { id: 'syrup-6', name: 'Uva', price: 0.00, limit: MAX_SYRUPS }
-            ],
-            complements: [ // Corresponde a Complementos 5x (Grátis)
-                { id: 'comp-1', name: 'Granola', price: 0.00, limit: MAX_COMPLEMENTS },
-                { id: 'comp-2', name: 'Ovomaltine', price: 0.00, limit: MAX_COMPLEMENTS },
-                { id: 'comp-3', name: 'Sucrilhos', price: 0.00, limit: MAX_COMPLEMENTS },
-                { id: 'comp-4', name: 'Flocos de arroz', price: 0.00, limit: MAX_COMPLEMENTS },
-                { id: 'comp-5', name: 'Paçoca', price: 0.00, limit: MAX_COMPLEMENTS },
-                { id: 'comp-6', name: 'Confete', price: 0.00, limit: MAX_COMPLEMENTS },
-                { id: 'comp-7', name: 'ChocoBall', price: 0.00, limit: MAX_COMPLEMENTS },
-                { id: 'comp-8', name: 'Amendoim', price: 0.00, limit: MAX_COMPLEMENTS },
-                { id: 'comp-9', name: 'Leite em Pó', price: 0.00, limit: MAX_COMPLEMENTS },
-                { id: 'comp-10', name: 'Gotas de Choc.', price: 0.00, limit: MAX_COMPLEMENTS }
-            ],
-            fruits: [ // Corresponde a Frutas 3x (Grátis)
-                { id: 'fruit-1', name: 'Uva', price: 0.00, limit: MAX_FRUITS },
-                { id: 'fruit-2', name: 'Morango', price: 0.00, limit: MAX_FRUITS },
-                { id: 'fruit-3', name: 'Kiwi', price: 0.00, limit: MAX_FRUITS },
-                { id: 'fruit-4', name: 'Maçã', price: 0.00, limit: MAX_FRUITS },
-                { id: 'fruit-5', name: 'Banana', price: 0.00, limit: MAX_FRUITS },
-                { id: 'fruit-6', name: 'Manga', price: 0.00, limit: MAX_FRUITS },
-                { id: 'fruit-7', name: 'Abacaxi', price: 0.00, limit: MAX_FRUITS },
-                { id: 'fruit-8', name: 'Coco', price: 0.00, limit: MAX_FRUITS }
-            ],
-            addOns: [ // Corresponde a Adicionais (Pagos)
-                { id: 'add-1', name: 'Chantilly', price: 2.00, limit: Infinity },
-                { id: 'add-2', name: 'Nutella', price: 3.00, limit: Infinity },
-                { id: 'add-3', name: 'Doce de leite', price: 2.00, limit: Infinity },
-                { id: 'add-4', name: 'Bis de Oreo', price: 2.00, limit: Infinity }
-            ]
-        };
+        let estoque = JSON.parse(localStorage.getItem('acaiEstoque')) || produtosPadrao;
+        let historico = JSON.parse(localStorage.getItem('acaiHistorico')) || [];
+        // Pedidos vindos do Cardápio do Cliente
+        let pedidosAtivos = JSON.parse(localStorage.getItem('acaiPedidosAtivos')) || [];
+        
+        let carrinhoPDV = [];
 
-        let cart = {
-            size: '',
-            sizePrice: 0,
-            sizeName: '',
-            syrups: [],
-            complements: [],
-            fruits: [],
-            addOns: [],
-            customerName: '',
-            tableNumber: ''
-        };
+        // --- SISTEMA ---
+        function init() {
+            document.getElementById('data-hoje').innerText = new Date().toLocaleDateString('pt-BR');
+            renderDashboard();
+            renderPDVGrid();
+            renderMesas();
+            renderEstoque();
 
-        function renderOptions(containerId, options, type) {
-            const grid = document.getElementById(containerId);
-            const html = options.map(opt => `
-                <div class="toggle-option" data-id="${opt.id}" data-price="${opt.price.toFixed(2)}" data-type="${type}" onclick="toggleOption('${opt.id}', '${type}')">
-                    <div class="toggle-option-content">
-                        <div class="toggle-option-name">${opt.name}</div>
-                        <div class="extra-price">
-                            ${opt.price > 0 ? `+R$ ${opt.price.toFixed(2).replace('.', ',')}` : 'Grátis'}
-                        </div>
-                    </div>
-                    <div class="toggle-switch"></div>
+            // Escuta atualizações do Cardápio do Cliente
+            window.addEventListener('storage', () => {
+                pedidosAtivos = JSON.parse(localStorage.getItem('acaiPedidosAtivos')) || [];
+                renderMesas();
+                renderDashboard();
+                tocarSom();
+            });
+        }
+
+        function nav(section) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById('view-' + section).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if(section === 'estoque') renderEstoque();
+            if(section === 'mesas') renderMesas();
+            if(section === 'dashboard') renderDashboard();
+        }
+
+        // --- MÓDULO: PDV ---
+        function renderPDVGrid() {
+            const grid = document.getElementById('pdv-grid');
+            grid.innerHTML = estoque.map(p => `
+                <div class="prod-item" onclick="addPDV(${p.id})">
+                    <h4>${p.nome}</h4>
+                    <span>R$ ${p.preco.toFixed(2)}</span>
+                    <small>Estoque: ${p.estoque}</small>
                 </div>
             `).join('');
-            grid.innerHTML = html;
         }
 
-        function init() {
-            renderOptions('syrups-grid', allOptions.syrups, 'syrup');
-            renderOptions('complements-grid', allOptions.complements, 'complement');
-            renderOptions('fruits-grid', allOptions.fruits, 'fruit');
-            renderOptions('add-ons-grid', allOptions.addOns, 'addOn');
-            updateAllCounters();
-            updateSummary();
+        function addPDV(id) {
+            const produto = estoque.find(p => p.id === id);
+            if(produto.estoque <= 0) return alert("Produto sem estoque!");
+            
+            carrinhoPDV.push(produto);
+            atualizarCarrinhoPDV();
         }
 
-        function selectSize(size, price, name) {
-            document.querySelectorAll('.size-card').forEach(card => {
-                card.classList.remove('selected');
-            });
+        function atualizarCarrinhoPDV() {
+            const lista = document.getElementById('pdv-carrinho-lista');
+            const totalEl = document.getElementById('pdv-total');
             
-            const selectedCard = document.querySelector(`[data-size="${size}"]`);
-            selectedCard.classList.add('selected');
-            
-            cart.size = size;
-            cart.sizePrice = price;
-            cart.sizeName = name;
-            
-            document.getElementById('size-warning').classList.remove('show');
-            updateSummary();
-        }
-
-        function toggleOption(id, type) {
-            if (!cart.size && type !== 'addOn') {
-                document.getElementById('size-warning').classList.add('show');
-                setTimeout(() => {
-                    document.getElementById('size-warning').classList.remove('show');
-                }, 3000);
+            if(carrinhoPDV.length === 0) {
+                lista.innerHTML = '<p style="text-align: center; color: #999; margin-top: 20px;">Cesta vazia</p>';
+                totalEl.innerText = "R$ 0,00";
                 return;
             }
 
-            const element = document.querySelector(`.toggle-option[data-id="${id}"]`);
-            const optionTypeKey = type + (type === 'syrup' ? 's' : (type === 'addOn' ? 's' : 's')); 
-            const allOptionsKey = type + (type === 'syrup' ? 's' : (type === 'addOn' ? 's' : 's')); 
+            lista.innerHTML = carrinhoPDV.map((item, idx) => `
+                <div class="cart-row">
+                    <span>${item.nome}</span>
+                    <div style="display:flex; gap:10px;">
+                        <b>R$ ${item.preco.toFixed(2)}</b>
+                        <i class="material-icons" style="font-size:1rem; color:red; cursor:pointer;" onclick="rmPDV(${idx})">delete</i>
+                    </div>
+                </div>
+            `).join('');
 
-            const optionsList = allOptions[allOptionsKey];
-            const option = optionsList.find(o => o.id === id);
-            const cartList = cart[optionTypeKey];
-            const index = cartList.findIndex(o => o.id === id);
-            const maxLimit = option.limit;
-
-            if (index > -1) {
-                cartList.splice(index, 1);
-                element.classList.remove('selected');
-            } else {
-                if (cartList.length >= maxLimit) {
-                    const limitWarning = document.getElementById('limit-warning'); // Reutilizando a div de alerta
-                    limitWarning.textContent = `⚠️ Você atingiu o limite máximo de ${maxLimit} ${type === 'syrup' ? 'Coberturas' : (type === 'complement' ? 'Complementos' : 'Frutas')}!`;
-                    limitWarning.classList.add('show');
-                    setTimeout(() => {
-                        limitWarning.classList.remove('show');
-                    }, 3000);
-                    return;
-                }
-                cartList.push(option);
-                element.classList.add('selected');
-            }
-            
-            updateAllCounters();
-            updateSummary();
+            const total = carrinhoPDV.reduce((acc, i) => acc + i.preco, 0);
+            totalEl.innerText = total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
         }
 
-        function updateCounter(type, maxLimit, counterId) {
-            const counter = document.getElementById(counterId);
-            const count = cart[type].length;
-            const name = type === 'syrups' ? 'Coberturas' : (type === 'complements' ? 'Complementos' : 'Frutas');
-            
-            counter.innerHTML = `${name} selecionadas: <strong>${count}/${maxLimit}</strong>`;
-            
-            const typeSelector = `.toggle-option[data-type="${type.slice(0, -1)}"]`; 
-            
-            if (count >= maxLimit) {
-                counter.classList.add('warning');
-                document.querySelectorAll(`${typeSelector}:not(.selected)`).forEach(el => {
-                    el.classList.add('disabled');
-                });
-            } else {
-                counter.classList.remove('warning');
-                document.querySelectorAll(typeSelector).forEach(el => {
-                    el.classList.remove('disabled');
-                });
-            }
-        }
-        
-        function updateAllCounters() {
-            updateCounter('syrups', MAX_SYRUPS, 'syrups-counter');
-            updateCounter('complements', MAX_COMPLEMENTS, 'complements-counter');
-            updateCounter('fruits', MAX_FRUITS, 'fruits-counter');
+        function rmPDV(idx) {
+            carrinhoPDV.splice(idx, 1);
+            atualizarCarrinhoPDV();
         }
 
-        function updateSummary() {
-            const summaryContent = document.getElementById('summary-content');
-            const totalSection = document.getElementById('total-section');
-            const totalPriceElement = document.getElementById('total-price');
-            const sendBtn = document.getElementById('send-btn');
+        function finalizarVendaPDV() {
+            if(carrinhoPDV.length === 0) return alert("Carrinho vazio!");
             
-            const customerName = document.getElementById('customer-name').value.trim();
-            const tableNumber = document.getElementById('table-number').value.trim();
-            
-            cart.customerName = customerName;
-            cart.tableNumber = tableNumber;
+            const total = carrinhoPDV.reduce((acc, i) => acc + i.preco, 0);
+            const tipoPgto = document.getElementById('pagamento-tipo').value;
 
-            let total = cart.sizePrice;
-            let html = '';
-            
-            if (cart.size && customerName && tableNumber) {
-                // 1. Tamanho
-                html += `<div class="summary-item">
-                    <span>Açaí ${cart.sizeName}</span>
-                    <span class="price-detail">R$ ${cart.sizePrice.toFixed(2).replace('.', ',')}</span>
-                </div>`;
-                
-                // 2. Coberturas
-                if (cart.syrups.length > 0) {
-                    html += `<div class="summary-item">
-                        <span>Coberturas (${cart.syrups.length} / ${MAX_SYRUPS})</span>
-                        <span class="price-detail">Grátis</span>
-                    </div>`;
-                    cart.syrups.forEach(o => {
-                        html += `<div class="summary-item indent">
-                            <span>• ${o.name}</span>
-                            <span class="price-detail">Grátis</span>
-                        </div>`;
-                    });
-                }
-                
-                // 3. Complementos
-                if (cart.complements.length > 0) {
-                    html += `<div class="summary-item">
-                        <span>Complementos (${cart.complements.length} / ${MAX_COMPLEMENTS})</span>
-                        <span class="price-detail">Grátis</span>
-                    </div>`;
-                    cart.complements.forEach(o => {
-                        html += `<div class="summary-item indent">
-                            <span>• ${o.name}</span>
-                            <span class="price-detail">Grátis</span>
-                        </div>`;
-                    });
-                }
-                
-                // 4. Frutas
-                if (cart.fruits.length > 0) {
-                    html += `<div class="summary-item">
-                        <span>Frutas (${cart.fruits.length} / ${MAX_FRUITS})</span>
-                        <span class="price-detail">Grátis</span>
-                    </div>`;
-                    cart.fruits.forEach(o => {
-                        html += `<div class="summary-item indent">
-                            <span>• ${o.name}</span>
-                            <span class="price-detail">Grátis</span>
-                        </div>`;
-                    });
-                }
-                
-                // 5. Adicionais
-                if (cart.addOns.length > 0) {
-                    html += `<div class="summary-item">
-                        <span>Adicionais</span>
-                        <span class="price-detail"></span>
-                    </div>`;
-                    cart.addOns.forEach(o => {
-                        html += `<div class="summary-item indent">
-                            <span>• ${o.name}</span>
-                            <span class="price-detail">+R$ ${o.price.toFixed(2).replace('.', ',')}</span>
-                        </div>`;
-                        total += o.price;
-                    });
-                }
-                
-                summaryContent.innerHTML = html;
-                totalPriceElement.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-                totalSection.style.display = 'flex';
-                sendBtn.disabled = false;
-            } else {
-                summaryContent.innerHTML = '<p style="color: #999; text-align: center; font-style: italic; padding: 10px 0;">Preencha todos os dados (Nome, Mesa/Endereço e Tamanho) para ver o resumo.</p>';
-                totalSection.style.display = 'none';
-                sendBtn.disabled = true;
-            }
-        }
-        
-        // FUNÇÃO MODIFICADA PARA SALVAR NO LOCALSTORAGE
-        function sendOrder() {
-            if (!cart.size || !cart.customerName || !cart.tableNumber) {
-                alert('⚠️ Por favor, preencha todos os campos obrigatórios (Nome, Mesa/Endereço e Tamanho)!');
-                return;
-            }
-            
-            // Cálculo do total: Preço do tamanho + Soma dos Adicionais (únicos pagos)
-            const total = cart.sizePrice + cart.addOns.reduce((sum, o) => sum + o.price, 0);
-            
-            const order = {
+            // Registrar Venda
+            const venda = {
                 id: Date.now(),
-                customerName: cart.customerName,
-                tableNumber: cart.tableNumber,
-                size: cart.sizeName,
-                sizePrice: cart.sizePrice,
-                // Itens grátis: Armazenar apenas nomes.
-                syrups: cart.syrups.map(s => s.name),
-                complements: cart.complements.map(c => c.name),
-                fruits: cart.fruits.map(f => f.name),
-                // Itens pagos (Adicionais): Armazenar nome e preço.
-                addOns: cart.addOns.map(a => ({ name: a.name, price: a.price })),
+                hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+                tipo: 'Balcão',
+                itens: carrinhoPDV.map(p => p.nome),
                 total: total,
-                timestamp: new Date().toLocaleString('pt-BR'),
-                status: 'pending'
+                pgto: tipoPgto
             };
-            
-            // LÓGICA PARA SALVAR O PEDIDO NO LOCAL STORAGE
-            let orders = JSON.parse(localStorage.getItem('acaiOrders') || '[]');
-            orders.push(order);
-            localStorage.setItem('acaiOrders', JSON.stringify(orders)); // 'acaiOrders' é a chave usada pelo admin.html
-            
-            // Avisa o painel de administração que há um novo pedido (dispara o evento 'storage')
-            window.dispatchEvent(new Event('storage'));
-            
-            alert('✅ Pedido enviado com sucesso! O seu pedido foi salvo e aparecerá no painel de administração.\n\nMesa/Endereço: ' + order.tableNumber + '\nTotal: R$ ' + order.total.toFixed(2).replace('.', ','));
-            
-            // Limpa o carrinho e reseta a UI
-            cart = {
-                size: '',
-                sizePrice: 0,
-                sizeName: '',
-                syrups: [],
-                complements: [],
-                fruits: [],
-                addOns: [],
-                customerName: '',
-                tableNumber: ''
-            };
-            
-            document.getElementById('customer-name').value = '';
-            document.getElementById('table-number').value = '';
-            document.querySelectorAll('.size-card').forEach(c => c.classList.remove('selected'));
-            document.querySelectorAll('.toggle-option').forEach(o => o.classList.remove('selected'));
-            
-            updateAllCounters();
-            updateSummary();
+
+            historico.push(venda);
+            localStorage.setItem('acaiHistorico', JSON.stringify(historico));
+
+            // Baixar Estoque
+            carrinhoPDV.forEach(itemCart => {
+                const prodIndex = estoque.findIndex(p => p.id === itemCart.id);
+                if(prodIndex > -1) estoque[prodIndex].estoque--;
+            });
+            localStorage.setItem('acaiEstoque', JSON.stringify(estoque));
+
+            // Limpar
+            carrinhoPDV = [];
+            atualizarCarrinhoPDV();
+            renderPDVGrid();
+            alert("✅ Venda Registrada com Sucesso!");
         }
 
+        function filtrarPDV(texto) {
+            const termo = texto.toLowerCase();
+            const filtrados = estoque.filter(p => p.nome.toLowerCase().includes(termo));
+            const grid = document.getElementById('pdv-grid');
+            grid.innerHTML = filtrados.map(p => `
+                <div class="prod-item" onclick="addPDV(${p.id})">
+                    <h4>${p.nome}</h4>
+                    <span>R$ ${p.preco.toFixed(2)}</span>
+                    <small>Estoque: ${p.estoque}</small>
+                </div>
+            `).join('');
+        }
+
+        // --- MÓDULO: MESAS (ATUALIZADO) ---
+        
+        // Função auxiliar para converter "R$ 12,00" em número (float)
+        function parseValor(valorStr) {
+            if(typeof valorStr === 'number') return valorStr;
+            return parseFloat(valorStr.replace('R$', '').replace('.', '').replace(',', '.').trim());
+        }
+
+        function renderMesas() {
+            const container = document.getElementById('mesas-container');
+            container.innerHTML = '';
+            let mesasComPedidos = 0;
+
+            for(let i=1; i<=12; i++) {
+                const numMesa = i.toString().padStart(2, '0');
+                
+                // ALTERAÇÃO: Usamos .filter para pegar TODOS os pedidos desta mesa
+                const pedidosDaMesa = pedidosAtivos.filter(p => p.mesa === numMesa);
+                const isOcupada = pedidosDaMesa.length > 0;
+                
+                if(isOcupada) mesasComPedidos++;
+
+                // Calcula o total acumulado da mesa
+                let totalAcumulado = 0;
+                pedidosDaMesa.forEach(p => {
+                    totalAcumulado += parseValor(p.total);
+                });
+
+                container.innerHTML += `
+                    <div class="mesa-box ${isOcupada ? 'ocupada' : 'livre'}" onclick="${isOcupada ? `abrirComanda('${numMesa}')` : ''}">
+                        <div class="mesa-badge ${isOcupada ? 'bg-ocupada' : 'bg-livre'}">
+                            ${isOcupada ? 'OCUPADA' : 'LIVRE'}
+                        </div>
+                        <i class="material-icons" style="font-size: 3rem; color: var(--dark); margin: 15px 0;">table_bar</i>
+                        <h3>Mesa ${numMesa}</h3>
+                        ${isOcupada ? `
+                            <div style="margin-top:5px;">
+                                <span style="display:block; font-size:0.8rem; color:#666;">${pedidosDaMesa.length} pedido(s)</span>
+                                <strong style="color:var(--danger); font-size:1.1rem;">R$ ${totalAcumulado.toFixed(2).replace('.', ',')}</strong>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            // Mostra bolinha vermelha no menu se houver mesas ocupadas
+            document.getElementById('alert-mesas').style.display = mesasComPedidos > 0 ? 'inline-block' : 'none';
+        }
+
+        function abrirComanda(mesaNum) {
+            // Filtra todos os pedidos desta mesa
+            const pedidosDaMesa = pedidosAtivos.filter(p => p.mesa === mesaNum);
+            if(pedidosDaMesa.length === 0) return;
+
+            document.getElementById('modal-titulo').innerText = `Mesa ${mesaNum}`;
+            
+            // Guarda o número da mesa no modal para usar ao fechar
+            document.getElementById('modal-mesa').setAttribute('data-mesa-atual', mesaNum);
+
+            let htmlPedidos = '';
+            let totalGeral = 0;
+
+            // Gera o HTML para cada pedido individualmente
+            pedidosDaMesa.forEach((pedido, index) => {
+                const valorPedido = parseValor(pedido.total);
+                totalGeral += valorPedido;
+
+                htmlPedidos += `
+                    <div style="background: #f1f2f6; border-radius: 8px; padding: 10px; margin-bottom: 10px; border-left: 4px solid var(--secondary);">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px; border-bottom:1px solid #ddd; padding-bottom:5px;">
+                            <strong>👤 ${pedido.cliente}</strong>
+                            <small>${pedido.hora}</small>
+                        </div>
+                        <div style="font-size: 0.95rem;">
+                            <strong>${pedido.tamanho}</strong>
+                            ${pedido.itens.map(item => `<div style="color: #666; font-size: 0.85rem; padding-left:10px;">+ ${item}</div>`).join('')}
+                        </div>
+                        <div style="text-align:right; font-weight:bold; margin-top:5px; color: var(--dark);">
+                            Total: ${pedido.total}
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('modal-itens').innerHTML = htmlPedidos;
+            document.getElementById('modal-total').innerText = totalGeral.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            
+            document.getElementById('modal-mesa').style.display = 'flex';
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-mesa').style.display = 'none';
+        }
+
+        function fecharContaMesa() {
+            if(!confirm("Deseja fechar a conta e liberar esta mesa?")) return;
+
+            const mesaNum = document.getElementById('modal-mesa').getAttribute('data-mesa-atual');
+            
+            // Pega todos os pedidos da mesa para salvar no histórico
+            const pedidosDaMesa = pedidosAtivos.filter(p => p.mesa === mesaNum);
+            
+            let totalFinal = 0;
+            let itensConsolidados = [];
+
+            // Consolida os itens para o histórico
+            pedidosDaMesa.forEach(p => {
+                totalFinal += parseValor(p.total);
+                itensConsolidados.push(`${p.cliente}: ${p.tamanho}`);
+                // Adiciona os adicionais na lista
+                p.itens.forEach(adicional => {
+                   // Opcional: se quiser detalhar muito o histórico, descomente abaixo
+                   // itensConsolidados.push(` - ${adicional}`);
+                });
+            });
+
+            // Salva no histórico como uma venda única da mesa
+            historico.push({
+                id: Date.now(),
+                hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+                tipo: `Mesa ${mesaNum}`,
+                itens: itensConsolidados, // Lista resumida de quem pediu o que
+                total: totalFinal,
+                pgto: 'Caixa' // Assumindo pagamento no caixa
+            });
+            localStorage.setItem('acaiHistorico', JSON.stringify(historico));
+
+            // REMOVE APENAS OS PEDIDOS DESSA MESA
+            pedidosAtivos = pedidosAtivos.filter(p => p.mesa !== mesaNum);
+            localStorage.setItem('acaiPedidosAtivos', JSON.stringify(pedidosAtivos));
+
+            fecharModal();
+            renderMesas();
+            renderDashboard(); // Atualiza KPI de vendas
+            alert("✅ Conta fechada com sucesso!");
+        }
+
+        // --- MÓDULO: ESTOQUE ---
+        function renderEstoque() {
+            const tbody = document.querySelector('#estoque-tabela tbody');
+            tbody.innerHTML = estoque.map((p, idx) => `
+                <tr>
+                    <td>${p.nome}</td>
+                    <td><span style="background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">${p.cat}</span></td>
+                    <td>R$ ${p.preco.toFixed(2)}</td>
+                    <td>
+                        <input type="number" class="stock-input" value="${p.estoque}" onchange="atualizarEstoque(${idx}, this.value)">
+                    </td>
+                    <td>
+                        <button onclick="removerProduto(${p.id})" style="color: red; border:none; background:transparent; cursor:pointer;"><i class="material-icons">delete</i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function atualizarEstoque(idx, qtd) {
+            estoque[idx].estoque = parseInt(qtd);
+            localStorage.setItem('acaiEstoque', JSON.stringify(estoque));
+        }
+
+        // --- MÓDULO: DASHBOARD ---
+        function renderDashboard() {
+            // KPI Total Vendas
+            const totalVendas = historico.reduce((acc, h) => acc + h.total, 0);
+            document.getElementById('kpi-vendas').innerText = totalVendas.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            
+            // KPI Pedidos
+            document.getElementById('kpi-pedidos').innerText = historico.length;
+            
+            // KPI Mesas
+            const mesasOcupadas = pedidosAtivos.length;
+            document.getElementById('kpi-mesas').innerText = `${mesasOcupadas} / 12`;
+
+            // Tabela Recentes (últimos 5)
+            const tabela = document.querySelector('#tabela-historico tbody');
+            const recentes = historico.slice().reverse().slice(0, 5);
+            
+            if(recentes.length === 0) {
+                tabela.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Nenhuma venda hoje</td></tr>';
+            } else {
+                tabela.innerHTML = recentes.map(h => `
+                    <tr>
+                        <td>${h.hora}</td>
+                        <td>${h.tipo}</td>
+                        <td style="color: var(--accent); font-weight: bold;">R$ ${h.total.toFixed(2)}</td>
+                        <td>${h.pgto}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function tocarSom() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = 600;
+            gain.gain.value = 0.1;
+            osc.start();
+            setTimeout(() => osc.stop(), 150);
+        }
+
+        // Inicializa
         init();
+
     </script>
 </body>
 </html>
