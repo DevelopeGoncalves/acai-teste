@@ -6,7 +6,7 @@
     <title>Sistema Gestão Açaí Pro - Victorino.eng</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        /* --- CSS MANTIDO IGUAL AO SEU --- */
+        /* CSS MANTIDO */
         :root { --primary: #2c3e50; --secondary: #8e44ad; --accent: #27ae60; --danger: #c0392b; --light: #ecf0f1; --dark: #2c3e50; --white: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { display: flex; background-color: #f4f6f9; height: 100vh; overflow: hidden; }
@@ -178,14 +178,16 @@
     </main>
 
     <div class="modal-overlay" id="modal-mesa"><div class="modal-content"><div class="modal-header"><h2 id="modal-titulo">Mesa 00</h2><button onclick="fecharModalMesa()" style="border:none; background:transparent; font-size: 1.5rem; cursor: pointer;">&times;</button></div><div class="comanda-list" id="modal-itens"></div><div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 1.5rem; font-weight: bold; border-top: 2px solid #eee; padding-top: 15px;"><span>Total Geral:</span><span id="modal-total" style="color: var(--secondary);">R$ 0,00</span></div><div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><button onclick="fecharContaMesa()" style="background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">✅ Fechar</button><button onclick="fecharModalMesa()" style="background: #e74c3c; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">Voltar</button></div></div></div>
-    <div class="modal-overlay" id="modal-produto"><div class="modal-content"><div class="modal-header"><h2 id="titulo-modal-prod">Novo Produto</h2><button onclick="fecharModalProduto()" style="border:none; background:transparent; font-size: 1.5rem; cursor: pointer;">&times;</button></div><form onsubmit="salvarProduto(event)" style="display: grid; gap: 15px;"><input type="hidden" id="prod-id"><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Nome do Produto</label><input type="text" id="prod-nome" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;"><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Preço (R$)</label><input type="number" step="0.01" id="prod-preco" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Estoque</label><input type="number" id="prod-estoque" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div></div><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Categoria</label><select id="prod-cat" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"><option value="Copo">Copo de Açaí</option><option value="Bebida">Bebida</option><option value="Adicional">Adicional / Complemento</option><option value="Outros">Outros</option></select></div><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="submit" style="flex: 1; background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">💾 Salvar</button></div></form></div></div>
-    <div class="modal-overlay" id="modal-ingredientes"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2>Gerenciar Adicionais</h2><button onclick="fecharModalIngredientes()" style="border:none; background:transparent; font-size: 1.5rem; cursor: pointer;">&times;</button></div><p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Clique no botão para bloquear/desbloquear um item no cardápio digital.</p><h3 style="font-size: 1rem; color: var(--secondary); margin-bottom: 10px; border-bottom: 1px solid #ddd;">Grátis</h3><div id="lista-ingred-gratis"></div><h3 style="font-size: 1rem; color: var(--secondary); margin: 20px 0 10px 0; border-bottom: 1px solid #ddd;">Pagos</h3><div id="lista-ingred-pagos"></div><div style="margin-top: 20px;"><button onclick="fecharModalIngredientes()" style="width:100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">Fechar</button></div></div></div>
+    
+    <div class="modal-overlay" id="modal-produto"><div class="modal-content"><div class="modal-header"><h2 id="titulo-modal-prod">Novo Produto</h2><button onclick="fecharModalProduto()" style="border:none; background:transparent; font-size: 1.5rem; cursor: pointer;">&times;</button></div><form onsubmit="salvarProduto(event)" style="display: grid; gap: 15px;"><input type="hidden" id="prod-id"><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Nome do Produto</label><input type="text" id="prod-nome" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;"><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Preço (R$)</label><input type="number" step="0.01" id="prod-preco" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"><small style="color:#666; font-size:0.75rem;">(Coloque 0 para Grátis)</small></div><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Estoque</label><input type="number" id="prod-estoque" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div></div><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Categoria</label><select id="prod-cat" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"><option value="Copo">Copo de Açaí (Tamanho)</option><option value="Adicional">Adicional (Grátis ou Pago)</option><option value="Bebida">Bebida</option><option value="Outros">Outros</option></select></div><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="submit" style="flex: 1; background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">💾 Salvar</button></div></form></div></div>
+    
+    <div class="modal-overlay" id="modal-ingredientes"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2>Gerenciar Adicionais</h2><button onclick="fecharModalIngredientes()" style="border:none; background:transparent; font-size: 1.5rem; cursor: pointer;">&times;</button></div><p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Clique para bloquear um item no cardápio.</p><h3 style="font-size: 1rem; color: var(--secondary); margin-bottom: 10px; border-bottom: 1px solid #ddd;">Grátis (Preço R$ 0,00)</h3><div id="lista-ingred-gratis"></div><h3 style="font-size: 1rem; color: var(--secondary); margin: 20px 0 10px 0; border-bottom: 1px solid #ddd;">Pagos</h3><div id="lista-ingred-pagos"></div><div style="margin-top: 20px;"><button onclick="fecharModalIngredientes()" style="width:100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">Fechar</button></div></div></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-        // --- COLOQUE SUA CONFIGURAÇÃO DO FIREBASE ABAIXO ---
+        // --- COLOQUE SUA CONFIGURAÇÃO AQUI ---
         const firebaseConfig = {
         apiKey: "AIzaSyAZXNqxuUyKACvDRuRYXUdzrUpVUl8K0JU",
         authDomain: "acaivictorino-amostra.firebaseapp.com",
@@ -194,61 +196,34 @@
         messagingSenderId: "1085066202451",
         appId: "1:1085066202451:web:5768ce3d9c2dc7a304a5a6"
         };
-        // ---------------------------------------------------
+        // -------------------------------------
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        window.dbRef = db; 
+        window.set = set; window.ref = ref; window.update = update;
 
-        // Referências Globais
-        window.dbRef = db; // Para uso no console se precisar
-        window.set = set;
-        window.ref = ref;
-        window.update = update;
-
-        // --- DADOS LOCAIS (Espelhos do Firebase) ---
         let estoque = [];
         let historico = [];
         let pedidosAtivos = [];
         let bloqueados = [];
         let carrinhoPDV = [];
 
-        const defaults = [
-            { id: 1, nome: "Açaí 300ml", preco: 12.00, cat: "Copo", estoque: 50 },
-            { id: 2, nome: "Açaí 500ml", preco: 18.00, cat: "Copo", estoque: 45 },
-            { id: 3, nome: "Açaí 700ml", preco: 24.00, cat: "Copo", estoque: 30 },
-            { id: 4, nome: "Água Mineral", preco: 4.00, cat: "Bebida", estoque: 100 },
-            { id: 5, nome: "Paçoca Extra", preco: 2.00, cat: "Adicional", estoque: 200 }
-        ];
-
-        const refGratis = ['Leite Cond.', 'Banana', 'Morango', 'Kiwi', 'Granola', 'Paçoca', 'Mel', 'Calda Choc.', 'Leite em pó'];
-        const refPagos = ['Nutella', 'Leite Ninho', 'Mousse Maracujá', 'Bis Extra', 'KitKat'];
-
-        // --- INICIALIZAÇÃO E LISTENERS (TEMPO REAL) ---
         function init() {
             document.getElementById('data-hoje').innerText = new Date().toLocaleDateString('pt-BR');
 
             // Ouvinte: Estoque
             onValue(ref(db, 'estoque'), (snapshot) => {
-                const data = snapshot.val();
-                if(!data) {
-                    // Se estiver vazio, popula com defaults
-                    set(ref(db, 'estoque'), defaults);
-                    estoque = defaults;
-                } else {
-                    estoque = data;
-                }
+                estoque = snapshot.val() || [];
                 renderEstoque();
                 renderPDVGrid();
             });
 
-            // Ouvinte: Pedidos Ativos
+            // Ouvinte: Pedidos
             onValue(ref(db, 'pedidosAtivos'), (snapshot) => {
                 pedidosAtivos = snapshot.val() || [];
                 renderMesas();
                 renderDashboard();
-                
-                // Alerta sonoro simples se chegou pedido novo (opcional)
-                // if(pedidosAtivos.length > snapshot.val()?.length) alert("Novo Pedido!");
             });
 
             // Ouvinte: Histórico
@@ -263,7 +238,6 @@
             });
         }
 
-        // --- FUNÇÕES DE NAVEGAÇÃO E UI ---
         window.nav = function(section) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -271,15 +245,12 @@
             event.currentTarget.classList.add('active');
         };
 
-        // --- GESTÃO DE BLOQUEIOS ---
+        // --- GESTÃO DINÂMICA DE BLOQUEIOS ---
         window.abrirModalIngredientes = function() {
             renderListaIngredientes();
             document.getElementById('modal-ingredientes').style.display = 'flex';
         };
-
-        window.fecharModalIngredientes = function() {
-            document.getElementById('modal-ingredientes').style.display = 'none';
-        };
+        window.fecharModalIngredientes = function() { document.getElementById('modal-ingredientes').style.display = 'none'; };
 
         window.toggleBloqueio = function(nome) {
             let novosBloqueios = [...bloqueados];
@@ -288,7 +259,6 @@
             } else {
                 novosBloqueios.push(nome);
             }
-            // Salva no Firebase
             set(ref(db, 'bloqueios'), novosBloqueios);
         };
 
@@ -296,22 +266,27 @@
             const containerGratis = document.getElementById('lista-ingred-gratis');
             const containerPagos = document.getElementById('lista-ingred-pagos');
 
+            // Filtra os adicionais diretamente do estoque
+            const gratis = estoque.filter(p => p.cat === 'Adicional' && p.preco === 0);
+            const pagos = estoque.filter(p => p.cat === 'Adicional' && p.preco > 0);
+
             const gerarHTML = (lista) => {
+                if(lista.length === 0) return '<p style="color:#999;font-size:0.8rem;">Nenhum item cadastrado.</p>';
                 return lista.map(item => {
-                    const isBloq = bloqueados.includes(item);
+                    const isBloq = bloqueados.includes(item.nome);
                     return `
                         <div class="ingrediente-row">
-                            <span>${item}</span>
+                            <span>${item.nome}</span>
                             <span class="ingrediente-status ${isBloq ? 'status-off' : 'status-on'}" 
-                                  onclick="toggleBloqueio('${item}')">
+                                  onclick="toggleBloqueio('${item.nome}')">
                                 ${isBloq ? 'ESGOTADO 🚫' : 'DISPONÍVEL ✅'}
                             </span>
                         </div>
                     `;
                 }).join('');
             };
-            containerGratis.innerHTML = gerarHTML(refGratis);
-            containerPagos.innerHTML = gerarHTML(refPagos);
+            containerGratis.innerHTML = gerarHTML(gratis);
+            containerPagos.innerHTML = gerarHTML(pagos);
         }
 
         // --- CRUD PRODUTOS ---
@@ -337,7 +312,6 @@
             } else { titulo.innerText = "Novo Produto"; }
             modal.style.display = 'flex';
         };
-
         window.fecharModalProduto = function() { document.getElementById('modal-produto').style.display = 'none'; };
 
         window.salvarProduto = function(event) {
@@ -347,7 +321,6 @@
             const preco = parseFloat(document.getElementById('prod-preco').value);
             const qtd = parseInt(document.getElementById('prod-estoque').value);
             const cat = document.getElementById('prod-cat').value;
-
             let novoEstoque = [...estoque];
 
             if (id) {
@@ -356,8 +329,6 @@
             } else {
                 novoEstoque.push({ id: Date.now(), nome, preco, estoque: qtd, cat });
             }
-
-            // Salva no Firebase
             set(ref(db, 'estoque'), novoEstoque);
             fecharModalProduto();
         };
@@ -448,10 +419,7 @@
             lista.innerHTML = carrinhoPDV.map((item, idx) => `
                 <div class="cart-row">
                     <span>${item.nome}</span>
-                    <div style="display:flex; gap:10px;">
-                        <b>R$ ${item.preco.toFixed(2)}</b>
-                        <i class="material-icons" style="font-size:1rem; color:red; cursor:pointer;" onclick="rmPDV(${idx})">delete</i>
-                    </div>
+                    <div style="display:flex; gap:10px;"><b>R$ ${item.preco.toFixed(2)}</b><i class="material-icons" style="font-size:1rem; color:red; cursor:pointer;" onclick="rmPDV(${idx})">delete</i></div>
                 </div>
             `).join('');
             const total = carrinhoPDV.reduce((acc, i) => acc + i.preco, 0);
@@ -460,13 +428,10 @@
 
         window.finalizarVendaPDV = function() {
             if(carrinhoPDV.length === 0) return alert("Carrinho vazio!");
-            
             const destino = document.getElementById('pdv-destino').value;
             const total = carrinhoPDV.reduce((acc, i) => acc + i.preco, 0);
-
             let novoEstoque = [...estoque];
 
-            // Debita estoque
             carrinhoPDV.forEach(itemCart => {
                 const prodIndex = novoEstoque.findIndex(p => p.id === itemCart.id);
                 if(prodIndex > -1) novoEstoque[prodIndex].estoque--;
@@ -475,41 +440,23 @@
             if (destino === 'balcao') {
                 const tipoPgto = document.getElementById('pagamento-tipo').value;
                 const novaVenda = {
-                    id: Date.now(),
-                    hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
-                    tipo: 'Balcão',
-                    itens: carrinhoPDV.map(p => p.nome),
-                    total: total,
-                    pgto: tipoPgto
+                    id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+                    tipo: 'Balcão', itens: carrinhoPDV.map(p => p.nome), total: total, pgto: tipoPgto
                 };
-                let novoHistorico = [...historico, novaVenda];
-                
-                // Salva tudo no Firebase
                 set(ref(db, 'estoque'), novoEstoque);
-                set(ref(db, 'historico'), novoHistorico);
+                set(ref(db, 'historico'), [...historico, novaVenda]);
                 alert("✅ Venda Registrada!");
-
             } else {
                 const novoPedidoMesa = {
-                    id: Date.now(),
-                    mesa: destino,
-                    cliente: "Caixa/Garçom",
-                    tamanho: "Pedido Balcão",
-                    itens: carrinhoPDV.map(p => p.nome),
-                    total: total,
+                    id: Date.now(), mesa: destino, cliente: "Caixa/Garçom", tamanho: "Pedido Balcão",
+                    itens: carrinhoPDV.map(p => p.nome), total: total,
                     hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})
                 };
-
-                let novosPedidos = [...pedidosAtivos, novoPedidoMesa];
-                
-                // Salva no Firebase
                 set(ref(db, 'estoque'), novoEstoque);
-                set(ref(db, 'pedidosAtivos'), novosPedidos);
+                set(ref(db, 'pedidosAtivos'), [...pedidosAtivos, novoPedidoMesa]);
                 alert(`📋 Pedido lançado na Mesa ${destino}!`);
             }
-
-            carrinhoPDV = []; 
-            atualizarCarrinhoPDV(); 
+            carrinhoPDV = []; atualizarCarrinhoPDV(); 
         };
 
         // --- MESAS ---
@@ -522,16 +469,13 @@
             const container = document.getElementById('mesas-container');
             container.innerHTML = '';
             let mesasComPedidos = 0;
-
             for(let i=1; i<=12; i++) {
                 const numMesa = i.toString().padStart(2, '0');
                 const pedidosDaMesa = pedidosAtivos.filter(p => p.mesa === numMesa);
                 const isOcupada = pedidosDaMesa.length > 0;
                 if(isOcupada) mesasComPedidos++;
-
                 let totalAcumulado = 0;
                 pedidosDaMesa.forEach(p => { totalAcumulado += parseValor(p.total); });
-
                 container.innerHTML += `
                     <div class="mesa-box ${isOcupada ? 'ocupada' : 'livre'}" onclick="${isOcupada ? `abrirComanda('${numMesa}')` : ''}">
                         <div class="mesa-badge ${isOcupada ? 'bg-ocupada' : 'bg-livre'}">${isOcupada ? 'OCUPADA' : 'LIVRE'}</div>
@@ -549,85 +493,44 @@
             if(pedidosDaMesa.length === 0) return;
             document.getElementById('modal-titulo').innerText = `Mesa ${mesaNum}`;
             document.getElementById('modal-mesa').setAttribute('data-mesa-atual', mesaNum);
-
             let htmlPedidos = '';
             let totalGeral = 0;
-
             pedidosDaMesa.forEach((pedido) => {
                 const valorPedido = parseValor(pedido.total);
                 totalGeral += valorPedido;
                 htmlPedidos += `
                     <div style="background: #f1f2f6; border-radius: 8px; padding: 10px; margin-bottom: 10px; border-left: 4px solid var(--secondary);">
                         <div style="display:flex; justify-content:space-between; margin-bottom:5px; border-bottom:1px solid #ddd; padding-bottom:5px;">
-                            <strong>👤 ${pedido.cliente}</strong>
-                            <small>${pedido.hora}</small>
+                            <strong>👤 ${pedido.cliente}</strong><small>${pedido.hora}</small>
                         </div>
-                        <div style="font-size: 0.95rem;">
-                            <strong>${pedido.tamanho}</strong>
-                            ${pedido.itens.map(item => `<small>+${item}</small>`).join(' ')}
-                        </div>
+                        <div style="font-size: 0.95rem;"><strong>${pedido.tamanho}</strong>${pedido.itens.map(item => `<small>+${item}</small>`).join(' ')}</div>
                         <div style="text-align:right; font-weight:bold; margin-top:5px; color: var(--dark);">R$ ${valorPedido.toFixed(2)}</div>
                     </div>
                 `;
             });
-
             document.getElementById('modal-itens').innerHTML = htmlPedidos;
             document.getElementById('modal-total').innerText = totalGeral.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById('modal-mesa').style.display = 'flex';
         };
 
         window.fecharModalMesa = function() { document.getElementById('modal-mesa').style.display = 'none'; };
-
         window.fecharContaMesa = function() {
             if(!confirm("Fechar conta?")) return;
             const mesaNum = document.getElementById('modal-mesa').getAttribute('data-mesa-atual');
             const pedidosDaMesa = pedidosAtivos.filter(p => p.mesa === mesaNum);
             let totalFinal = 0;
             let itensConsolidados = [];
-
-            pedidosDaMesa.forEach(p => {
-                totalFinal += parseValor(p.total);
-                itensConsolidados.push(`${p.cliente}: ${p.tamanho}`);
-            });
-
+            pedidosDaMesa.forEach(p => { totalFinal += parseValor(p.total); itensConsolidados.push(`${p.cliente}: ${p.tamanho}`); });
             const novaVenda = {
-                id: Date.now(),
-                hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
-                tipo: `Mesa ${mesaNum}`,
-                itens: itensConsolidados,
-                total: totalFinal,
-                pgto: 'Caixa'
+                id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+                tipo: `Mesa ${mesaNum}`, itens: itensConsolidados, total: totalFinal, pgto: 'Caixa'
             };
-            
-            let novoHistorico = [...historico, novaVenda];
-            let novosPedidosAtivos = pedidosAtivos.filter(p => p.mesa !== mesaNum);
-
-            // Salva no Firebase
-            set(ref(db, 'historico'), novoHistorico);
-            set(ref(db, 'pedidosAtivos'), novosPedidosAtivos);
-
+            set(ref(db, 'historico'), [...historico, novaVenda]);
+            set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(p => p.mesa !== mesaNum));
             fecharModalMesa();
             alert("✅ Conta fechada!");
         };
 
-        function renderDashboard() {
-            const totalVendas = historico.reduce((acc, h) => acc + h.total, 0);
-            document.getElementById('kpi-vendas').innerText = totalVendas.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            document.getElementById('kpi-pedidos').innerText = historico.length;
-            document.getElementById('kpi-mesas').innerText = `${pedidosAtivos.length} / 12`;
-
-            const tabela = document.querySelector('#tabela-historico tbody');
-            const recentes = historico.slice().reverse().slice(0, 5);
-            if(recentes.length === 0) {
-                tabela.innerHTML = '<tr><td colspan="4" style="text-align:center;">Sem vendas</td></tr>';
-            } else {
-                tabela.innerHTML = recentes.map(h => `
-                    <tr><td>${h.hora}</td><td>${h.tipo}</td><td style="color: var(--accent);">R$ ${h.total.toFixed(2)}</td><td>${h.pgto}</td></tr>
-                `).join('');
-            }
-        }
-
-        // Inicia o app
         init();
     </script>
 </body>

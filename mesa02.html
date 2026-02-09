@@ -65,15 +65,18 @@
     <div class="container">
         <div class="mesa-badge animate-up" style="animation-delay: 0.1s;"><div class="mesa-info"><i class="material-icons" style="color: var(--primary);">table_restaurant</i><span style="color: #ddd;">Você está na</span></div><div class="mesa-numero" id="display-mesa">--</div></div>
         <input type="text" id="cliente-nome" class="neon-input animate-up" style="animation-delay: 0.2s;" placeholder="Qual seu nome?" onkeyup="validar()">
+        
         <h3 class="section-title animate-up" style="animation-delay: 0.3s;">1. Escolha o Tamanho</h3>
-        <div class="grid-sizes animate-up" style="animation-delay: 0.4s;">
-            <div class="size-card" onclick="selectSize('300ml', 12)"><i class="material-icons" style="font-size: 2rem; color:var(--gray); margin-bottom:5px;">local_cafe</i><h4>300ml</h4> <p>R$ 12,00</p></div>
-            <div class="size-card" onclick="selectSize('500ml', 18)"><i class="material-icons" style="font-size: 2.2rem; color:var(--gray); margin-bottom:5px;">local_cafe</i><h4>500ml</h4> <p>R$ 18,00</p></div>
-            <div class="size-card" onclick="selectSize('700ml', 24)"><i class="material-icons" style="font-size: 2.4rem; color:var(--gray); margin-bottom:5px;">local_cafe</i><h4>700ml</h4> <p>R$ 24,00</p></div>
-            <div class="size-card" onclick="selectSize('1 Litro', 32)"><i class="material-icons" style="font-size: 2.6rem; color:var(--gray); margin-bottom:5px;">local_cafe</i><h4>1 Litro</h4> <p>R$ 32,00</p></div>
+        <div class="grid-sizes animate-up" style="animation-delay: 0.4s;" id="grid-sizes">
+            <p style="color:#666;">Carregando cardápio...</p>
         </div>
-        <h3 class="section-title animate-up" style="animation-delay: 0.5s;">2. Grátis (Max 3)</h3><div class="chips-container animate-up" style="animation-delay: 0.6s;" id="lista-gratis"></div>
-        <h3 class="section-title animate-up" style="animation-delay: 0.7s;">3. Turbinar (Pago)</h3><div class="animate-up" style="animation-delay: 0.8s;" id="lista-pagos"></div>
+
+        <h3 class="section-title animate-up" style="animation-delay: 0.5s;">2. Grátis (Max 3)</h3>
+        <div class="chips-container animate-up" style="animation-delay: 0.6s;" id="lista-gratis"></div>
+
+        <h3 class="section-title animate-up" style="animation-delay: 0.7s;">3. Turbinar (Pago)</h3>
+        <div class="animate-up" style="animation-delay: 0.8s;" id="lista-pagos"></div>
+
         <div class="dev-footer animate-up" style="animation-delay: 0.9s;"><a href="https://victorinoeng.com.br/" target="_blank" class="dev-link"><img src="img/logo.png" alt="Victorino.eng"><span>Desenvolvido por <strong>Victorino.eng</strong></span></a></div>
     </div>
 
@@ -84,7 +87,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-        // --- COLOQUE SUA CONFIGURAÇÃO DO FIREBASE ABAIXO (A MESMA DO PAINEL) ---
+        // --- COLOQUE SUA CONFIGURAÇÃO AQUI ---
         const firebaseConfig = {
         apiKey: "AIzaSyAZXNqxuUyKACvDRuRYXUdzrUpVUl8K0JU",
         authDomain: "acaivictorino-amostra.firebaseapp.com",
@@ -93,41 +96,32 @@
         messagingSenderId: "1085066202451",
         appId: "1:1085066202451:web:5768ce3d9c2dc7a304a5a6"
         };
-        // ------------------------------------------------------------------------
+        // -------------------------------------
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-
-        // Disponibiliza funcoes para o HTML
         window.enviarPedido = enviarPedidoFunc;
         window.selectSize = selectSize;
         window.toggleGratis = toggleGratis;
         window.togglePago = togglePago;
         window.validar = validar;
 
-        const itensGratis = [
-            {nome: 'Leite Cond.', icon: 'opacity'}, {nome: 'Banana', icon: 'lunch_dining'}, 
-            {nome: 'Morango', icon: 'favorite'}, {nome: 'Kiwi', icon: 'eco'}, 
-            {nome: 'Granola', icon: 'grain'}, {nome: 'Paçoca', icon: 'cookie'}, 
-            {nome: 'Mel', icon: 'water_drop'}, {nome: 'Calda Choc.', icon: 'water_drop'}, 
-            {nome: 'Leite em pó', icon: 'cloud'}
-        ];
-        
-        const itensPagos = [
-            { nome: 'Nutella', preco: 5.00 }, { nome: 'Leite Ninho', preco: 3.00 },
-            { nome: 'Mousse Maracujá', preco: 4.00 }, { nome: 'Bis Extra', preco: 2.50 },
-            { nome: 'KitKat', preco: 3.50 }
-        ];
-
         let pedido = { mesa: '', cliente: '', tamanho: null, precoBase: 0, gratis: [], pagos: [] };
+        let estoque = [];
         let bloqueados = [];
 
         window.onload = () => {
             detectarMesa();
-            // Escutar bloqueios em tempo real
-            onValue(ref(db, 'bloqueios'), (snapshot) => {
-                bloqueados = snapshot.val() || [];
-                renderItens();
+            
+            // Carrega tudo do Firebase (Produtos + Bloqueios)
+            onValue(ref(db, 'bloqueios'), (snap) => {
+                bloqueados = snap.val() || [];
+                if(estoque.length > 0) renderCardapio();
+            });
+
+            onValue(ref(db, 'estoque'), (snap) => {
+                estoque = snap.val() || [];
+                renderCardapio();
             });
         };
 
@@ -146,19 +140,30 @@
             document.getElementById('display-mesa').innerText = numMesa;
         }
 
-        function renderItens() {
-            const divGratis = document.getElementById('lista-gratis');
-            divGratis.innerHTML = itensGratis.map(item => {
+        function renderCardapio() {
+            // 1. TAMANHOS (Categoria 'Copo')
+            const tamanhos = estoque.filter(p => p.cat === 'Copo');
+            document.getElementById('grid-sizes').innerHTML = tamanhos.map(p => `
+                <div class="size-card" onclick="selectSize('${p.nome}', ${p.preco})">
+                    <i class="material-icons" style="font-size: 2rem; color:var(--gray); margin-bottom:5px;">local_cafe</i>
+                    <h4>${p.nome.replace('Açaí ', '')}</h4> <p>R$ ${p.preco.toFixed(2)}</p>
+                </div>
+            `).join('');
+
+            // 2. GRÁTIS (Categoria 'Adicional' + Preço 0)
+            const gratis = estoque.filter(p => p.cat === 'Adicional' && p.preco === 0);
+            document.getElementById('lista-gratis').innerHTML = gratis.map(item => {
                 const isBlocked = bloqueados.includes(item.nome);
                 return `
                 <div class="chip ${isBlocked ? 'disabled' : ''}" onclick="toggleGratis(this, '${item.nome}')">
-                    <i class="material-icons" style="font-size:1rem;">${item.icon}</i>
+                    <i class="material-icons" style="font-size:1rem;">star</i>
                     ${item.nome}
                 </div>
             `}).join('');
 
-            const divPagos = document.getElementById('lista-pagos');
-            divPagos.innerHTML = itensPagos.map(item => {
+            // 3. PAGOS (Categoria 'Adicional' + Preço > 0)
+            const pagos = estoque.filter(p => p.cat === 'Adicional' && p.preco > 0);
+            document.getElementById('lista-pagos').innerHTML = pagos.map(item => {
                 const isBlocked = bloqueados.includes(item.nome);
                 return `
                 <div class="premium-item ${isBlocked ? 'disabled' : ''}" onclick="togglePago(this, '${item.nome}', ${item.preco})">
@@ -229,20 +234,14 @@
             pedido.pagos.forEach(p => listaItens.push(`${p.nome} (+R$${p.preco})`));
 
             const novoPedido = {
-                id: Date.now(),
-                mesa: pedido.mesa,
-                cliente: pedido.cliente,
-                tamanho: pedido.tamanho,
-                itens: listaItens,
-                total: document.getElementById('display-total').innerText,
+                id: Date.now(), mesa: pedido.mesa, cliente: pedido.cliente, tamanho: pedido.tamanho,
+                itens: listaItens, total: document.getElementById('display-total').innerText,
                 hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})
             };
 
-            // Lê pedidos atuais do Firebase, adiciona o novo e salva
             get(ref(db, 'pedidosAtivos')).then((snapshot) => {
                 let ativos = snapshot.val() || [];
                 ativos.push(novoPedido);
-                
                 set(ref(db, 'pedidosAtivos'), ativos)
                 .then(() => {
                     document.body.innerHTML = `
@@ -256,9 +255,7 @@
                         </div>
                     `;
                 })
-                .catch((error) => {
-                    alert("Erro ao enviar: " + error.message);
-                });
+                .catch((error) => alert("Erro ao enviar: " + error.message));
             });
         }
     </script>
