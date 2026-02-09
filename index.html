@@ -168,7 +168,19 @@
                     <button onclick="abrirModalProduto()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;"><i class="material-icons">add</i> Novo Produto</button>
                 </div>
             </header>
-            <div style="overflow-x: auto; margin-top: 20px;">
+            
+            <div style="background: #f1f2f6; padding: 15px; border-radius: 8px; margin-top: 20px; display: flex; align-items: center; gap: 10px;">
+                <label style="font-weight: 600; color: #555;"><i class="material-icons" style="font-size: 1rem; vertical-align: middle;">filter_list</i> Filtrar por:</label>
+                <select id="filtro-categoria" onchange="renderEstoque()" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc; flex: 1; max-width: 200px;">
+                    <option value="Todos">Todos</option>
+                    <option value="Copo">Copo de Açaí</option>
+                    <option value="Adicional">Adicional</option>
+                    <option value="Bebida">Bebida</option>
+                    <option value="Outros">Outros</option>
+                </select>
+            </div>
+
+            <div style="overflow-x: auto; margin-top: 10px;">
                 <table id="estoque-tabela">
                     <thead><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Qtd</th><th>Ações</th></tr></thead>
                     <tbody></tbody>
@@ -212,29 +224,27 @@
         function init() {
             document.getElementById('data-hoje').innerText = new Date().toLocaleDateString('pt-BR');
 
-            // Ouvinte: Estoque
             onValue(ref(db, 'estoque'), (snapshot) => {
                 estoque = snapshot.val() || [];
                 renderEstoque();
                 renderPDVGrid();
             });
 
-            // Ouvinte: Pedidos
             onValue(ref(db, 'pedidosAtivos'), (snapshot) => {
                 pedidosAtivos = snapshot.val() || [];
                 renderMesas();
                 renderDashboard();
             });
 
-            // Ouvinte: Histórico
             onValue(ref(db, 'historico'), (snapshot) => {
                 historico = snapshot.val() || [];
                 renderDashboard();
             });
 
-            // Ouvinte: Bloqueios
             onValue(ref(db, 'bloqueios'), (snapshot) => {
                 bloqueados = snapshot.val() || [];
+                // CORREÇÃO: Atualiza a lista instantaneamente quando houver mudança
+                renderListaIngredientes();
             });
         }
 
@@ -245,7 +255,6 @@
             event.currentTarget.classList.add('active');
         };
 
-        // --- GESTÃO DINÂMICA DE BLOQUEIOS ---
         window.abrirModalIngredientes = function() {
             renderListaIngredientes();
             document.getElementById('modal-ingredientes').style.display = 'flex';
@@ -266,7 +275,6 @@
             const containerGratis = document.getElementById('lista-ingred-gratis');
             const containerPagos = document.getElementById('lista-ingred-pagos');
 
-            // Filtra os adicionais diretamente do estoque
             const gratis = estoque.filter(p => p.cat === 'Adicional' && p.preco === 0);
             const pagos = estoque.filter(p => p.cat === 'Adicional' && p.preco > 0);
 
@@ -340,10 +348,19 @@
             }
         };
 
-        function renderEstoque() {
+        // --- FUNÇÃO ATUALIZADA COM FILTRO ---
+        window.renderEstoque = function() {
             const tbody = document.querySelector('#estoque-tabela tbody');
-            if(estoque.length === 0) { tbody.innerHTML = '<tr><td colspan="5">Vazio</td></tr>'; return; }
-            tbody.innerHTML = estoque.map((p) => `
+            const filtro = document.getElementById('filtro-categoria') ? document.getElementById('filtro-categoria').value : 'Todos';
+
+            let listaFiltrada = estoque;
+            if(filtro !== 'Todos') {
+                listaFiltrada = estoque.filter(p => p.cat === filtro);
+            }
+
+            if(listaFiltrada.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Vazio</td></tr>'; return; }
+            
+            tbody.innerHTML = listaFiltrada.map((p) => `
                 <tr>
                     <td><strong>${p.nome}</strong></td>
                     <td><span style="background:#eee;padding:2px 6px;border-radius:4px;font-size:0.8rem;">${p.cat}</span></td>
@@ -355,7 +372,7 @@
                     </td>
                 </tr>
             `).join('');
-        }
+        };
 
         // --- PDV ---
         window.alternarBotaoPDV = function() {
