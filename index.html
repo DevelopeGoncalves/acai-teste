@@ -150,6 +150,17 @@
         
         .badge-notif { background: var(--danger); color: white; padding: 2px 6px; border-radius: 50%; font-size: 0.75rem; margin-left: auto; display: none; }
 
+        /* --- Novo CSS para a Lista de Bloqueio --- */
+        .ingrediente-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px; border-bottom: 1px solid #eee;
+        }
+        .ingrediente-status {
+            padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; cursor: pointer; text-transform: uppercase;
+        }
+        .status-on { background: #e8f5e9; color: #27ae60; border: 1px solid #27ae60; }
+        .status-off { background: #ffebee; color: #c0392b; border: 1px solid #c0392b; }
+
         /* Mobile Fixes */
         @media (max-width: 768px) {
             body { flex-direction: column; }
@@ -304,8 +315,11 @@
             <header>
                 <h1>Estoque</h1>
                 <div style="display: flex; gap: 10px;">
+                    <button onclick="abrirModalIngredientes()" style="background: #34495e; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                        <i class="material-icons">block</i> Gerenciar Adicionais
+                    </button>
                     <button onclick="abrirModalProduto()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-                        <i class="material-icons">add</i> Novo
+                        <i class="material-icons">add</i> Novo Produto
                     </button>
                 </div>
             </header>
@@ -390,6 +404,27 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modal-ingredientes">
+        <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2>Gerenciar Adicionais</h2>
+                <button onclick="fecharModalIngredientes()" style="border:none; background:transparent; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Clique no botão para bloquear/desbloquear um item no cardápio digital.</p>
+
+            <h3 style="font-size: 1rem; color: var(--secondary); margin-bottom: 10px; border-bottom: 1px solid #ddd;">Grátis</h3>
+            <div id="lista-ingred-gratis"></div>
+
+            <h3 style="font-size: 1rem; color: var(--secondary); margin: 20px 0 10px 0; border-bottom: 1px solid #ddd;">Pagos</h3>
+            <div id="lista-ingred-pagos"></div>
+
+            <div style="margin-top: 20px;">
+                <button onclick="fecharModalIngredientes()" style="width:100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">Fechar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const defaults = [
             { id: 1, nome: "Açaí 300ml", preco: 12.00, cat: "Copo", estoque: 50 },
@@ -399,6 +434,11 @@
             { id: 5, nome: "Paçoca Extra", preco: 2.00, cat: "Adicional", estoque: 200 }
         ];
 
+        // --- LISTAS ESPELHADAS DO CARDAPIO ---
+        // É importante que os nomes aqui sejam IDENTICOS aos do mesa01.html
+        const refGratis = ['Leite Cond.', 'Banana', 'Morango', 'Kiwi', 'Granola', 'Paçoca', 'Mel', 'Calda Choc.', 'Leite em pó'];
+        const refPagos = ['Nutella', 'Leite Ninho', 'Mousse Maracujá', 'Bis Extra', 'KitKat'];
+
         let estoque = JSON.parse(localStorage.getItem('acaiEstoque'));
         if (!estoque || estoque.length === 0) {
             estoque = defaults;
@@ -407,6 +447,8 @@
 
         let historico = JSON.parse(localStorage.getItem('acaiHistorico')) || [];
         let pedidosAtivos = JSON.parse(localStorage.getItem('acaiPedidosAtivos')) || [];
+        // Lista de bloqueados
+        let bloqueados = JSON.parse(localStorage.getItem('acaiBloqueios')) || [];
         let carrinhoPDV = [];
 
         function init() {
@@ -434,7 +476,51 @@
             if(section === 'dashboard') renderDashboard();
         }
 
-        // --- CRUD ---
+        // --- GESTÃO DE BLOQUEIOS (NOVO) ---
+        function abrirModalIngredientes() {
+            renderListaIngredientes();
+            document.getElementById('modal-ingredientes').style.display = 'flex';
+        }
+
+        function fecharModalIngredientes() {
+            document.getElementById('modal-ingredientes').style.display = 'none';
+        }
+
+        function toggleBloqueio(nome) {
+            if (bloqueados.includes(nome)) {
+                bloqueados = bloqueados.filter(i => i !== nome);
+            } else {
+                bloqueados.push(nome);
+            }
+            localStorage.setItem('acaiBloqueios', JSON.stringify(bloqueados));
+            renderListaIngredientes(); // Re-renderiza para atualizar cores
+        }
+
+        function renderListaIngredientes() {
+            const containerGratis = document.getElementById('lista-ingred-gratis');
+            const containerPagos = document.getElementById('lista-ingred-pagos');
+
+            const gerarHTML = (lista) => {
+                return lista.map(item => {
+                    const isBloq = bloqueados.includes(item);
+                    return `
+                        <div class="ingrediente-row">
+                            <span>${item}</span>
+                            <span class="ingrediente-status ${isBloq ? 'status-off' : 'status-on'}" 
+                                  onclick="toggleBloqueio('${item}')">
+                                ${isBloq ? 'ESGOTADO 🚫' : 'DISPONÍVEL ✅'}
+                            </span>
+                        </div>
+                    `;
+                }).join('');
+            };
+
+            containerGratis.innerHTML = gerarHTML(refGratis);
+            containerPagos.innerHTML = gerarHTML(refPagos);
+        }
+
+
+        // --- CRUD ESTOQUE ---
         function abrirModalProduto(id = null) {
             const modal = document.getElementById('modal-produto');
             const titulo = document.getElementById('titulo-modal-prod');
