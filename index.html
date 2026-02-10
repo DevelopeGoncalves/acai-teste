@@ -243,7 +243,6 @@
 
             onValue(ref(db, 'bloqueios'), (snapshot) => {
                 bloqueados = snapshot.val() || [];
-                // CORREÇÃO: Atualiza a lista instantaneamente quando houver mudança
                 renderListaIngredientes();
             });
         }
@@ -348,7 +347,6 @@
             }
         };
 
-        // --- FUNÇÃO ATUALIZADA COM FILTRO ---
         window.renderEstoque = function() {
             const tbody = document.querySelector('#estoque-tabela tbody');
             const filtro = document.getElementById('filtro-categoria') ? document.getElementById('filtro-categoria').value : 'Todos';
@@ -546,6 +544,29 @@
             set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(p => p.mesa !== mesaNum));
             fecharModalMesa();
             alert("✅ Conta fechada!");
+        };
+
+        // --- DASHBOARD (CORRIGIDO) ---
+        window.renderDashboard = function() {
+            // Soma segura: Se h.total for número, usa direto. Se for string, converte.
+            const totalVendas = historico.reduce((acc, h) => {
+                return acc + (typeof h.total === 'number' ? h.total : parseValor(h.total));
+            }, 0);
+
+            document.getElementById('kpi-vendas').innerText = totalVendas.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('kpi-pedidos').innerText = historico.length;
+            document.getElementById('kpi-mesas').innerText = `${pedidosAtivos.length} / 12`;
+
+            const tabela = document.querySelector('#tabela-historico tbody');
+            const recentes = historico.slice().reverse().slice(0, 5);
+            if(recentes.length === 0) {
+                tabela.innerHTML = '<tr><td colspan="4" style="text-align:center;">Sem vendas</td></tr>';
+            } else {
+                tabela.innerHTML = recentes.map(h => {
+                    const val = typeof h.total === 'number' ? h.total : parseValor(h.total);
+                    return `<tr><td>${h.hora}</td><td>${h.tipo}</td><td style="color: var(--accent);">R$ ${val.toFixed(2)}</td><td>${h.pgto}</td></tr>`;
+                }).join('');
+            }
         };
 
         init();
