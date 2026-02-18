@@ -745,15 +745,36 @@
             } 
         };
         
-        window.cancelarDelivery = function(id) { if(confirm("Cancelar?")) set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(x => x.id !== id)); };
-
         window.abrirComanda = function(m) {
             const pMesa = pedidosAtivos.filter(p => p.mesa === m);
             if(pMesa.length === 0) return;
+            
             document.getElementById('modal-titulo').innerText = `Mesa ${m}`;
             document.getElementById('modal-mesa').setAttribute('data-mesa-atual', m);
+            
             let html = '', tot = 0;
-            pMesa.forEach(p => { tot += parseValor(p.total); html += `<div style="background:#f9f9f9; padding:10px; margin-bottom:5px; border-left:3px solid var(--secondary);"><strong>${p.cliente}</strong><br>${p.tamanho} <br>R$ ${parseValor(p.total).toFixed(2)}</div>`; });
+            
+            pMesa.forEach(p => { 
+                tot += parseValor(p.total);
+                
+                // --- CORREÇÃO AQUI: Verifica se tem itens e cria o HTML para eles ---
+                let listaItensHtml = '';
+                if (p.itens && p.itens.length > 0) {
+                    listaItensHtml = `<div style="font-size: 0.85rem; color: #666; margin-top: 5px; border-top: 1px dashed #ddd; padding-top: 5px;">+ ${p.itens.join('<br>+ ')}</div>`;
+                }
+                // -------------------------------------------------------------------
+
+                html += `
+                <div style="background:#f9f9f9; padding:10px; margin-bottom:5px; border-left:3px solid var(--secondary); border-radius: 4px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>${p.cliente}</strong>
+                        <strong style="color:var(--accent);">R$ ${parseValor(p.total).toFixed(2)}</strong>
+                    </div>
+                    <div style="margin-top: 4px;">${p.tamanho}</div>
+                    ${listaItensHtml}
+                </div>`; 
+            });
+            
             document.getElementById('modal-itens').innerHTML = html;
             document.getElementById('modal-total').innerText = tot.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById('modal-mesa').style.display = 'flex';
