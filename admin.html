@@ -201,6 +201,9 @@
             <button onclick="nav('mesas')" style="position: relative;"><i class="material-icons">table_restaurant</i> Mesas <span id="badge-mesas" class="badge-notif">!</span></button>
             <button onclick="nav('delivery')" style="position: relative;"><i class="material-icons">moped</i> Delivery <span id="badge-delivery" class="badge-notif">0</span></button>
             <button onclick="nav('estoque')"><i class="material-icons">inventory</i> Estoque</button>
+            <button onclick="nav('relatorios')">
+                <i class="material-icons">query_stats</i> Relatórios
+            </button>
         </nav>
         <div class="profile-footer">
             <a href="https://victorinoeng.com.br/" target="_blank" class="profile-link">
@@ -275,8 +278,8 @@
                     <div class="cart-items" id="pdv-carrinho-lista"><p style="text-align: center; color: #999; margin-top: 20px;">Vazio</p></div>
                     <div class="cart-total" id="pdv-total">R$ 0,00</div>
                     <div style="display:flex; flex-direction: column; gap: 10px;">
-                        <select id="pdv-destino" onchange="alternarBotaoPDV()" style="padding: 10px; border-radius: 5px; border: 1px solid #ddd; background: #fff8e1;">
-                            <option value="balcao">🏪 Balcão</option>
+                        <select id="pdv-destino" onchange="alternarBotaoPDV()" style="padding: 10px; border-radius: 5px; border: 1px solid #ddd; background: #fff8e1; margin-bottom: 10px; width: 100%;">
+                            <option value="balcao">🏪 Venda Balcão (Direta)</option>
                             <option value="01">🪑 Mesa 01</option>
                             <option value="02">🪑 Mesa 02</option>
                             <option value="03">🪑 Mesa 03</option>
@@ -289,6 +292,7 @@
                             <option value="10">🪑 Mesa 10</option>
                             <option value="11">🪑 Mesa 11</option>
                             <option value="12">🪑 Mesa 12</option>
+                            <option value="Delivery">🛵 Delivery (Novo)</option>
                         </select>
                         <div id="pdv-pagamento-box">
                             <select id="pagamento-tipo" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
@@ -340,6 +344,83 @@
                 <table id="estoque-tabela"><thead><tr><th>Produto</th><th>Cat</th><th>$</th><th>Qtd</th><th>Ações</th></tr></thead><tbody></tbody></table>
             </div>
         </section>
+
+        <section id="view-relatorios" class="view-section">
+            <header>
+                <h1>Relatórios Avançados</h1>
+            </header>
+
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px;">
+                <h4 style="margin-bottom: 15px; color: var(--dark);">Filtrar Período</h4>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 0.9rem; color: #666;">Data Início</label>
+                        <input type="date" id="rel-inicio" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px;">
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 0.9rem; color: #666;">Data Fim</label>
+                        <input type="date" id="rel-fim" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px;">
+                    </div>
+                    <button onclick="gerarRelatorio()" style="background: var(--secondary); color: white; border: none; padding: 12px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; height: 46px; display: flex; align-items: center; gap: 8px;">
+                        <i class="material-icons">search</i> FILTRAR
+                    </button>
+                </div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card green">
+                    <div class="kpi-info">
+                        <h3>Faturamento Total</h3>
+                        <span id="rel-total-fat">R$ 0,00</span>
+                    </div>
+                    <i class="material-icons kpi-icon">attach_money</i>
+                </div>
+                <div class="kpi-card blue">
+                    <div class="kpi-info">
+                        <h3>Qtd. Vendas</h3>
+                        <span id="rel-total-qtd">0</span>
+                    </div>
+                    <i class="material-icons kpi-icon">shopping_cart</i>
+                </div>
+                <div class="kpi-card purple">
+                    <div class="kpi-info">
+                        <h3>Ticket Médio</h3>
+                        <span id="rel-ticket-medio">R$ 0,00</span>
+                    </div>
+                    <i class="material-icons kpi-icon">analytics</i>
+                </div>
+            </div>
+
+            <div class="chart-container" style="overflow-x: auto;">
+                <div class="chart-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Detalhamento das Vendas</span>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="exportarExcel()" style="background: #27ae60; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: bold;">
+                            <i class="material-icons" style="font-size: 1rem;">table_view</i> Excel
+                        </button>
+                        <button onclick="window.print()" style="background: white; border: 1px solid #ccc; color: #333; padding: 5px 15px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: bold;">
+                            <i class="material-icons" style="font-size: 1rem;">print</i> Imprimir
+                        </button>
+                    </div>
+                </div>
+
+                <table id="tabela-relatorio">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Tipo</th>
+                            <th>Itens</th>
+                            <th>Pgto</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="5" style="text-align:center; padding: 20px; color: #999;">Selecione as datas e clique em Filtrar</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
 
     <div class="modal-overlay" id="modal-mesa"><div class="modal-content"><div class="modal-header"><h2 id="modal-titulo">Mesa 00</h2><button onclick="fecharModalMesa()" style="border:none; background:transparent; font-size: 1.5rem;">&times;</button></div><div class="comanda-list" id="modal-itens"></div><div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-weight: bold; padding-top: 15px; border-top: 1px solid #eee;"><span>Total:</span><span id="modal-total" style="color: var(--secondary);">R$ 0,00</span></div><div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><button onclick="fecharContaMesa()" style="background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold;">✅ Fechar</button><button onclick="fecharModalMesa()" style="background: #e74c3c; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold;">Voltar</button></div></div></div>
@@ -386,6 +467,25 @@
             document.getElementById('view-' + section).classList.add('active');
             const btn = Array.from(document.querySelectorAll('nav button')).find(b => b.onclick.toString().includes(section));
             if(btn) btn.classList.add('active');
+        };
+
+        window.exportarExcel = function() {
+            const tabela = document.getElementById("tabela-relatorio");
+            let html = tabela.outerHTML;
+
+            // Ajuste para acentos (UTF-8)
+            const uri = 'data:application/vnd.ms-excel;base64,';
+            const template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body><table>{table}</table></body></html>';
+            
+            const base64 = (s) => window.btoa(unescape(encodeURIComponent(s)));
+            const format = (s, c) => s.replace(/{(\w+)}/g, (m, p) => c[p]);
+
+            const ctx = { worksheet: 'Relatorio', table: html };
+            
+            const link = document.createElement("a");
+            link.download = "Relatorio_Vendas.xls";
+            link.href = uri + base64(format(template, ctx));
+            link.click();
         };
 
         // DASHBOARD
@@ -624,26 +724,153 @@
             if(d==='balcao') { b.innerText="✅ FINALIZAR"; b.style.background="var(--accent)"; bx.style.display="block"; }
             else { b.innerText=`📋 MESA ${d}`; b.style.background="var(--secondary)"; bx.style.display="none"; }
         };
+        window.alternarBotaoPDV = () => {
+            const dst = document.getElementById('pdv-destino').value;
+            const btn = document.getElementById('btn-finalizar');
+            const boxPgto = document.getElementById('pdv-pagamento-box');
+            
+            if(dst === 'balcao') {
+                btn.innerHTML = "✅ FINALIZAR E RECEBER";
+                btn.style.background = "var(--accent)"; // Verde
+                boxPgto.style.display = "block"; // Mostra opção de pagamento
+            } else {
+                btn.innerHTML = `🚀 ENVIAR PARA ${dst.toUpperCase()}`;
+                btn.style.background = "var(--secondary)"; // Roxo
+                boxPgto.style.display = "none"; // Esconde pgto, pois vai pagar depois
+            }
+        };  
+
         window.finalizarVendaPDV = () => {
-            if(carrinhoPDV.length===0) return alert("Vazio");
+            if(carrinhoPDV.length === 0) return alert("O carrinho está vazio!");
+            
             const dst = document.getElementById('pdv-destino').value;
             const tot = carrinhoPDV.reduce((a,b)=>a+b.preco,0);
-            let nE = [...estoque];
-            carrinhoPDV.forEach(c => { const idx = nE.findIndex(x=>x.id===c.id); if(idx>-1) nE[idx].estoque--; });
             
-            if(dst==='balcao') {
-                const pg = document.getElementById('pagamento-tipo').value;
-                set(ref(db,'historico'), [...historico, {id:Date.now(), hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), tipo:'Balcão', itens:carrinhoPDV.map(x=>x.nome), total:tot, pgto:pg}]);
-                alert("Venda OK!");
+            // Baixa no estoque (comum para os dois casos)
+            let novoEstoque = [...estoque];
+            carrinhoPDV.forEach(itemCarrinho => {
+                const index = novoEstoque.findIndex(x => x.id === itemCarrinho.id);
+                if(index > -1) novoEstoque[index].estoque--;
+            });
+
+            if(dst === 'balcao') {
+                // VENDA DIRETA (BALCÃO) -> Vai para o Financeiro
+                const pgto = document.getElementById('pagamento-tipo').value;
+                const venda = {
+                    id: Date.now(),
+                    hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+                    tipo: 'Balcão',
+                    itens: carrinhoPDV.map(x => x.nome),
+                    total: tot,
+                    pgto: pgto
+                };
+                // Salva histórico e atualiza estoque
+                set(ref(db, 'historico'), [...historico, venda]);
+                set(ref(db, 'estoque'), novoEstoque);
+                
+                alert("Venda realizada com sucesso!");
+                
             } else {
-                set(ref(db,'pedidosAtivos'), [...pedidosAtivos, {id:Date.now(), mesa:dst, cliente:"Caixa", tamanho:"Pedido Balcão", itens:carrinhoPDV.map(x=>x.nome), total:tot, hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}]);
-                alert("Enviado para Mesa!");
+                // LANÇAR NA MESA OU DELIVERY -> Vai para Pedidos Ativos
+                const nomeCliente = prompt("Nome do cliente (Opcional):") || "Cliente Balcão";
+                
+                const pedidoMesa = {
+                    id: Date.now(),
+                    mesa: dst === 'Delivery' ? 'DELIVERY' : dst, // Se for Delivery ou numero da mesa
+                    cliente: nomeCliente,
+                    tamanho: "Pedido via PDV", // Descrição genérica
+                    itens: carrinhoPDV.map(x => x.nome),
+                    total: tot,
+                    status: 'PREPARO', // Já entra como preparo
+                    hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+                };
+
+                // Adiciona aos pedidos ativos e atualiza estoque
+                set(ref(db, 'pedidosAtivos'), [...pedidosAtivos, pedidoMesa]);
+                set(ref(db, 'estoque'), novoEstoque);
+                
+                alert(`Pedido enviado para ${dst}!`);
             }
-            set(ref(db,'estoque'), nE);
-            carrinhoPDV=[]; updCart();
+
+            // Limpa o carrinho
+            carrinhoPDV = [];
+            updCart();
         };
 
         init();
+
+        // --- FUNÇÃO DO RELATÓRIO AVANÇADO ---
+        window.gerarRelatorio = function() {
+            const inicioInput = document.getElementById('rel-inicio').value;
+            const fimInput = document.getElementById('rel-fim').value;
+
+            if (!inicioInput || !fimInput) return alert("Selecione a data de início e fim!");
+
+            // Converter inputs para data (zerando horas para comparação correta)
+            // Criamos datas "UTC" ou ajustamos o fuso para garantir que pegue o dia todo
+            const dtInicio = new Date(inicioInput + 'T00:00:00'); 
+            const dtFim = new Date(fimInput + 'T23:59:59');
+
+            let totalFaturado = 0;
+            let qtdVendas = 0;
+            let html = '';
+
+            // Filtrar o histórico
+            const vendasFiltradas = historico.filter(venda => {
+                const dataVenda = new Date(venda.id); // O ID é o timestamp
+                return dataVenda >= dtInicio && dataVenda <= dtFim;
+            });
+
+            // Ordenar da mais recente para a mais antiga
+            vendasFiltradas.sort((a, b) => b.id - a.id);
+
+            if (vendasFiltradas.length === 0) {
+                document.querySelector('#tabela-relatorio tbody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Nenhuma venda encontrada neste período.</td></tr>';
+                document.getElementById('rel-total-fat').innerText = "R$ 0,00";
+                document.getElementById('rel-total-qtd').innerText = "0";
+                document.getElementById('rel-ticket-medio').innerText = "R$ 0,00";
+                return;
+            }
+
+            vendasFiltradas.forEach(v => {
+                const val = typeof v.total === 'number' ? v.total : parseValor(v.total);
+                totalFaturado += val;
+                qtdVendas++;
+
+                // Formatar Data legível
+                const dataObj = new Date(v.id);
+                const diaMes = dataObj.toLocaleDateString('pt-BR');
+                const itensStr = Array.isArray(v.itens) ? v.itens.join('<br>') : v.itens;
+
+                html += `
+                    <tr>
+                        <td>${diaMes} <small style="color:#777;">${v.hora}</small></td>
+                        <td>${v.tipo}</td>
+                        <td style="font-size: 0.85rem; color:#555;">${itensStr}</td>
+                        <td>${v.pgto || '-'}</td>
+                        <td style="font-weight:bold; color: var(--accent);">R$ ${val.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            // Atualizar Tela
+            const ticketMedio = totalFaturado / qtdVendas;
+            
+            document.querySelector('#tabela-relatorio tbody').innerHTML = html;
+            document.getElementById('rel-total-fat').innerText = totalFaturado.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('rel-total-qtd').innerText = qtdVendas;
+            document.getElementById('rel-ticket-medio').innerText = ticketMedio.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+        };
+
+        // Define data de hoje como padrão ao carregar
+        setTimeout(() => {
+            const hoje = new Date().toISOString().split('T')[0];
+            if(document.getElementById('rel-inicio')) {
+                document.getElementById('rel-inicio').value = hoje;
+                document.getElementById('rel-fim').value = hoje;
+            }
+        }, 1000);
     </script>
 </body>
 </html>
+
