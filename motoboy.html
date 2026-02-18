@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Painel Motoboy | Açaí Victorino</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body { background-color: #121214; color: #e1e1e6; font-family: sans-serif; margin: 0; padding: 20px; padding-bottom: 80px; }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+        .card { background: #202024; border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 5px solid #3498db; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .cliente { font-size: 1.3rem; font-weight: bold; color: #fff; }
+        .endereco { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; font-size: 0.95rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .pagamento { font-size: 1.1rem; color: #00b894; font-weight: bold; margin-bottom: 20px; display: block; }
+        
+        /* Botões de Ação */
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .btn-gps { background: #2c3e50; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-size: 1rem; }
+        .btn-call { background: #e67e22; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-size: 1rem; }
+        
+        .btn-confirm { width: 100%; background: #27ae60; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; margin-top: 5px; }
+        
+        .empty-state { text-align: center; color: #777; margin-top: 50px; }
+        .refresh-btn { position: fixed; bottom: 20px; right: 20px; background: #8e44ad; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); cursor: pointer; border: none; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <i class="material-icons" style="font-size: 3rem; color: #f39c12;">two_wheeler</i>
+        <h2>Área do Motoboy</h2>
+        <p style="color: #888;">Entregas Pendentes</p>
+    </div>
+
+    <div id="lista-entregas">
+        <div class="empty-state">Carregando pedidos...</div>
+    </div>
+
+    <button class="refresh-btn" onclick="window.location.reload()">
+        <i class="material-icons">refresh</i>
+    </button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZXNqxuUyKACvDRuRYXUdzrUpVUl8K0JU",
+            authDomain: "acaivictorino-amostra.firebaseapp.com",
+            projectId: "acaivictorino-amostra",
+            storageBucket: "acaivictorino-amostra.firebasestorage.app",
+            messagingSenderId: "1085066202451",
+            appId: "1:1085066202451:web:5768ce3d9c2dc7a304a5a6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        let pedidosAtivos = [];
+
+        onValue(ref(db, 'pedidosAtivos'), (snapshot) => {
+            pedidosAtivos = snapshot.val() || [];
+            renderPedidos();
+        });
+
+        function renderPedidos() {
+            const container = document.getElementById('lista-entregas');
+            const entregas = pedidosAtivos.filter(p => p.status === 'ENTREGA');
+
+            if(entregas.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="material-icons" style="font-size: 4rem; opacity: 0.5;">thumb_up</i>
+                        <p>Tudo entregue por enquanto!</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = entregas.map(p => {
+                const enderecoFull = p.tamanho.split('Entregar em:')[1]?.split('- Pagamento:')[0] || '';
+                const enderecoLink = encodeURIComponent(enderecoFull.trim() + ", Serra - ES");
+                const valor = p.total;
+                const obsPagamento = p.tamanho.split('Pagamento:')[1] || 'Não inf.';
+                
+                // Extração inteligente do telefone
+                const nomeRaw = p.cliente;
+                const nomeCliente = nomeRaw.split('(')[0];
+                
+                // Tenta pegar o que está entre parênteses para ser o telefone
+                const matchTelefone = nomeRaw.match(/\((.*?)\)/);
+                const telefone = matchTelefone ? matchTelefone[1].replace(/\D/g, '') : ''; // Remove não-números
+                
+                // Botão de ligar aparece só se tiver número
+                const btnLigar = telefone.length > 8 
+                    ? `<a href="tel:${telefone}" class="btn-call"><i class="material-icons">call</i> Ligar</a>` 
+                    : `<div class="btn-call" style="opacity:0.5; cursor:not-allowed"><i class="material-icons">phone_disabled</i> Sem Nº</div>`;
+
+                return `
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="cliente">${nomeCliente}</div>
+                            <small style="color:#aaa;">Pedido #${p.id.toString().slice(-4)}</small>
+                            ${telefone ? `<div style="font-size:0.8rem; color:#f39c12; margin-top:2px;">Tel: ${matchTelefone[1]}</div>` : ''}
+                        </div>
+                        <div style="font-size:1.2rem; font-weight:bold;">${valor}</div>
+                    </div>
+
+                    <div class="endereco">
+                        <i class="material-icons" style="color:#f39c12">location_on</i>
+                        ${enderecoFull}
+                    </div>
+
+                    <span class="pagamento">
+                        <i class="material-icons" style="vertical-align:middle; font-size:1.1rem;">payments</i> 
+                        Cobrar: ${obsPagamento}
+                    </span>
+
+                    <div class="btn-row">
+                        <a href="https://www.google.com/maps/search/?api=1&query=${enderecoLink}" target="_blank" class="btn-gps">
+                            <i class="material-icons">map</i> GPS
+                        </a>
+                        ${btnLigar}
+                    </div>
+
+                    <button class="btn-confirm" onclick="confirmarEntrega(${p.id})">
+                        <i class="material-icons">check_circle</i> CONFIRMAR ENTREGA
+                    </button>
+                </div>
+            `}).join('');
+        }
+
+        window.confirmarEntrega = function(id) {
+            if(!confirm("Já entregou o pedido ao cliente?")) return;
+
+            const index = pedidosAtivos.findIndex(p => p.id === id);
+            if(index > -1) {
+                let novosPedidos = [...pedidosAtivos];
+                novosPedidos[index].status = 'RETORNO'; 
+                
+                set(ref(db, 'pedidosAtivos'), novosPedidos)
+                .then(() => alert("Boa! Painel atualizado."))
+                .catch(err => alert("Erro: " + err));
+            }
+        };
+    </script>
+</body>
+</html>
