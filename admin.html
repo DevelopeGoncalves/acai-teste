@@ -17,7 +17,7 @@
         .brand { padding: 25px; text-align: center; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; align-items: center; }
         .brand h2 { font-size: 1.4rem; color: var(--secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
         .brand span { color: #fff; font-size: 0.8rem; letter-spacing: normal; }
-        nav { flex: 1; padding: 20px 10px; }
+        nav { flex: 1; padding: 20px 10px; overflow-y: auto; }
         nav button { width: 100%; background: transparent; border: none; color: #bdc3c7; padding: 15px; text-align: left; cursor: pointer; border-radius: 8px; margin-bottom: 5px; display: flex; align-items: center; gap: 15px; font-size: 1rem; transition: 0.3s; font-weight: 500; }
         nav button:hover, nav button.active { background: var(--secondary); color: white; padding-left: 20px; box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4); }
         nav button i { font-size: 1.2rem; }
@@ -42,6 +42,7 @@
         .kpi-card.green { border-color: #27ae60; }
         .kpi-card.purple { border-color: #9b59b6; }
         .kpi-card.orange { border-color: var(--delivery); }
+        .kpi-card.red { border-color: var(--danger); }
         .kpi-info h3 { font-size: 0.85rem; color: #7f8c8d; margin-bottom: 5px; text-transform: uppercase; font-weight: 700; }
         .kpi-info span { font-size: 1.8rem; font-weight: bold; color: var(--dark); }
         .kpi-icon { font-size: 2.5rem; opacity: 0.15; }
@@ -54,6 +55,18 @@
         .top-products-list { list-style: none; }
         .top-products-list li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 0.9rem; }
         .rank-badge { background: var(--secondary); color: white; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; font-size: 0.75rem; margin-right: 10px; }
+
+        /* --- MENU GERENCIAL (NOVO) --- */
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 20px; }
+        .admin-card { background: white; border-radius: 15px; padding: 40px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .admin-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: var(--secondary); }
+        .admin-card i { font-size: 4rem; color: var(--primary); transition: 0.3s; }
+        .admin-card:hover i { color: var(--secondary); }
+        .admin-card h3 { font-size: 1.5rem; color: var(--dark); }
+        .admin-card p { color: #7f8c8d; font-size: 0.9rem; }
+        
+        .btn-voltar { display: inline-flex; align-items: center; gap: 5px; background: transparent; border: 1px solid #ccc; padding: 5px 15px; border-radius: 20px; cursor: pointer; color: #666; font-size: 0.9rem; transition: 0.2s; }
+        .btn-voltar:hover { background: #eee; color: var(--dark); border-color: #999; }
 
         /* --- DELIVERY & MESAS --- */
         .delivery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
@@ -125,6 +138,38 @@
         .apenas-excel { display: none; }
         .tooltip-item { cursor: help; border-bottom: 1px dotted #999; }
 
+        /* --- CONTROLE DE CAIXA (ATUALIZADO PARA CORRIGIR DESALINHAMENTO) --- */
+        .form-config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #555; font-weight: 600; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+        
+        .caixa-status-bar { 
+            background: #fff; 
+            padding: 15px 25px; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-left: 6px solid #ccc; /* Borda indicativa */
+        }
+        /* Cores dinâmicas da borda */
+        .caixa-status-bar.aberto { border-left-color: #27ae60; }
+        .caixa-status-bar.fechado { border-left-color: #c0392b; }
+
+        .status-box { display: flex; align-items: center; gap: 15px; }
+        .status-label { font-size: 1.1rem; color: #555; font-weight: 600; }
+
+        .status-badge { padding: 6px 15px; border-radius: 20px; font-weight: 800; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px; }
+        .status-aberto { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status-fechado { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        
+        .caixa-mov-table td { padding: 10px; font-size: 0.9rem; }
+        .mov-entrada { color: var(--accent); font-weight: bold; }
+        .mov-saida { color: var(--danger); font-weight: bold; }
+
         /* --- MODAIS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; width: 500px; max-width: 90%; animation: zoomIn 0.3s; }
@@ -160,37 +205,21 @@
 
         @media print {
             body * { visibility: hidden; } /* Esconde tudo */
-            
-            /* Mostra apenas o modal de cupom e o conteúdo do cupom */
             #modal-cupom { visibility: visible; display: block !important; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: white; z-index: 9999; }
             #modal-cupom .modal-content { box-shadow: none; border: none; padding: 0; margin: 0; width: 100%; max-width: 100%; }
-            
-            /* Área do cupom específica para impressão */
-            .cupom-visual-box { 
-                visibility: visible; 
-                width: 100%; 
-                max-width: 100%; 
-                border: none; 
-                box-shadow: none; 
-                margin: 0; 
-                padding: 0;
-                background: white; 
-            }
+            .cupom-visual-box { visibility: visible; width: 100%; max-width: 100%; border: none; box-shadow: none; margin: 0; padding: 0; background: white; }
             .cupom-visual-box * { visibility: visible; }
-            
-            /* Esconde os botões na hora de imprimir */
             .no-print { display: none !important; }
-            
             @page { margin: 0; size: auto; }
         }
 
         /* RESPONSIVIDADE */
         @media (max-width: 768px) {
             body { flex-direction: column; overflow: auto; background: #f0f2f5; }
-            aside { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; flex-direction: row; justify-content: space-around; align-items: center; padding: 0; border-top: 1px solid #ddd; border-right: none; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+            aside { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; flex-direction: row; justify-content: space-around; align-items: center; padding: 0; border-top: 1px solid #ddd; border-right: none; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 999; }
             .brand, .profile-footer { display: none; }
-            nav { display: flex; width: 100%; padding: 0; justify-content: space-between; }
-            nav button { flex-direction: column; justify-content: center; margin: 0; border-radius: 0; font-size: 0.65rem; gap: 4px; padding: 8px 0; flex: 1; color: #95a5a6; height: 100%; }
+            nav { display: flex; width: 100%; padding: 0; justify-content: space-between; overflow-x: auto; }
+            nav button { flex-direction: column; justify-content: center; margin: 0; border-radius: 0; font-size: 0.65rem; gap: 4px; padding: 8px 5px; flex: 1; min-width: 60px; color: #95a5a6; height: 100%; }
             nav button i { font-size: 1.5rem; margin-bottom: 2px; }
             nav button.active { background: transparent; color: var(--secondary); padding-left: 0; box-shadow: none; border-top: 3px solid var(--secondary); }
             nav button.active i { color: var(--secondary); }
@@ -208,11 +237,15 @@
             .pdv-cart { order: -1; position: relative; max-height: 400px; border: 2px solid var(--primary); padding: 15px; }
             .pdv-products { overflow: visible; height: auto; padding: 0; background: transparent; box-shadow: none; }
             .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .form-config-grid { grid-template-columns: 1fr; }
             div[style*="overflow-x: auto"] { -webkit-overflow-scrolling: touch; }
             table { min-width: 500px; font-size: 0.9rem; }
             th, td { padding: 10px; }
             #view-estoque header div { flex-wrap: wrap; }
             #view-estoque button { flex: 1; justify-content: center; }
+            
+            .caixa-status-bar { flex-direction: column; gap: 15px; text-align: center; }
+            .status-box { justify-content: center; }
         }
     </style>
 </head>
@@ -223,12 +256,12 @@
             <h2>Victorino</h2>
         </div>
         <nav>
-            <button onclick="nav('dashboard')" class="active" style="position: relative;"><i class="material-icons">dashboard</i> Visão Geral</button>
-            <button onclick="nav('pdv')"><i class="material-icons">point_of_sale</i> PDV</button>
-            <button onclick="nav('mesas')" style="position: relative;"><i class="material-icons">table_restaurant</i> Mesas <span id="badge-mesas" class="badge-notif">!</span></button>
-            <button onclick="nav('delivery')" style="position: relative;"><i class="material-icons">moped</i> Delivery <span id="badge-delivery" class="badge-notif">0</span></button>
-            <button onclick="nav('estoque')"><i class="material-icons">inventory</i> Estoque</button>
-            <button onclick="nav('relatorios')"><i class="material-icons">query_stats</i> Relatórios</button>
+            <button onclick="nav('dashboard')" class="active" id="nav-dashboard"><i class="material-icons">dashboard</i> Visão Geral</button>
+            <button onclick="nav('pdv')" id="nav-pdv"><i class="material-icons">point_of_sale</i> PDV</button>
+            <button onclick="nav('mesas')" id="nav-mesas" style="position: relative;"><i class="material-icons">table_restaurant</i> Mesas <span id="badge-mesas" class="badge-notif">!</span></button>
+            <button onclick="nav('delivery')" id="nav-delivery" style="position: relative;"><i class="material-icons">moped</i> Delivery <span id="badge-delivery" class="badge-notif">0</span></button>
+            <button onclick="nav('caixa')" id="nav-caixa"><i class="material-icons">account_balance_wallet</i> Cx / Sangria</button>
+            <button onclick="nav('admin')" id="nav-admin"><i class="material-icons">admin_panel_settings</i> Administração</button>
         </nav>
         <div class="profile-footer">
             <a href="https://victorinoeng.com.br/" target="_blank" class="profile-link">
@@ -254,6 +287,28 @@
             <div class="charts-row">
                 <div class="chart-container" style="overflow-x: auto;"><div class="chart-title">Últimas Vendas</div><table id="tabela-historico"><thead><tr><th>Hora</th><th>Tipo</th><th>Valor</th><th>Pgto</th></tr></thead><tbody></tbody></table></div>
                 <div class="chart-container"><div class="chart-title">Top Produtos</div><ul class="top-products-list" id="top-products"></ul></div>
+            </div>
+        </section>
+
+        <section id="view-admin" class="view-section">
+            <header><h1>Administração</h1></header>
+            <p style="color: #666;">Selecione uma opção de gerenciamento:</p>
+            <div class="admin-grid">
+                <div class="admin-card" onclick="nav('estoque')">
+                    <i class="material-icons">inventory</i>
+                    <h3>Estoque</h3>
+                    <p>Gerencie produtos, preços e adicionais.</p>
+                </div>
+                <div class="admin-card" onclick="nav('relatorios')">
+                    <i class="material-icons">query_stats</i>
+                    <h3>Relatórios</h3>
+                    <p>Histórico completo, excel e fechamento.</p>
+                </div>
+                <div class="admin-card" onclick="nav('config')">
+                    <i class="material-icons">settings</i>
+                    <h3>Configurações</h3>
+                    <p>Dados da loja, impressão e cupom.</p>
+                </div>
             </div>
         </section>
 
@@ -321,7 +376,10 @@
 
         <section id="view-estoque" class="view-section">
             <header>
-                <h1>Estoque</h1>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <button class="btn-voltar" onclick="nav('admin')"><i class="material-icons">arrow_back</i></button>
+                    <h1>Estoque</h1>
+                </div>
                 <div style="display: flex; gap: 10px;">
                     <button onclick="abrirModalIngredientes()" style="background: #34495e; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: bold; font-size: 0.9rem;">
                         <i class="material-icons">block</i> <span class="btn-text">Gerenciar Adicionais</span>
@@ -345,8 +403,45 @@
             </div>
         </section>
 
+        <section id="view-caixa" class="view-section">
+            <header><h1>Controle de Caixa</h1></header>
+            <div class="caixa-status-bar" id="barra-status-caixa">
+                <div class="status-box">
+                    <span class="status-label">Status:</span>
+                    <span id="cx-status-texto" class="status-badge status-fechado">FECHADO</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-abrir-caixa" onclick="abrirModalAbrirCaixa()" style="background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">Abrir Caixa</button>
+                    <button id="btn-sangria" onclick="abrirModalSangria()" style="background: var(--delivery); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none;">Sangria</button>
+                    <button id="btn-fechar-caixa" onclick="fecharCaixa()" style="background: var(--danger); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none;">Fechar Caixa</button>
+                </div>
+            </div>
+            
+            <div id="caixa-aberto-view" style="display: none;">
+                <div class="kpi-grid">
+                    <div class="kpi-card blue"><div class="kpi-info"><h3>Saldo Inicial</h3><span id="cx-saldo-inicial">R$ 0,00</span></div><i class="material-icons kpi-icon">account_balance</i></div>
+                    <div class="kpi-card green"><div class="kpi-info"><h3>Entradas (Vendas)</h3><span id="cx-entradas">R$ 0,00</span></div><i class="material-icons kpi-icon">arrow_upward</i></div>
+                    <div class="kpi-card red"><div class="kpi-info"><h3>Saídas (Sangria)</h3><span id="cx-saidas">R$ 0,00</span></div><i class="material-icons kpi-icon">arrow_downward</i></div>
+                    <div class="kpi-card purple"><div class="kpi-info"><h3>Saldo em Caixa</h3><span id="cx-saldo-atual">R$ 0,00</span></div><i class="material-icons kpi-icon">savings</i></div>
+                </div>
+
+                <div class="chart-container" style="overflow-x: auto;">
+                    <div class="chart-title">Movimentações do Turno</div>
+                    <table class="caixa-mov-table">
+                        <thead><tr><th>Hora</th><th>Tipo</th><th>Descrição</th><th>Valor</th></tr></thead>
+                        <tbody id="lista-movimentos"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
         <section id="view-relatorios" class="view-section">
-            <header><h1>Relatórios Avançados</h1></header>
+            <header>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <button class="btn-voltar" onclick="nav('admin')"><i class="material-icons">arrow_back</i></button>
+                    <h1>Relatórios Avançados</h1>
+                </div>
+            </header>
             <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px;">
                 <h4 style="margin-bottom: 15px; color: var(--dark);">Filtrar Período</h4>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
@@ -386,6 +481,39 @@
                 </table>
             </div>
         </section>
+
+        <section id="view-config" class="view-section">
+            <header>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <button class="btn-voltar" onclick="nav('admin')"><i class="material-icons">arrow_back</i></button>
+                    <h1>Configurações da Loja</h1>
+                </div>
+            </header>
+            <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); max-width: 800px; margin: 0 auto;">
+                <p style="margin-bottom: 20px; color: #666;">Edite as informações que aparecerão no cupom fiscal.</p>
+                <div class="form-config-grid">
+                    <div class="form-group">
+                        <label>Nome da Loja</label>
+                        <input type="text" id="cfg-nome" placeholder="Ex: Açaí do João">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone / WhatsApp</label>
+                        <input type="text" id="cfg-tel" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="form-group" style="grid-column: 1/-1;">
+                        <label>Endereço Completo</label>
+                        <input type="text" id="cfg-end" placeholder="Rua X, Bairro Y...">
+                    </div>
+                    <div class="form-group" style="grid-column: 1/-1;">
+                        <label>Chave PIX</label>
+                        <input type="text" id="cfg-pix" placeholder="E-mail ou CPF">
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 20px;">
+                    <button onclick="salvarConfiguracoes()" style="background: var(--secondary); color: white; padding: 12px 30px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem;">SALVAR DADOS</button>
+                </div>
+            </div>
+        </section>
     </main>
 
     <div class="modal-overlay" id="modal-cupom" style="z-index: 9999;">
@@ -394,9 +522,9 @@
             
             <div class="cupom-visual-box">
                 <div class="cupom-header">
-                    <h3 style="margin:0; font-size:16px;">AÇAÍ VICTORINO</h3>
-                    <p style="margin:0; font-size:10px;">Endereço da Loja</p>
-                    <p style="margin:0; font-size:10px;">(27) 99906-4068</p>
+                    <h3 style="margin:0; font-size:16px;" id="cp-nome-loja">AÇAÍ VICTORINO</h3>
+                    <p style="margin:0; font-size:10px;" id="cp-end-loja">Endereço da Loja</p>
+                    <p style="margin:0; font-size:10px;" id="cp-tel-loja">(27) 99999-9999</p>
                     <p style="margin:5px 0 0 0;">--------------------------------</p>
                 </div>
                 <div class="cupom-info" style="margin-bottom: 5px;">
@@ -407,6 +535,9 @@
                 <div id="cupom-itens"></div>
                 <div class="cupom-total">TOTAL: <span id="cupom-total">R$ 0,00</span></div>
                 <div style="text-align: right; font-size: 11px; margin-top: 2px;">Pagamento: <span id="cupom-pgto">Dinheiro</span></div>
+                <div style="text-align: center; font-size: 11px; margin-top: 10px; border-top:1px dashed #000; padding-top:5px;">
+                    Pix: <span id="cp-pix-loja"></span>
+                </div>
                 <div class="cupom-footer"><p>Obrigado pela preferência!</p><small>Sistema Victorino.eng</small></div>
             </div>
 
@@ -420,6 +551,9 @@
     <div class="modal-overlay" id="modal-mesa"><div class="modal-content"><div class="modal-header"><h2 id="modal-titulo">Mesa 00</h2><button onclick="fecharModalMesa()" style="border:none; background:transparent; font-size: 1.5rem;">&times;</button></div><div class="comanda-list" id="modal-itens"></div><div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-weight: bold; padding-top: 15px; border-top: 1px solid #eee;"><span>Total:</span><span id="modal-total" style="color: var(--secondary);">R$ 0,00</span></div><div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><button onclick="fecharContaMesa()" style="background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold;">✅ Fechar</button><button onclick="fecharModalMesa()" style="background: #e74c3c; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold;">Voltar</button></div></div></div>
     <div class="modal-overlay" id="modal-produto"><div class="modal-content"><div class="modal-header"><h2 id="titulo-modal-prod">Produto</h2><button onclick="fecharModalProduto()" style="border:none; background:transparent; font-size: 1.5rem;">&times;</button></div><form onsubmit="salvarProduto(event)" style="display: grid; gap: 15px;"><input type="hidden" id="prod-id"><div><label>Nome</label><input type="text" id="prod-nome" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><div><label>Preço</label><input type="number" step="0.01" id="prod-preco" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div><div><label>Qtd</label><input type="number" id="prod-estoque" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div></div><div><label>Categoria</label><select id="prod-cat" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"><option value="Copo">Copo</option><option value="Adicional">Adicional</option><option value="Bebida">Bebida</option><option value="Outros">Outros</option></select></div><button type="submit" style="background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px;">💾 Salvar</button></form></div></div>
     <div class="modal-overlay" id="modal-ingredientes"><div class="modal-content"><div class="modal-header"><h2>Adicionais</h2><button onclick="fecharModalIngredientes()" style="border:none; background:transparent; font-size: 1.5rem;">&times;</button></div><div style="max-height:60vh; overflow-y:auto;"><h3 style="font-size:1rem;color:var(--secondary);">Grátis</h3><div id="lista-ingred-gratis"></div><h3 style="font-size:1rem;color:var(--secondary);margin-top:15px;">Pagos</h3><div id="lista-ingred-pagos"></div></div><button onclick="fecharModalIngredientes()" style="width:100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 20px;">Fechar</button></div></div>
+    
+    <div class="modal-overlay" id="modal-abrir-caixa"><div class="modal-content"><div class="modal-header"><h2>Abrir Caixa</h2><button onclick="document.getElementById('modal-abrir-caixa').style.display='none'" style="border:none;background:transparent;font-size:1.5rem;">&times;</button></div><div style="margin-bottom:20px;"><label>Valor Inicial (Fundo de Troco)</label><input type="number" id="cx-valor-inicial" step="0.01" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;margin-top:5px;"></div><button onclick="confirmarAberturaCaixa()" style="width:100%;background:var(--accent);color:white;padding:12px;border:none;border-radius:6px;font-weight:bold;">CONFIRMAR ABERTURA</button></div></div>
+    <div class="modal-overlay" id="modal-sangria"><div class="modal-content"><div class="modal-header"><h2>Realizar Sangria</h2><button onclick="document.getElementById('modal-sangria').style.display='none'" style="border:none;background:transparent;font-size:1.5rem;">&times;</button></div><div style="display:grid;gap:15px;"><div ><label>Valor da Retirada</label><input type="number" id="sg-valor" step="0.01" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;"></div><div><label>Motivo</label><input type="text" id="sg-motivo" placeholder="Ex: Compra de Gelo" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;"></div><button onclick="confirmarSangria()" style="width:100%;background:var(--danger);color:white;padding:12px;border:none;border-radius:6px;font-weight:bold;">REGISTRAR SAÍDA</button></div></div></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -438,6 +572,9 @@
         const db = getDatabase(app);
 
         let estoque = [], historico = [], pedidosAtivos = [], bloqueados = [], carrinhoPDV = [];
+        let configLoja = { nome: 'Açaí Victorino', end: '', tel: '', pix: '' };
+        let caixaInfo = { aberto: false, saldoInicial: 0, movimentos: [] };
+        
         const audioCampainha = new Audio('img/bell.mp3');
         let totalPedidosAnterior = 0;
         let chartVendas = null, chartPagamento = null;
@@ -453,6 +590,17 @@
             });
             onValue(ref(db, 'historico'), (s) => { historico = s.val() || []; renderDashboard(); });
             onValue(ref(db, 'bloqueios'), (s) => { bloqueados = s.val() || []; renderListaIngredientes(); });
+            onValue(ref(db, 'config'), (s) => { 
+                configLoja = s.val() || configLoja; 
+                document.getElementById('cfg-nome').value = configLoja.nome || '';
+                document.getElementById('cfg-end').value = configLoja.end || '';
+                document.getElementById('cfg-tel').value = configLoja.tel || '';
+                document.getElementById('cfg-pix').value = configLoja.pix || '';
+            });
+            onValue(ref(db, 'caixa'), (s) => {
+                caixaInfo = s.val() || { aberto: false, saldoInicial: 0, movimentos: [] };
+                renderCaixa();
+            });
             
             setTimeout(() => {
                 const hoje = new Date().toISOString().split('T')[0];
@@ -463,12 +611,22 @@
         window.nav = function(section) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            
+            // Lógica para mostrar a seção correta
             document.getElementById('view-' + section).classList.add('active');
-            const btn = Array.from(document.querySelectorAll('nav button')).find(b => b.onclick.toString().includes(section));
+            
+            // Lógica para iluminar o botão correto na sidebar
+            let btnId = 'nav-' + section;
+            // Se for uma das telas administrativas, ilumina o botão Admin
+            if (['estoque', 'relatorios', 'config'].includes(section)) {
+                btnId = 'nav-admin';
+            }
+            
+            const btn = document.getElementById(btnId);
             if(btn) btn.classList.add('active');
         };
 
-        // DASHBOARD
+        // --- DASHBOARD ---
         window.renderDashboard = function() {
             const agora = new Date();
             const mesAtual = agora.getMonth(), anoAtual = agora.getFullYear(), diaAtual = agora.getDate();
@@ -524,7 +682,7 @@
             chartVendas = new Chart(ctxVendas, { type: 'bar', data: { labels: labelsHoras, datasets: [{ label: 'R$', data: dataHoras, backgroundColor: '#2c3e50', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } } });
         }
 
-        // DELIVERY
+        // --- DELIVERY ---
         function renderDelivery() {
             const container = document.getElementById('delivery-container');
             const listaDelivery = pedidosAtivos.filter(p => p.mesa === 'DELIVERY').sort((a, b) => {
@@ -548,7 +706,7 @@
             }).join('');
         }
 
-        // MESAS
+        // --- MESAS ---
         function renderMesas() {
             const container = document.getElementById('mesas-container');
             container.innerHTML = '';
@@ -567,7 +725,26 @@
         function parseValor(str) { if(typeof str === 'number') return str; return parseFloat(str.toString().replace('R$', '').replace('.','').replace(',','.').trim()); }
 
         window.mudarStatusDelivery = function(id, st) { const idx = pedidosAtivos.findIndex(p => p.id === id); if(idx === -1) return; const pedido = {...pedidosAtivos[idx], status: st}; if(st === 'ENTREGA') { const moto = document.getElementById(`moto-${id}`).value; if(!moto) return alert("Nome do motoboy!"); pedido.motoboy = moto; } const novos = [...pedidosAtivos]; novos[idx] = pedido; set(ref(db, 'pedidosAtivos'), novos); };
-        window.finalizarDelivery = function(id) { if(!confirm("Finalizar?")) return; const p = pedidosAtivos.find(x => x.id === id); if(p) { const hist = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), tipo: 'Delivery', itens: [`${p.cliente} (Moto: ${p.motoboy}): ${p.tamanho}`], total: parseValor(p.total), pgto: 'Delivery' }; set(ref(db, 'historico'), [...historico, hist]); set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(x => x.id !== id)); } };
+        
+        window.finalizarDelivery = function(id) { 
+            if(!confirm("Finalizar?")) return; 
+            const p = pedidosAtivos.find(x => x.id === id); 
+            if(p) { 
+                const valTotal = parseValor(p.total);
+                const hist = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), tipo: 'Delivery', itens: [`${p.cliente} (Moto: ${p.motoboy}): ${p.tamanho}`], total: valTotal, pgto: 'Delivery' }; 
+                
+                // ADD AO CAIXA SE ABERTO
+                if(caixaInfo.aberto) {
+                    const mov = { tipo: 'entrada', valor: valTotal, desc: `Delivery: ${p.cliente}`, hora: hist.hora };
+                    let m = caixaInfo.movimentos || []; m.push(mov);
+                    set(ref(db, 'caixa/movimentos'), m);
+                }
+
+                set(ref(db, 'historico'), [...historico, hist]); 
+                set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(x => x.id !== id)); 
+            } 
+        };
+        
         window.cancelarDelivery = function(id) { if(confirm("Cancelar?")) set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(x => x.id !== id)); };
 
         window.abrirComanda = function(m) {
@@ -583,7 +760,7 @@
         };
         window.fecharModalMesa = () => document.getElementById('modal-mesa').style.display = 'none';
 
-        // FECHAR CONTA MESA + ABRE JANELA DE PRINT
+        // FECHAR CONTA MESA
         window.fecharContaMesa = () => {
             if(!confirm("Tem certeza que deseja fechar a conta desta mesa?")) return;
             const m = document.getElementById('modal-mesa').getAttribute('data-mesa-atual');
@@ -595,14 +772,23 @@
                 if(p.itens) p.itens.forEach(i => listaItens.push(` - ${i}`));
             });
             const venda = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), tipo: `Mesa ${m}`, itens: listaItens, total: tot, pgto: 'Caixa', cliente: `Mesa ${m}` };
+            
+            // ADD AO CAIXA SE ABERTO
+            if(caixaInfo.aberto) {
+                const mov = { tipo: 'entrada', valor: tot, desc: `Venda Mesa ${m}`, hora: venda.hora };
+                let movimentos = caixaInfo.movimentos || [];
+                movimentos.push(mov);
+                set(ref(db, 'caixa/movimentos'), movimentos);
+            }
+
             set(ref(db, 'historico'), [...historico, venda]);
             set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(p => p.mesa !== m));
             fecharModalMesa();
             
-            // ABRE VISUALIZAÇÃO DO CUPOM
             setTimeout(() => { if(confirm("Mesa fechada! Visualizar cupom?")) imprimirCupom(venda); }, 500);
         };
 
+        // --- ESTOQUE ---
         window.renderEstoque = function() {
             const cat = document.getElementById('filtro-categoria').value;
             const lista = cat === 'Todos' ? estoque : estoque.filter(p => p.cat === cat);
@@ -640,7 +826,6 @@
             document.getElementById('pdv-total').innerText = carrinhoPDV.reduce((a,b)=>a+b.preco,0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         }
 
-        // LÓGICA DE DESTINO PDV E BOTÃO
         window.alternarBotaoPDV = () => {
             const dst = document.getElementById('pdv-destino').value;
             const btn = document.getElementById('btn-finalizar');
@@ -649,7 +834,7 @@
             else { btn.innerText=`🚀 ENVIAR PARA ${dst.toUpperCase()}`; btn.style.background="var(--secondary)"; bx.style.display="none"; }
         };
 
-        // FUNÇÃO DE FINALIZAR PDV
+        // --- FINALIZAR VENDAS (PDV) ---
         window.finalizarVendaPDV = () => {
             if(carrinhoPDV.length === 0) return alert("Carrinho vazio!");
             const dst = document.getElementById('pdv-destino').value;
@@ -664,10 +849,18 @@
             if(dst === 'balcao') {
                 const pgto = document.getElementById('pagamento-tipo').value;
                 const venda = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), tipo: 'Balcão', itens: carrinhoPDV.map(x => x.nome), total: tot, pgto: pgto, cliente: "Balcão" };
+                
+                // ADD CAIXA
+                if(caixaInfo.aberto) {
+                    const mov = { tipo: 'entrada', valor: tot, desc: 'Venda Balcão', hora: venda.hora };
+                    let movimentos = caixaInfo.movimentos || [];
+                    movimentos.push(mov);
+                    set(ref(db, 'caixa/movimentos'), movimentos);
+                }
+
                 set(ref(db, 'historico'), [...historico, venda]);
                 set(ref(db, 'estoque'), novoEstoque);
                 
-                // ABRE A JANELA DE VISUALIZAÇÃO
                 setTimeout(() => { if(confirm("Venda OK! Visualizar cupom?")) imprimirCupom(venda); }, 500);
 
             } else {
@@ -680,7 +873,117 @@
             carrinhoPDV = []; updCart();
         };
 
-        // RELATÓRIOS E EXCEL
+        // --- CONTROLE DE CAIXA ---
+        window.renderCaixa = function() {
+            const statusTxt = document.getElementById('cx-status-texto');
+            const barraStatus = document.getElementById('barra-status-caixa'); // Container da barra
+            const btnAbrir = document.getElementById('btn-abrir-caixa');
+            const btnSangria = document.getElementById('btn-sangria');
+            const btnFechar = document.getElementById('btn-fechar-caixa');
+            const viewAberto = document.getElementById('caixa-aberto-view');
+
+            if(caixaInfo.aberto) {
+                statusTxt.innerText = "ABERTO";
+                statusTxt.className = "status-badge status-aberto";
+                barraStatus.className = "caixa-status-bar aberto"; // Adiciona classe visual
+                
+                btnAbrir.style.display = "none";
+                btnSangria.style.display = "inline-block";
+                btnFechar.style.display = "inline-block";
+                viewAberto.style.display = "block";
+                
+                // Cálculos
+                const inicial = parseFloat(caixaInfo.saldoInicial || 0);
+                const movs = caixaInfo.movimentos || [];
+                let entradas = 0;
+                let saidas = 0;
+                let htmlMovs = '';
+
+                movs.forEach(m => {
+                    if(m.tipo === 'entrada') entradas += parseFloat(m.valor);
+                    if(m.tipo === 'saida') saidas += parseFloat(m.valor);
+                    
+                    htmlMovs += `<tr>
+                        <td>${m.hora}</td>
+                        <td class="${m.tipo==='entrada'?'mov-entrada':'mov-saida'}">${m.tipo.toUpperCase()}</td>
+                        <td>${m.desc}</td>
+                        <td>R$ ${parseFloat(m.valor).toFixed(2)}</td>
+                    </tr>`;
+                });
+
+                document.getElementById('cx-saldo-inicial').innerText = inicial.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+                document.getElementById('cx-entradas').innerText = entradas.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+                document.getElementById('cx-saidas').innerText = saidas.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+                document.getElementById('cx-saldo-atual').innerText = (inicial + entradas - saidas).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+                document.getElementById('lista-movimentos').innerHTML = htmlMovs || '<tr><td colspan="4" style="text-align:center;">Sem movimentações</td></tr>';
+
+            } else {
+                statusTxt.innerText = "FECHADO";
+                statusTxt.className = "status-badge status-fechado";
+                barraStatus.className = "caixa-status-bar fechado"; // Adiciona classe visual
+                
+                btnAbrir.style.display = "inline-block";
+                btnSangria.style.display = "none";
+                btnFechar.style.display = "none";
+                viewAberto.style.display = "none";
+            }
+        };
+
+        window.abrirModalAbrirCaixa = () => document.getElementById('modal-abrir-caixa').style.display='flex';
+        window.confirmarAberturaCaixa = () => {
+            const val = document.getElementById('cx-valor-inicial').value;
+            if(val === '') return alert("Informe o valor inicial!");
+            const novoCaixa = {
+                aberto: true,
+                saldoInicial: parseFloat(val),
+                movimentos: [] // Zera movimentos
+            };
+            set(ref(db, 'caixa'), novoCaixa);
+            document.getElementById('modal-abrir-caixa').style.display='none';
+            document.getElementById('cx-valor-inicial').value = '';
+        };
+
+        window.abrirModalSangria = () => document.getElementById('modal-sangria').style.display='flex';
+        window.confirmarSangria = () => {
+            const val = document.getElementById('sg-valor').value;
+            const mot = document.getElementById('sg-motivo').value;
+            if(!val || !mot) return alert("Preencha valor e motivo!");
+            
+            const mov = {
+                tipo: 'saida',
+                valor: parseFloat(val),
+                desc: mot,
+                hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+            };
+            
+            let movimentos = caixaInfo.movimentos || [];
+            movimentos.push(mov);
+            set(ref(db, 'caixa/movimentos'), movimentos);
+            
+            document.getElementById('modal-sangria').style.display='none';
+            document.getElementById('sg-valor').value='';
+            document.getElementById('sg-motivo').value='';
+        };
+
+        window.fecharCaixa = () => {
+            if(!confirm("Deseja realmente FECHAR o caixa agora?")) return;
+            // Aqui poderia salvar um histórico de caixas fechados, mas vou apenas resetar o status para simplificar
+            set(ref(db, 'caixa/aberto'), false);
+        };
+
+        // --- CONFIGURAÇÕES DA LOJA ---
+        window.salvarConfiguracoes = () => {
+            const novaConfig = {
+                nome: document.getElementById('cfg-nome').value,
+                end: document.getElementById('cfg-end').value,
+                tel: document.getElementById('cfg-tel').value,
+                pix: document.getElementById('cfg-pix').value
+            };
+            set(ref(db, 'config'), novaConfig);
+            alert("Configurações salvas!");
+        };
+
+        // --- RELATÓRIOS E EXCEL ---
         window.gerarRelatorio = function() {
             const inicioInput = document.getElementById('rel-inicio').value;
             const fimInput = document.getElementById('rel-fim').value;
@@ -727,9 +1030,13 @@
         };
 
         // --- SISTEMA DE IMPRESSÃO VISUAL (MODAL) ---
-        
-        // 1. Abre o modal e preenche os dados
         window.imprimirCupom = function(dados) {
+            // Preencher dados da loja
+            document.getElementById('cp-nome-loja').innerText = configLoja.nome || 'AÇAÍ VICTORINO';
+            document.getElementById('cp-end-loja').innerText = configLoja.end || 'Endereço não configurado';
+            document.getElementById('cp-tel-loja').innerText = configLoja.tel || 'Tel não configurado';
+            document.getElementById('cp-pix-loja').innerText = configLoja.pix || '';
+
             document.getElementById('cupom-data').innerText = new Date().toLocaleDateString('pt-BR');
             document.getElementById('cupom-hora').innerText = dados.hora;
             document.getElementById('cupom-cliente').innerText = dados.cliente || "Balcão";
@@ -743,19 +1050,11 @@
             dados.itens.forEach(i => htmlItens += `<div class="cupom-row"><span>${i}</span></div>`);
             document.getElementById('cupom-itens').innerHTML = htmlItens;
             
-            // Exibe o modal
             document.getElementById('modal-cupom').style.display = 'flex';
         };
 
-        // 2. Botão "IMPRIMIR" (Chama o navegador)
-        window.realizarImpressao = function() {
-            window.print();
-        };
-
-        // 3. Botão "FECHAR" (Esconde o modal)
-        window.fecharModalCupom = function() {
-            document.getElementById('modal-cupom').style.display = 'none';
-        };
+        window.realizarImpressao = function() { window.print(); };
+        window.fecharModalCupom = function() { document.getElementById('modal-cupom').style.display = 'none'; };
 
         init();
     </script>
