@@ -151,12 +151,37 @@
         function renderCardapio() {
             // 1. TAMANHOS (Categoria 'Copo')
             const tamanhos = estoque.filter(p => p.cat === 'Copo');
-            document.getElementById('grid-sizes').innerHTML = tamanhos.map(p => `
-                <div class="size-card" onclick="selectSize('${p.nome}', ${p.preco})">
-                    <i class="material-icons" style="font-size: 2rem; color:var(--gray); margin-bottom:5px;">local_cafe</i>
-                    <h4>${p.nome.replace('Açaí ', '')}</h4> <p>R$ ${p.preco.toFixed(2)}</p>
+            document.getElementById('grid-sizes').innerHTML = tamanhos.map(p => {
+                let imgNome = "";
+                const nomeLower = p.nome.toLowerCase();
+
+                // Lógica de identificação aprimorada
+                if (nomeLower.includes("300")) {
+                    imgNome = "300ml.webp";
+                } else if (nomeLower.includes("500")) {
+                    imgNome = "500ml.webp";
+                } else if (nomeLower.includes("700")) {
+                    imgNome = "700ml.webp";
+                } else if (nomeLower.includes("1l") || nomeLower.includes("1 l") || nomeLower.includes("1litro") || nomeLower.includes("1 litro") || nomeLower.includes("1000")) {
+                    imgNome = "1l.webp";
+                } else {
+                    imgNome = "default-copo.webp"; 
+                }
+
+                return `
+                <div class="size-card" onclick="selectSize('${p.nome}', ${p.preco})" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; height: 100%;">
+                    <div style="width: 100%; height: 140px; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; border-radius: 20px 20px 0 0; overflow: hidden;">
+                        <img src="img/${imgNome}" 
+                             alt="${p.nome}" 
+                             style="width: 100%; height: 100%; object-fit: cover;" 
+                             onerror="this.src='img/default-copo.webp';">
+                    </div>
+                    <div style="padding: 12px 5px;">
+                        <h4 style="margin:0; font-size: 1.1rem;">${p.nome.replace('Açaí ', '')}</h4> 
+                        <p style="margin:5px 0 0 0; color: var(--primary); font-weight: bold;">R$ ${p.preco.toFixed(2)}</p>
+                    </div>
                 </div>
-            `).join('');
+            `}).join('');
 
             // 2. GRÁTIS (Categoria 'Adicional' + Preço 0)
             const gratis = estoque.filter(p => p.cat === 'Adicional' && p.preco === 0);
