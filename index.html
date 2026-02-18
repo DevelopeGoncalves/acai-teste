@@ -31,7 +31,16 @@
         h3.section-title::before { content:''; width: 6px; height: 24px; background: var(--primary); border-radius: 4px; }
 
         .grid-sizes { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .size-card { background: var(--card-bg); padding: 20px 10px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; }
+        .size-card { 
+        background: var(--card-bg); 
+        padding: 0; /* Mude de 20px 10px para 0 */
+        border-radius: 15px; 
+        text-align: center; 
+        border: 1px solid rgba(255,255,255,0.05); 
+        cursor: pointer; 
+        transition: 0.3s; 
+        overflow: hidden; /* Adicione isso para a imagem não sair da borda */
+    }
         .size-card.selected { border-color: var(--primary); background: rgba(255, 159, 67, 0.15); box-shadow: 0 0 15px rgba(255, 159, 67, 0.2); }
         
         .chips-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
@@ -176,38 +185,53 @@
         });
 
         function renderCardapio() {
-            // Tamanhos
-            const tamanhos = estoque.filter(p => p.cat === 'Copo');
-            document.getElementById('grid-sizes').innerHTML = tamanhos.map(p => `
-                <div class="size-card" onclick="selectSize('${p.nome}', ${p.preco})">
-                    <h4>${p.nome.replace('Açaí ', '')}</h4> <p>R$ ${p.preco.toFixed(2)}</p>
-                </div>
-            `).join('');
+        const tamanhos = estoque.filter(p => p.cat === 'Copo');
+        document.getElementById('grid-sizes').innerHTML = tamanhos.map(p => {
+            let imgNome = "";
+            const nomeLower = p.nome.toLowerCase();
 
-            // Grátis
-            const gratis = estoque.filter(p => p.cat === 'Adicional' && p.preco === 0);
-            document.getElementById('lista-gratis').innerHTML = gratis.map(item => {
-                const isBlocked = bloqueados.includes(item.nome);
-                return `
-                <div class="chip ${isBlocked ? 'disabled' : ''}" onclick="toggleGratis(this, '${item.nome}')">
-                    ${item.nome}
-                </div>
-            `}).join('');
+            if (nomeLower.includes("300")) imgNome = "300ml.webp";
+            else if (nomeLower.includes("500")) imgNome = "500ml.webp";
+            else if (nomeLower.includes("700")) imgNome = "700ml.webp";
+            else if (nomeLower.includes("1l") || nomeLower.includes("1 l") || nomeLower.includes("1litro") || nomeLower.includes("1 litro") || nomeLower.includes("1000")) imgNome = "1l.webp";
+            else imgNome = "default-copo.webp";
 
-            // Pagos
-            const pagos = estoque.filter(p => p.cat === 'Adicional' && p.preco > 0);
-            document.getElementById('lista-pagos').innerHTML = pagos.map(item => {
-                const isBlocked = bloqueados.includes(item.nome);
-                return `
-                <div class="premium-item ${isBlocked ? 'disabled' : ''}" onclick="togglePago(this, '${item.nome}', ${item.preco})">
-                    <div>
-                        <div style="font-weight:600;">${item.nome}</div>
-                        <small style="color: var(--primary);">+ R$ ${item.preco.toFixed(2)}</small>
-                    </div>
-                    <i class="material-icons" style="color:#fff;">add_circle_outline</i>
+            return `
+            <div class="size-card" onclick="selectSize('${p.nome}', ${p.preco})">
+                <div style="width: 100%; height: 140px; overflow: hidden;">
+                    <img src="img/${imgNome}" 
+                        alt="${p.nome}" 
+                        style="width: 100%; height: 100%; object-fit: cover; display: block;" 
+                        onerror="this.src='img/default-copo.webp';">
                 </div>
-            `}).join('');
-        }
+                <div style="padding: 10px 5px 15px;">
+                    <h4 style="margin:0; font-size: 1rem; color: #fff;">${p.nome.replace('Açaí ', '')}</h4>
+                    <p style="margin:5px 0 0 0; color: var(--primary); font-weight: bold;">R$ ${p.preco.toFixed(2)}</p>
+                </div>
+            </div>
+        `}).join('');
+
+        // Adicionais Grátis
+        const gratis = estoque.filter(p => p.cat === 'Adicional' && p.preco === 0);
+        document.getElementById('lista-gratis').innerHTML = gratis.map(item => {
+            const isBlocked = bloqueados.includes(item.nome);
+            return `<div class="chip ${isBlocked ? 'disabled' : ''}" onclick="toggleGratis(this, '${item.nome}')">${item.nome}</div>`
+        }).join('');
+
+        // Adicionais Pagos
+        const pagos = estoque.filter(p => p.cat === 'Adicional' && p.preco > 0);
+        document.getElementById('lista-pagos').innerHTML = pagos.map(item => {
+            const isBlocked = bloqueados.includes(item.nome);
+            return `
+            <div class="premium-item ${isBlocked ? 'disabled' : ''}" onclick="togglePago(this, '${item.nome}', ${item.preco})">
+                <div>
+                    <div style="font-weight:600;">${item.nome}</div>
+                    <small style="color: var(--primary);">+ R$ ${item.preco.toFixed(2)}</small>
+                </div>
+                <i class="material-icons" style="color:#fff;">add_circle_outline</i>
+            </div>
+        `}).join('');
+    }
 
         function selectSize(tamanho, preco) {
             document.querySelectorAll('.size-card').forEach(c => c.classList.remove('selected'));
