@@ -25,12 +25,6 @@
         .profile-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; transition: 0.3s; }
         .profile-link:hover { opacity: 0.8; }
         .profile-icon { width: 38px; height: 38px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.2); overflow: hidden; }
-
-        /* Estilo para ocultar coluna do Excel na tela */
-        .apenas-excel { display: none; }
-
-        /* Tooltip simples para ver detalhes ao passar o mouse */
-        .tooltip-item { cursor: help; border-bottom: 1px dotted #999; }
         
         /* --- MAIN CONTENT --- */
         main { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
@@ -127,6 +121,9 @@
         .btn-action { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 5px; }
         .btn-action.edit { color: var(--primary); }
         .btn-action.delete { color: var(--danger); }
+        
+        .apenas-excel { display: none; }
+        .tooltip-item { cursor: help; border-bottom: 1px dotted #999; }
 
         /* --- MODAIS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
@@ -138,16 +135,58 @@
         .ingrediente-status { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
         .status-on { background: #e8f5e9; color: #27ae60; }
         .status-off { background: #ffebee; color: #c0392b; }
-        
         .badge-notif { background: var(--danger); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.6rem; position: absolute; top: 5px; right: 5px; display: none; }
 
-        /* ==========================================================================
-           RESPONSIVIDADE (MOBILE OPTIMIZATION)
-           ========================================================================== */
+        /* --- ESTILOS DE IMPRESSÃO TÉRMICA E MODAL DE CUPOM --- */
+        .cupom-visual-box {
+            background: #fffbe6; /* Cor de papel amarelinho */
+            border: 1px solid #dcdcdc;
+            padding: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto 20px auto;
+            color: black;
+            text-align: left;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .cupom-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 5px; margin-bottom: 5px; }
+        .cupom-row { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 12px; }
+        .cupom-total { border-top: 1px dashed #000; padding-top: 5px; margin-top: 5px; text-align: right; font-weight: bold; font-size: 14px; }
+        .cupom-footer { text-align: center; margin-top: 10px; font-size: 10px; }
+
+        .btn-print { background: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-close-modal { background: #c0392b; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+
+        @media print {
+            body * { visibility: hidden; } /* Esconde tudo */
+            
+            /* Mostra apenas o modal de cupom e o conteúdo do cupom */
+            #modal-cupom { visibility: visible; display: block !important; position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: white; z-index: 9999; }
+            #modal-cupom .modal-content { box-shadow: none; border: none; padding: 0; margin: 0; width: 100%; max-width: 100%; }
+            
+            /* Área do cupom específica para impressão */
+            .cupom-visual-box { 
+                visibility: visible; 
+                width: 100%; 
+                max-width: 100%; 
+                border: none; 
+                box-shadow: none; 
+                margin: 0; 
+                padding: 0;
+                background: white; 
+            }
+            .cupom-visual-box * { visibility: visible; }
+            
+            /* Esconde os botões na hora de imprimir */
+            .no-print { display: none !important; }
+            
+            @page { margin: 0; size: auto; }
+        }
+
+        /* RESPONSIVIDADE */
         @media (max-width: 768px) {
             body { flex-direction: column; overflow: auto; background: #f0f2f5; }
-            
-            /* Navegação Inferior (App Style) */
             aside { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; flex-direction: row; justify-content: space-around; align-items: center; padding: 0; border-top: 1px solid #ddd; border-right: none; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
             .brand, .profile-footer { display: none; }
             nav { display: flex; width: 100%; padding: 0; justify-content: space-between; }
@@ -155,41 +194,23 @@
             nav button i { font-size: 1.5rem; margin-bottom: 2px; }
             nav button.active { background: transparent; color: var(--secondary); padding-left: 0; box-shadow: none; border-top: 3px solid var(--secondary); }
             nav button.active i { color: var(--secondary); }
-            .badge-notif { top: 5px; right: 25%; }
-
-            /* Conteúdo Principal */
             main { padding: 15px 15px 80px 15px; height: auto; overflow: visible; }
             header { margin-bottom: 20px; }
             header h1 { font-size: 1.5rem; }
-
-            /* Dashboard Compacto */
             .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .kpi-card { padding: 15px; }
             .kpi-info h3 { font-size: 0.7rem; }
             .kpi-info span { font-size: 1.1rem; }
             .kpi-icon { font-size: 2rem; }
-            
             .charts-row { grid-template-columns: 1fr; gap: 15px; }
-            .chart-container { padding: 15px; }
-            .chart-box { height: 250px; }
-
-            /* Delivery Compacto */
             .delivery-grid { grid-template-columns: 1fr; }
-            
-            /* PDV Mobile (Carrinho no topo) */
             .pdv-container { display: flex; flex-direction: column; height: auto; gap: 20px; }
             .pdv-cart { order: -1; position: relative; max-height: 400px; border: 2px solid var(--primary); padding: 15px; }
             .pdv-products { overflow: visible; height: auto; padding: 0; background: transparent; box-shadow: none; }
             .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .prod-item { padding: 10px; min-height: 130px; } 
-            .prod-item h4 { font-size: 0.85rem; }
-
-            /* Tabelas com Scroll Horizontal */
             div[style*="overflow-x: auto"] { -webkit-overflow-scrolling: touch; }
             table { min-width: 500px; font-size: 0.9rem; }
             th, td { padding: 10px; }
-            
-            /* Botões Estoque Mobile (Ajuste para caber) */
             #view-estoque header div { flex-wrap: wrap; }
             #view-estoque button { flex: 1; justify-content: center; }
         }
@@ -207,9 +228,7 @@
             <button onclick="nav('mesas')" style="position: relative;"><i class="material-icons">table_restaurant</i> Mesas <span id="badge-mesas" class="badge-notif">!</span></button>
             <button onclick="nav('delivery')" style="position: relative;"><i class="material-icons">moped</i> Delivery <span id="badge-delivery" class="badge-notif">0</span></button>
             <button onclick="nav('estoque')"><i class="material-icons">inventory</i> Estoque</button>
-            <button onclick="nav('relatorios')">
-                <i class="material-icons">query_stats</i> Relatórios
-            </button>
+            <button onclick="nav('relatorios')"><i class="material-icons">query_stats</i> Relatórios</button>
         </nav>
         <div class="profile-footer">
             <a href="https://victorinoeng.com.br/" target="_blank" class="profile-link">
@@ -222,44 +241,19 @@
     <main>
         <section id="view-dashboard" class="view-section active">
             <header><h1>Visão Geral</h1><div style="font-size: 0.8rem; color: #666;"><span id="data-hoje"></span></div></header>
-            
             <div class="kpi-grid">
-                <div class="kpi-card purple">
-                    <div class="kpi-info"><h3>Faturamento Mês</h3><span id="kpi-fat-mes">R$ 0,00</span></div>
-                    <i class="material-icons kpi-icon">calendar_month</i>
-                </div>
-                <div class="kpi-card blue">
-                    <div class="kpi-info"><h3>Vendas Hoje</h3><span id="kpi-vendas-hoje">R$ 0,00</span></div>
-                    <i class="material-icons kpi-icon">payments</i>
-                </div>
+                <div class="kpi-card purple"><div class="kpi-info"><h3>Faturamento Mês</h3><span id="kpi-fat-mes">R$ 0,00</span></div><i class="material-icons kpi-icon">calendar_month</i></div>
+                <div class="kpi-card blue"><div class="kpi-info"><h3>Vendas Hoje</h3><span id="kpi-vendas-hoje">R$ 0,00</span></div><i class="material-icons kpi-icon">payments</i></div>
                 <div class="kpi-card green"><div class="kpi-info"><h3>Pedidos Total</h3><span id="kpi-pedidos">0</span></div><i class="material-icons kpi-icon">receipt</i></div>
                 <div class="kpi-card orange"><div class="kpi-info"><h3>Delivery Ativo</h3><span id="kpi-delivery">0</span></div><i class="material-icons kpi-icon">moped</i></div>
             </div>
-
             <div class="charts-row">
-                <div class="chart-container">
-                    <div class="chart-title">Vendas (Horário)</div>
-                    <div class="chart-box">
-                        <canvas id="vendasChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <div class="chart-title">Pagamentos</div>
-                    <div class="chart-box">
-                        <canvas id="pagamentoChart"></canvas>
-                    </div>
-                </div>
+                <div class="chart-container"><div class="chart-title">Vendas (Horário)</div><div class="chart-box"><canvas id="vendasChart"></canvas></div></div>
+                <div class="chart-container"><div class="chart-title">Pagamentos</div><div class="chart-box"><canvas id="pagamentoChart"></canvas></div></div>
             </div>
-
             <div class="charts-row">
-                <div class="chart-container" style="overflow-x: auto;">
-                    <div class="chart-title">Últimas Vendas</div>
-                    <table id="tabela-historico"><thead><tr><th>Hora</th><th>Tipo</th><th>Valor</th><th>Pgto</th></tr></thead><tbody></tbody></table>
-                </div>
-                <div class="chart-container">
-                    <div class="chart-title">Top Produtos</div>
-                    <ul class="top-products-list" id="top-products"></ul>
-                </div>
+                <div class="chart-container" style="overflow-x: auto;"><div class="chart-title">Últimas Vendas</div><table id="tabela-historico"><thead><tr><th>Hora</th><th>Tipo</th><th>Valor</th><th>Pgto</th></tr></thead><tbody></tbody></table></div>
+                <div class="chart-container"><div class="chart-title">Top Produtos</div><ul class="top-products-list" id="top-products"></ul></div>
             </div>
         </section>
 
@@ -284,8 +278,8 @@
                     <div class="cart-items" id="pdv-carrinho-lista"><p style="text-align: center; color: #999; margin-top: 20px;">Vazio</p></div>
                     <div class="cart-total" id="pdv-total">R$ 0,00</div>
                     <div style="display:flex; flex-direction: column; gap: 10px;">
-                        <select id="pdv-destino" onchange="alternarBotaoPDV()" style="padding: 10px; border-radius: 5px; border: 1px solid #ddd; background: #fff8e1; margin-bottom: 10px; width: 100%;">
-                            <option value="balcao">🏪 Venda Balcão (Direta)</option>
+                        <select id="pdv-destino" onchange="alternarBotaoPDV()" style="padding: 10px; border-radius: 5px; border: 1px solid #ddd; background: #fff8e1;">
+                            <option value="balcao">🏪 Balcão (Direta)</option>
                             <option value="01">🪑 Mesa 01</option>
                             <option value="02">🪑 Mesa 02</option>
                             <option value="03">🪑 Mesa 03</option>
@@ -352,10 +346,7 @@
         </section>
 
         <section id="view-relatorios" class="view-section">
-            <header>
-                <h1>Relatórios Avançados</h1>
-            </header>
-
+            <header><h1>Relatórios Avançados</h1></header>
             <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px;">
                 <h4 style="margin-bottom: 15px; color: var(--dark);">Filtrar Período</h4>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
@@ -372,35 +363,14 @@
                     </button>
                 </div>
             </div>
-
             <div class="kpi-grid">
-                <div class="kpi-card green">
-                    <div class="kpi-info">
-                        <h3>Faturamento Total</h3>
-                        <span id="rel-total-fat">R$ 0,00</span>
-                    </div>
-                    <i class="material-icons kpi-icon">attach_money</i>
-                </div>
-                <div class="kpi-card blue">
-                    <div class="kpi-info">
-                        <h3>Qtd. Vendas</h3>
-                        <span id="rel-total-qtd">0</span>
-                    </div>
-                    <i class="material-icons kpi-icon">shopping_cart</i>
-                </div>
-                <div class="kpi-card purple">
-                    <div class="kpi-info">
-                        <h3>Ticket Médio</h3>
-                        <span id="rel-ticket-medio">R$ 0,00</span>
-                    </div>
-                    <i class="material-icons kpi-icon">analytics</i>
-                </div>
+                <div class="kpi-card green"><div class="kpi-info"><h3>Faturamento Total</h3><span id="rel-total-fat">R$ 0,00</span></div><i class="material-icons kpi-icon">attach_money</i></div>
+                <div class="kpi-card blue"><div class="kpi-info"><h3>Qtd. Vendas</h3><span id="rel-total-qtd">0</span></div><i class="material-icons kpi-icon">shopping_cart</i></div>
+                <div class="kpi-card purple"><div class="kpi-info"><h3>Ticket Médio</h3><span id="rel-ticket-medio">R$ 0,00</span></div><i class="material-icons kpi-icon">analytics</i></div>
             </div>
-
             <div class="chart-container" style="overflow-x: auto;">
                 <div class="chart-title" style="display: flex; justify-content: space-between; align-items: center;">
                     <span>Detalhamento das Vendas</span>
-                    
                     <div style="display: flex; gap: 10px;">
                         <button onclick="exportarExcel()" style="background: #27ae60; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: bold;">
                             <i class="material-icons" style="font-size: 1rem;">table_view</i> Excel
@@ -410,24 +380,42 @@
                         </button>
                     </div>
                 </div>
-
                 <table id="tabela-relatorio">
-                    <thead>
-                        <tr>
-                            <th>Data/Hora</th>
-                            <th>Tipo</th>
-                            <th>Itens</th>
-                            <th>Pgto</th>
-                            <th>Valor</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td colspan="5" style="text-align:center; padding: 20px; color: #999;">Selecione as datas e clique em Filtrar</td></tr>
-                    </tbody>
+                    <thead><tr><th>Data/Hora</th><th>Tipo</th><th class="col-visual">Itens (Resumo)</th><th class="apenas-excel">Itens (Detalhado)</th><th>Pgto</th><th>Valor</th></tr></thead>
+                    <tbody><tr><td colspan="5" style="text-align:center; padding: 20px; color: #999;">Selecione as datas e clique em Filtrar</td></tr></tbody>
                 </table>
             </div>
         </section>
     </main>
+
+    <div class="modal-overlay" id="modal-cupom" style="z-index: 9999;">
+        <div class="modal-content" style="width: 400px; text-align: center;">
+            <h3 style="margin-bottom: 15px; color: var(--dark);">Visualizar Cupom</h3>
+            
+            <div class="cupom-visual-box">
+                <div class="cupom-header">
+                    <h3 style="margin:0; font-size:16px;">AÇAÍ VICTORINO</h3>
+                    <p style="margin:0; font-size:10px;">Endereço da Loja</p>
+                    <p style="margin:0; font-size:10px;">(27) 99906-4068</p>
+                    <p style="margin:5px 0 0 0;">--------------------------------</p>
+                </div>
+                <div class="cupom-info" style="margin-bottom: 5px;">
+                    Data: <span id="cupom-data">--/--/--</span> <span id="cupom-hora">--:--</span><br>
+                    Cliente: <span id="cupom-cliente">Balcão</span>
+                </div>
+                <div style="border-bottom: 1px solid #000; margin-bottom: 5px;"></div>
+                <div id="cupom-itens"></div>
+                <div class="cupom-total">TOTAL: <span id="cupom-total">R$ 0,00</span></div>
+                <div style="text-align: right; font-size: 11px; margin-top: 2px;">Pagamento: <span id="cupom-pgto">Dinheiro</span></div>
+                <div class="cupom-footer"><p>Obrigado pela preferência!</p><small>Sistema Victorino.eng</small></div>
+            </div>
+
+            <div class="no-print" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                <button class="btn-print" onclick="realizarImpressao()"><i class="material-icons">print</i> IMPRIMIR</button>
+                <button class="btn-close-modal" onclick="fecharModalCupom()">FECHAR</button>
+            </div>
+        </div>
+    </div>
 
     <div class="modal-overlay" id="modal-mesa"><div class="modal-content"><div class="modal-header"><h2 id="modal-titulo">Mesa 00</h2><button onclick="fecharModalMesa()" style="border:none; background:transparent; font-size: 1.5rem;">&times;</button></div><div class="comanda-list" id="modal-itens"></div><div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-weight: bold; padding-top: 15px; border-top: 1px solid #eee;"><span>Total:</span><span id="modal-total" style="color: var(--secondary);">R$ 0,00</span></div><div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><button onclick="fecharContaMesa()" style="background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold;">✅ Fechar</button><button onclick="fecharModalMesa()" style="background: #e74c3c; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold;">Voltar</button></div></div></div>
     <div class="modal-overlay" id="modal-produto"><div class="modal-content"><div class="modal-header"><h2 id="titulo-modal-prod">Produto</h2><button onclick="fecharModalProduto()" style="border:none; background:transparent; font-size: 1.5rem;">&times;</button></div><form onsubmit="salvarProduto(event)" style="display: grid; gap: 15px;"><input type="hidden" id="prod-id"><div><label>Nome</label><input type="text" id="prod-nome" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><div><label>Preço</label><input type="number" step="0.01" id="prod-preco" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div><div><label>Qtd</label><input type="number" id="prod-estoque" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div></div><div><label>Categoria</label><select id="prod-cat" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"><option value="Copo">Copo</option><option value="Adicional">Adicional</option><option value="Bebida">Bebida</option><option value="Outros">Outros</option></select></div><button type="submit" style="background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px;">💾 Salvar</button></form></div></div>
@@ -465,6 +453,11 @@
             });
             onValue(ref(db, 'historico'), (s) => { historico = s.val() || []; renderDashboard(); });
             onValue(ref(db, 'bloqueios'), (s) => { bloqueados = s.val() || []; renderListaIngredientes(); });
+            
+            setTimeout(() => {
+                const hoje = new Date().toISOString().split('T')[0];
+                if(document.getElementById('rel-inicio')) { document.getElementById('rel-inicio').value = hoje; document.getElementById('rel-fim').value = hoje; }
+            }, 1000);
         }
 
         window.nav = function(section) {
@@ -475,45 +468,6 @@
             if(btn) btn.classList.add('active');
         };
 
-        window.exportarExcel = function() {
-            // 1. Clona a tabela original para não bagunçar a tela do usuário
-            const tabelaOriginal = document.getElementById("tabela-relatorio");
-            const tabelaClone = tabelaOriginal.cloneNode(true);
-
-            // 2. Manipula o Clone: Remove a coluna visual e mostra a oculta
-            // Remove cabeçalhos visuais
-            const thVisual = tabelaClone.querySelector('.col-visual');
-            if(thVisual) thVisual.remove();
-            
-            const thExcel = tabelaClone.querySelector('.apenas-excel');
-            if(thExcel) thExcel.style.display = 'table-cell'; // Mostra o cabeçalho oculto
-
-            // Manipula as linhas do corpo
-            const linhas = tabelaClone.querySelectorAll('tbody tr');
-            linhas.forEach(tr => {
-                const tdVisual = tr.querySelector('.col-visual');
-                if(tdVisual) tdVisual.remove(); // Remove o resumo
-
-                const tdExcel = tr.querySelector('.apenas-excel');
-                if(tdExcel) tdExcel.style.display = 'table-cell'; // Mostra o completo
-            });
-
-            // 3. Gera o arquivo Excel a partir do Clone modificado
-            let html = tabelaClone.outerHTML;
-
-            // Corrige acentuação
-            const uri = 'data:application/vnd.ms-excel;base64,';
-            const template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body><table>{table}</table></body></html>';
-            
-            const base64 = (s) => window.btoa(unescape(encodeURIComponent(s)));
-            const format = (s, c) => s.replace(/{(\w+)}/g, (m, p) => c[p]);
-
-            const link = document.createElement("a");
-            link.download = "Relatorio_Completo.xls";
-            link.href = uri + base64(format(template, { worksheet: 'Relatorio', table: html }));
-            link.click();
-        };
-
         // DASHBOARD
         window.renderDashboard = function() {
             const agora = new Date();
@@ -521,23 +475,19 @@
             let fatMes = 0, fatHoje = 0;
             const qtdPedidos = historico.length;
             const deliveryCount = pedidosAtivos.filter(p => p.mesa === 'DELIVERY').length;
-
             historico.forEach(h => {
                 const dataVenda = new Date(h.id);
                 const val = typeof h.total === 'number' ? h.total : parseValor(h.total);
                 if(dataVenda.getMonth()===mesAtual && dataVenda.getFullYear()===anoAtual) fatMes += val;
                 if(dataVenda.getDate()===diaAtual && dataVenda.getMonth()===mesAtual && dataVenda.getFullYear()===anoAtual) fatHoje += val;
             });
-
             document.getElementById('kpi-fat-mes').innerText = fatMes.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById('kpi-vendas-hoje').innerText = fatHoje.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById('kpi-pedidos').innerText = qtdPedidos;
             document.getElementById('kpi-delivery').innerText = deliveryCount;
-
             const tabela = document.querySelector('#tabela-historico tbody');
             const recentes = historico.slice().reverse().slice(0, 5);
             tabela.innerHTML = recentes.length ? recentes.map(h => `<tr><td>${h.hora}</td><td>${h.tipo}</td><td style="color: var(--accent);">${typeof h.total === 'number' ? h.total.toFixed(2) : h.total}</td><td>${h.pgto || '?'}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center;">Vazio</td></tr>';
-
             const contagemProd = {};
             historico.forEach(v => {
                 if(v.itens) v.itens.forEach(item => {
@@ -547,7 +497,6 @@
             });
             const sortedProd = Object.entries(contagemProd).sort((a,b) => b[1] - a[1]).slice(0, 5);
             document.getElementById('top-products').innerHTML = sortedProd.map((p, i) => `<li><div><span class="rank-badge">${i+1}</span> ${p[0]}</div> <strong>${p[1]}</strong></li>`).join('');
-            
             atualizarGraficos();
         };
 
@@ -560,7 +509,6 @@
                 else if(p.includes('Cartão')) pgtoCounts['Cartão']++;
                 else pgtoCounts['Outros']++;
             });
-
             const horas = {};
             historico.forEach(h => {
                 const hora = h.hora.split(':')[0] + 'h';
@@ -568,11 +516,9 @@
             });
             const labelsHoras = Object.keys(horas).sort();
             const dataHoras = labelsHoras.map(k => horas[k]);
-
             const ctxPgto = document.getElementById('pagamentoChart').getContext('2d');
             if(chartPagamento) chartPagamento.destroy();
             chartPagamento = new Chart(ctxPgto, { type: 'doughnut', data: { labels: Object.keys(pgtoCounts), datasets: [{ data: Object.values(pgtoCounts), backgroundColor: ['#2ecc71', '#9b59b6', '#3498db', '#95a5a6'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10 } } } } });
-
             const ctxVendas = document.getElementById('vendasChart').getContext('2d');
             if(chartVendas) chartVendas.destroy();
             chartVendas = new Chart(ctxVendas, { type: 'bar', data: { labels: labelsHoras, datasets: [{ label: 'R$', data: dataHoras, backgroundColor: '#2c3e50', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } } });
@@ -587,38 +533,22 @@
             });
             document.getElementById('badge-delivery').innerText = listaDelivery.length;
             document.getElementById('badge-delivery').style.display = listaDelivery.length > 0 ? 'inline-block' : 'none';
-
             if(listaDelivery.length === 0) { container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 20px;">Sem pedidos ativos.</p>'; return; }
-
             container.innerHTML = listaDelivery.map(p => {
                 const status = p.status || 'PENDENTE';
                 const nome = p.cliente.split('(')[0];
                 let zapLink = '';
-                if(p.cliente.includes('(')) {
-                    const rawNum = p.cliente.split('(')[1].replace(/\D/g, '');
-                    if(rawNum.length >= 10) zapLink = `https://wa.me/55${rawNum}`;
-                }
-                
+                if(p.cliente.includes('(')) { const rawNum = p.cliente.split('(')[1].replace(/\D/g, ''); if(rawNum.length >= 10) zapLink = `https://wa.me/55${rawNum}`; }
                 let htmlBotoes = '', badgeClass = '', badgeTexto = '', corBorda = '';
-                if(status === 'PENDENTE') {
-                    badgeClass = 'st-pendente'; badgeTexto = '🔔 Aguardando'; corBorda = 'var(--danger)';
-                    htmlBotoes = `<div class="actions-row"><button class="btn-step" style="background:#f39c12;" onclick="mudarStatusDelivery(${p.id}, 'PREPARO')">PREPARAR</button><button class="btn-cancel" onclick="cancelarDelivery(${p.id})">X</button></div>`;
-                } else if(status === 'PREPARO') {
-                    badgeClass = 'st-preparo'; badgeTexto = '👨‍🍳 Cozinha'; corBorda = 'var(--delivery)';
-                    htmlBotoes = `<input type="text" id="moto-${p.id}" class="motoboy-input" placeholder="Motoboy" value="${p.motoboy||''}"><div class="actions-row"><button class="btn-step" style="background:#3498db;" onclick="mudarStatusDelivery(${p.id}, 'ENTREGA')">SAIU</button><button class="btn-step" style="background:#95a5a6;" onclick="mudarStatusDelivery(${p.id}, 'PENDENTE')">↩️</button></div>`;
-                } else if(status === 'ENTREGA') {
-                    badgeClass = 'st-entrega'; badgeTexto = `🏍️ ${p.motoboy}`; corBorda = '#3498db';
-                    htmlBotoes = `<div style="text-align:center;margin-bottom:5px;">${zapLink ? `<a href="${zapLink}?text=Saiu para entrega!" target="_blank" class="btn-wpp">WhatsApp</a>` : ''}</div><div class="actions-row"><button class="btn-step" style="background:#27ae60;" onclick="finalizarDelivery(${p.id})">ENTREGUE</button><button class="btn-step" style="background:#95a5a6;" onclick="mudarStatusDelivery(${p.id}, 'PREPARO')">↩️</button></div>`;
-                } else if(status === 'RETORNO') {
-                    badgeClass = 'st-retorno'; badgeTexto = `🏁 ${p.motoboy}`; corBorda = '#8e44ad';
-                    htmlBotoes = `<div class="actions-row"><button class="btn-step" style="background:#27ae60;" onclick="finalizarDelivery(${p.id})">RECEBER $</button></div>`;
-                }
-
+                if(status === 'PENDENTE') { badgeClass = 'st-pendente'; badgeTexto = '🔔 Aguardando'; corBorda = 'var(--danger)'; htmlBotoes = `<div class="actions-row"><button class="btn-step" style="background:#f39c12;" onclick="mudarStatusDelivery(${p.id}, 'PREPARO')">PREPARAR</button><button class="btn-cancel" onclick="cancelarDelivery(${p.id})">X</button></div>`; } 
+                else if(status === 'PREPARO') { badgeClass = 'st-preparo'; badgeTexto = '👨‍🍳 Cozinha'; corBorda = 'var(--delivery)'; htmlBotoes = `<input type="text" id="moto-${p.id}" class="motoboy-input" placeholder="Motoboy" value="${p.motoboy||''}"><div class="actions-row"><button class="btn-step" style="background:#3498db;" onclick="mudarStatusDelivery(${p.id}, 'ENTREGA')">SAIU</button><button class="btn-step" style="background:#95a5a6;" onclick="mudarStatusDelivery(${p.id}, 'PENDENTE')">↩️</button></div>`; } 
+                else if(status === 'ENTREGA') { badgeClass = 'st-entrega'; badgeTexto = `🏍️ ${p.motoboy}`; corBorda = '#3498db'; htmlBotoes = `<div style="text-align:center;margin-bottom:5px;">${zapLink ? `<a href="${zapLink}?text=Saiu para entrega!" target="_blank" class="btn-wpp">WhatsApp</a>` : ''}</div><div class="actions-row"><button class="btn-step" style="background:#27ae60;" onclick="finalizarDelivery(${p.id})">ENTREGUE</button><button class="btn-step" style="background:#95a5a6;" onclick="mudarStatusDelivery(${p.id}, 'PREPARO')">↩️</button></div>`; } 
+                else if(status === 'RETORNO') { badgeClass = 'st-retorno'; badgeTexto = `🏁 ${p.motoboy}`; corBorda = '#8e44ad'; htmlBotoes = `<div class="actions-row"><button class="btn-step" style="background:#27ae60;" onclick="finalizarDelivery(${p.id})">RECEBER $</button></div>`; }
                 return `<div class="delivery-card" style="border-left: 5px solid ${corBorda};"><div class="del-header"><div><span class="badge-status ${badgeClass}">${badgeTexto}</span><h3 style="font-size:1rem; margin-top:5px;">${nome}</h3></div><div class="del-time">${p.hora}</div></div><div class="del-itens"><strong>${p.tamanho.split('-')[0]}</strong><div style="font-size:0.8rem; color:#777;">${p.itens.join(', ')}</div></div><div class="del-info">📍 ${p.tamanho.split('Entregar em:')[1]?.split('-')[0] || '...'}</div><div class="del-info">💰 ${p.tamanho.split('Pagamento:')[1] || '...'}</div><div style="display:flex; justify-content:space-between; margin-top:10px; border-top:1px solid #eee; padding-top:10px;"><span style="color:#777;">Total:</span><span class="del-total">${p.total}</span></div><div style="margin-top:10px;">${htmlBotoes}</div></div>`;
             }).join('');
         }
 
-        // MESAS (CORRIGIDO)
+        // MESAS
         function renderMesas() {
             const container = document.getElementById('mesas-container');
             container.innerHTML = '';
@@ -636,28 +566,8 @@
 
         function parseValor(str) { if(typeof str === 'number') return str; return parseFloat(str.toString().replace('R$', '').replace('.','').replace(',','.').trim()); }
 
-        // AÇÕES GLOBAIS
-        window.mudarStatusDelivery = function(id, st) {
-            const idx = pedidosAtivos.findIndex(p => p.id === id); if(idx === -1) return;
-            const pedido = {...pedidosAtivos[idx], status: st};
-            if(st === 'ENTREGA') {
-                const moto = document.getElementById(`moto-${id}`).value;
-                if(!moto) return alert("Nome do motoboy!");
-                pedido.motoboy = moto;
-            }
-            const novos = [...pedidosAtivos]; novos[idx] = pedido;
-            set(ref(db, 'pedidosAtivos'), novos);
-        };
-
-        window.finalizarDelivery = function(id) {
-            if(!confirm("Finalizar?")) return;
-            const p = pedidosAtivos.find(x => x.id === id);
-            if(p) {
-                const hist = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), tipo: 'Delivery', itens: [`${p.cliente} (Moto: ${p.motoboy}): ${p.tamanho}`], total: parseValor(p.total), pgto: 'Delivery' };
-                set(ref(db, 'historico'), [...historico, hist]);
-                set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(x => x.id !== id));
-            }
-        };
+        window.mudarStatusDelivery = function(id, st) { const idx = pedidosAtivos.findIndex(p => p.id === id); if(idx === -1) return; const pedido = {...pedidosAtivos[idx], status: st}; if(st === 'ENTREGA') { const moto = document.getElementById(`moto-${id}`).value; if(!moto) return alert("Nome do motoboy!"); pedido.motoboy = moto; } const novos = [...pedidosAtivos]; novos[idx] = pedido; set(ref(db, 'pedidosAtivos'), novos); };
+        window.finalizarDelivery = function(id) { if(!confirm("Finalizar?")) return; const p = pedidosAtivos.find(x => x.id === id); if(p) { const hist = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), tipo: 'Delivery', itens: [`${p.cliente} (Moto: ${p.motoboy}): ${p.tamanho}`], total: parseValor(p.total), pgto: 'Delivery' }; set(ref(db, 'historico'), [...historico, hist]); set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(x => x.id !== id)); } };
         window.cancelarDelivery = function(id) { if(confirm("Cancelar?")) set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(x => x.id !== id)); };
 
         window.abrirComanda = function(m) {
@@ -672,15 +582,25 @@
             document.getElementById('modal-mesa').style.display = 'flex';
         };
         window.fecharModalMesa = () => document.getElementById('modal-mesa').style.display = 'none';
+
+        // FECHAR CONTA MESA + ABRE JANELA DE PRINT
         window.fecharContaMesa = () => {
-            if(!confirm("Fechar mesa?")) return;
+            if(!confirm("Tem certeza que deseja fechar a conta desta mesa?")) return;
             const m = document.getElementById('modal-mesa').getAttribute('data-mesa-atual');
             const pMesa = pedidosAtivos.filter(p => p.mesa === m);
-            let tot = 0, itens = [];
-            pMesa.forEach(p => { tot += parseValor(p.total); itens.push(`${p.cliente}: ${p.tamanho}`); });
-            set(ref(db, 'historico'), [...historico, {id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), tipo: `Mesa ${m}`, itens: itens, total: tot, pgto: 'Caixa'}]);
+            let tot = 0, listaItens = [];
+            pMesa.forEach(p => { 
+                tot += (typeof p.total === 'number' ? p.total : parseFloat(p.total.replace('R$','').replace(',','.')));
+                listaItens.push(`${p.cliente}: ${p.tamanho}`);
+                if(p.itens) p.itens.forEach(i => listaItens.push(` - ${i}`));
+            });
+            const venda = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), tipo: `Mesa ${m}`, itens: listaItens, total: tot, pgto: 'Caixa', cliente: `Mesa ${m}` };
+            set(ref(db, 'historico'), [...historico, venda]);
             set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(p => p.mesa !== m));
             fecharModalMesa();
+            
+            // ABRE VISUALIZAÇÃO DO CUPOM
+            setTimeout(() => { if(confirm("Mesa fechada! Visualizar cupom?")) imprimirCupom(venda); }, 500);
         };
 
         window.renderEstoque = function() {
@@ -689,21 +609,13 @@
             document.querySelector('#estoque-tabela tbody').innerHTML = lista.map(p => `<tr><td><strong>${p.nome}</strong></td><td>${p.cat}</td><td>${p.preco.toFixed(2)}</td><td>${p.estoque}</td><td><button class="btn-action edit" onclick="abrirModalProduto(${p.id})"><i class="material-icons">edit</i></button><button class="btn-action delete" onclick="removerProduto(${p.id})"><i class="material-icons">delete</i></button></td></tr>`).join('');
         };
         
-        // RENDER PDV (CORRIGIDO: CARDS LINDOS E ORGANIZADOS)
         window.renderPDVGrid = function() {
             const cat = document.getElementById('filtro-pdv-cat').value;
             const term = document.getElementById('busca-pdv-texto').value.toLowerCase();
             let lista = estoque;
             if(cat !== 'Todos') lista = lista.filter(p => p.cat === cat);
             if(term) lista = lista.filter(p => p.nome.toLowerCase().includes(term));
-            
-            document.getElementById('pdv-grid').innerHTML = lista.map(p => `
-                <div class="prod-item" onclick="addPDV(${p.id})">
-                    <h4>${p.nome}</h4>
-                    <div class="prod-price">R$ ${p.preco.toFixed(2)}</div>
-                    <small class="prod-stock">Estoque: ${p.estoque}</small>
-                </div>
-            `).join('');
+            document.getElementById('pdv-grid').innerHTML = lista.map(p => `<div class="prod-item" onclick="addPDV(${p.id})"><h4>${p.nome}</h4><div class="prod-price">R$ ${p.preco.toFixed(2)}</div><small class="prod-stock">Estoque: ${p.estoque}</small></div>`).join('');
         };
         
         window.abrirModalIngredientes = () => { renderListaIngredientes(); document.getElementById('modal-ingredientes').style.display='flex'; };
@@ -714,25 +626,9 @@
             document.getElementById('lista-ingred-gratis').innerHTML = g(estoque.filter(p=>p.cat==='Adicional'&&p.preco===0));
             document.getElementById('lista-ingred-pagos').innerHTML = g(estoque.filter(p=>p.cat==='Adicional'&&p.preco>0));
         }
-        window.abrirModalProduto = (id) => {
-            const p = id ? estoque.find(x => x.id === id) : null;
-            document.getElementById('titulo-modal-prod').innerText = p ? "Editar" : "Novo";
-            document.getElementById('prod-id').value = p ? p.id : '';
-            document.getElementById('prod-nome').value = p ? p.nome : '';
-            document.getElementById('prod-preco').value = p ? p.preco : '';
-            document.getElementById('prod-estoque').value = p ? p.estoque : '';
-            document.getElementById('prod-cat').value = p ? p.cat : 'Copo';
-            document.getElementById('modal-produto').style.display = 'flex';
-        };
+        window.abrirModalProduto = (id) => { const p = id ? estoque.find(x => x.id === id) : null; document.getElementById('titulo-modal-prod').innerText = p ? "Editar" : "Novo"; document.getElementById('prod-id').value = p ? p.id : ''; document.getElementById('prod-nome').value = p ? p.nome : ''; document.getElementById('prod-preco').value = p ? p.preco : ''; document.getElementById('prod-estoque').value = p ? p.estoque : ''; document.getElementById('prod-cat').value = p ? p.cat : 'Copo'; document.getElementById('modal-produto').style.display = 'flex'; };
         window.fecharModalProduto = () => document.getElementById('modal-produto').style.display='none';
-        window.salvarProduto = (e) => {
-            e.preventDefault();
-            const id = document.getElementById('prod-id').value;
-            const obj = { id: id ? Number(id) : Date.now(), nome: document.getElementById('prod-nome').value, preco: parseFloat(document.getElementById('prod-preco').value), estoque: parseInt(document.getElementById('prod-estoque').value), cat: document.getElementById('prod-cat').value };
-            let nE = [...estoque];
-            if(id) { const idx = nE.findIndex(x=>x.id==id); if(idx>-1) nE[idx]=obj; } else nE.push(obj);
-            set(ref(db, 'estoque'), nE); fecharModalProduto();
-        };
+        window.salvarProduto = (e) => { e.preventDefault(); const id = document.getElementById('prod-id').value; const obj = { id: id ? Number(id) : Date.now(), nome: document.getElementById('prod-nome').value, preco: parseFloat(document.getElementById('prod-preco').value), estoque: parseInt(document.getElementById('prod-estoque').value), cat: document.getElementById('prod-cat').value }; let nE = [...estoque]; if(id) { const idx = nE.findIndex(x=>x.id==id); if(idx>-1) nE[idx]=obj; } else nE.push(obj); set(ref(db, 'estoque'), nE); fecharModalProduto(); };
         window.removerProduto = (id) => { if(confirm("Excluir?")) set(ref(db, 'estoque'), estoque.filter(x=>x.id!==id)); };
 
         window.addPDV = (id) => { const p=estoque.find(x=>x.id===id); if(p.estoque<=0) return alert("Sem estoque"); carrinhoPDV.push(p); updCart(); };
@@ -743,189 +639,125 @@
             c.innerHTML = carrinhoPDV.map((x,i) => `<div class="cart-row"><span>${x.nome}</span><div style="display:flex;gap:10px;"><b>${x.preco.toFixed(2)}</b><i class="material-icons" style="color:red;cursor:pointer;" onclick="rmPDV(${i})">delete</i></div></div>`).join('');
             document.getElementById('pdv-total').innerText = carrinhoPDV.reduce((a,b)=>a+b.preco,0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         }
-        window.alternarBotaoPDV = () => {
-            const d = document.getElementById('pdv-destino').value;
-            const b = document.getElementById('btn-finalizar');
-            const bx = document.getElementById('pdv-pagamento-box');
-            if(d==='balcao') { b.innerText="✅ FINALIZAR"; b.style.background="var(--accent)"; bx.style.display="block"; }
-            else { b.innerText=`📋 MESA ${d}`; b.style.background="var(--secondary)"; bx.style.display="none"; }
-        };
+
+        // LÓGICA DE DESTINO PDV E BOTÃO
         window.alternarBotaoPDV = () => {
             const dst = document.getElementById('pdv-destino').value;
             const btn = document.getElementById('btn-finalizar');
-            const boxPgto = document.getElementById('pdv-pagamento-box');
-            
-            if(dst === 'balcao') {
-                btn.innerHTML = "✅ FINALIZAR E RECEBER";
-                btn.style.background = "var(--accent)"; // Verde
-                boxPgto.style.display = "block"; // Mostra opção de pagamento
-            } else {
-                btn.innerHTML = `🚀 ENVIAR PARA ${dst.toUpperCase()}`;
-                btn.style.background = "var(--secondary)"; // Roxo
-                boxPgto.style.display = "none"; // Esconde pgto, pois vai pagar depois
-            }
-        };  
+            const bx = document.getElementById('pdv-pagamento-box');
+            if(dst==='balcao') { btn.innerText="✅ FINALIZAR"; btn.style.background="var(--accent)"; bx.style.display="block"; }
+            else { btn.innerText=`🚀 ENVIAR PARA ${dst.toUpperCase()}`; btn.style.background="var(--secondary)"; bx.style.display="none"; }
+        };
 
+        // FUNÇÃO DE FINALIZAR PDV
         window.finalizarVendaPDV = () => {
-            if(carrinhoPDV.length === 0) return alert("O carrinho está vazio!");
-            
+            if(carrinhoPDV.length === 0) return alert("Carrinho vazio!");
             const dst = document.getElementById('pdv-destino').value;
             const tot = carrinhoPDV.reduce((a,b)=>a+b.preco,0);
             
-            // Baixa no estoque (comum para os dois casos)
             let novoEstoque = [...estoque];
-            carrinhoPDV.forEach(itemCarrinho => {
-                const index = novoEstoque.findIndex(x => x.id === itemCarrinho.id);
-                if(index > -1) novoEstoque[index].estoque--;
+            carrinhoPDV.forEach(c => {
+                const idx = novoEstoque.findIndex(x => x.id === c.id);
+                if(idx > -1) novoEstoque[idx].estoque = novoEstoque[idx].estoque - 1;
             });
 
             if(dst === 'balcao') {
-                // VENDA DIRETA (BALCÃO) -> Vai para o Financeiro
                 const pgto = document.getElementById('pagamento-tipo').value;
-                const venda = {
-                    id: Date.now(),
-                    hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
-                    tipo: 'Balcão',
-                    itens: carrinhoPDV.map(x => x.nome),
-                    total: tot,
-                    pgto: pgto
-                };
-                // Salva histórico e atualiza estoque
+                const venda = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), tipo: 'Balcão', itens: carrinhoPDV.map(x => x.nome), total: tot, pgto: pgto, cliente: "Balcão" };
                 set(ref(db, 'historico'), [...historico, venda]);
                 set(ref(db, 'estoque'), novoEstoque);
                 
-                alert("Venda realizada com sucesso!");
-                
+                // ABRE A JANELA DE VISUALIZAÇÃO
+                setTimeout(() => { if(confirm("Venda OK! Visualizar cupom?")) imprimirCupom(venda); }, 500);
+
             } else {
-                // LANÇAR NA MESA OU DELIVERY -> Vai para Pedidos Ativos
-                const nomeCliente = prompt("Nome do cliente (Opcional):") || "Cliente Balcão";
-                
-                const pedidoMesa = {
-                    id: Date.now(),
-                    mesa: dst === 'Delivery' ? 'DELIVERY' : dst, // Se for Delivery ou numero da mesa
-                    cliente: nomeCliente,
-                    tamanho: "Pedido via PDV", // Descrição genérica
-                    itens: carrinhoPDV.map(x => x.nome),
-                    total: tot,
-                    status: 'PREPARO', // Já entra como preparo
-                    hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
-                };
-
-                // Adiciona aos pedidos ativos e atualiza estoque
-                set(ref(db, 'pedidosAtivos'), [...pedidosAtivos, pedidoMesa]);
+                const nome = prompt("Nome Cliente (Opcional):") || `Mesa ${dst}`;
+                const ped = { id: Date.now(), mesa: dst==='Delivery'?'DELIVERY':dst, cliente: nome, tamanho: "Pedido Balcão", itens: carrinhoPDV.map(x=>x.nome), total: tot, status: 'PREPARO', hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) };
+                set(ref(db, 'pedidosAtivos'), [...pedidosAtivos, ped]);
                 set(ref(db, 'estoque'), novoEstoque);
-                
-                alert(`Pedido enviado para ${dst}!`);
+                alert("Enviado para cozinha!");
             }
-
-            // Limpa o carrinho
-            carrinhoPDV = [];
-            updCart();
+            carrinhoPDV = []; updCart();
         };
 
-        init();
-
-        // --- FUNÇÃO DO RELATÓRIO AVANÇADO ---
+        // RELATÓRIOS E EXCEL
         window.gerarRelatorio = function() {
             const inicioInput = document.getElementById('rel-inicio').value;
             const fimInput = document.getElementById('rel-fim').value;
-
-            if (!inicioInput || !fimInput) return alert("Selecione a data de início e fim!");
-
-            const dtInicio = new Date(inicioInput + 'T00:00:00');
-            const dtFim = new Date(fimInput + 'T23:59:59');
-
-            let totalFaturado = 0;
-            let qtdVendas = 0;
-            let html = '';
-
-            const vendasFiltradas = historico.filter(venda => {
-                const dataVenda = new Date(venda.id);
-                return dataVenda >= dtInicio && dataVenda <= dtFim;
-            });
-
-            vendasFiltradas.sort((a, b) => b.id - a.id);
-
-            if (vendasFiltradas.length === 0) {
-                document.querySelector('#tabela-relatorio tbody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Nenhuma venda encontrada.</td></tr>';
-                document.getElementById('rel-total-fat').innerText = "R$ 0,00";
-                document.getElementById('rel-total-qtd').innerText = "0";
-                document.getElementById('rel-ticket-medio').innerText = "R$ 0,00";
-                return;
-            }
-
+            if (!inicioInput || !fimInput) return alert("Selecione data início e fim!");
+            const dtInicio = new Date(inicioInput + 'T00:00:00'), dtFim = new Date(fimInput + 'T23:59:59');
+            let totalFaturado = 0, qtdVendas = 0, html = '';
+            const vendasFiltradas = historico.filter(v => { const d = new Date(v.id); return d >= dtInicio && d <= dtFim; }).sort((a, b) => b.id - a.id);
+            if (vendasFiltradas.length === 0) { document.querySelector('#tabela-relatorio tbody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Nenhuma venda.</td></tr>'; return; }
+            
             vendasFiltradas.forEach(v => {
                 const val = typeof v.total === 'number' ? v.total : parseValor(v.total);
-                totalFaturado += val;
-                qtdVendas++;
-
-                const dataObj = new Date(v.id);
-                const diaMes = dataObj.toLocaleDateString('pt-BR');
-                
-                // --- LÓGICA DE SIMPLIFICAÇÃO ---
+                totalFaturado += val; qtdVendas++;
+                const diaMes = new Date(v.id).toLocaleDateString('pt-BR');
                 const listaItens = Array.isArray(v.itens) ? v.itens : [v.itens];
-                
-                // Texto Completo (para Excel) - separado por quebra de linha
-                const textoCompleto = listaItens.join('<br>');
-                
-                // Texto Resumido (para Tela)
-                let textoResumido = listaItens[0]; // Pega o primeiro item
-                // Limpa o nome para ficar curto (tira adicionais visuais se quiser)
-                textoResumido = textoResumido.split('+')[0].trim(); 
-                
-                if (listaItens.length > 1) {
-                    textoResumido += ` <span style="color:var(--secondary); font-weight:bold; font-size:0.8rem;">(+ ${listaItens.length - 1} itens)</span>`;
-                }
-
-                html += `
-                    <tr>
-                        <td>${diaMes} <small style="color:#777;">${v.hora}</small></td>
-                        <td>${v.tipo}</td>
-                        
-                        <td class="col-visual" title="${listaItens.join(', ')}">
-                            <div class="tooltip-item">${textoResumido}</div>
-                        </td>
-                        
-                        <td class="apenas-excel">${textoCompleto}</td>
-                        
-                        <td>${v.pgto || '-'}</td>
-                        <td style="font-weight:bold; color: var(--accent);">R$ ${val.toFixed(2)}</td>
-                    </tr>
-                `;
+                const txtFull = listaItens.join('<br>');
+                let txtRes = listaItens[0].split('+')[0].trim();
+                if (listaItens.length > 1) txtRes += ` <span style="color:var(--secondary); font-weight:bold; font-size:0.8rem;">(+ ${listaItens.length - 1})</span>`;
+                html += `<tr><td>${diaMes} <small>${v.hora}</small></td><td>${v.tipo}</td><td class="col-visual" title="${listaItens.join(', ')}"><div class="tooltip-item">${txtRes}</div></td><td class="apenas-excel">${txtFull}</td><td>${v.pgto || '-'}</td><td style="font-weight:bold; color: var(--accent);">R$ ${val.toFixed(2)}</td></tr>`;
             });
-
-            const ticketMedio = qtdVendas > 0 ? totalFaturado / qtdVendas : 0;
-            
-            // Atualiza cabeçalho da tabela para comportar a lógica (embora visualmente pareça igual)
-            const headerHTML = `
-                <thead>
-                    <tr>
-                        <th>Data/Hora</th>
-                        <th>Tipo</th>
-                        <th class="col-visual">Itens (Resumo)</th>
-                        <th class="apenas-excel">Itens (Detalhado)</th> <th>Pgto</th>
-                        <th>Valor</th>
-                    </tr>
-                </thead>
-                <tbody>${html}</tbody>
-            `;
-
+            const headerHTML = `<thead><tr><th>Data/Hora</th><th>Tipo</th><th class="col-visual">Itens</th><th class="apenas-excel">Detalhes</th><th>Pgto</th><th>Valor</th></tr></thead><tbody>${html}</tbody>`;
             document.getElementById('tabela-relatorio').innerHTML = headerHTML;
-            
             document.getElementById('rel-total-fat').innerText = totalFaturado.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById('rel-total-qtd').innerText = qtdVendas;
-            document.getElementById('rel-ticket-medio').innerText = ticketMedio.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('rel-ticket-medio').innerText = (qtdVendas>0?totalFaturado/qtdVendas:0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
         };
 
-        // Define data de hoje como padrão ao carregar
-        setTimeout(() => {
-            const hoje = new Date().toISOString().split('T')[0];
-            if(document.getElementById('rel-inicio')) {
-                document.getElementById('rel-inicio').value = hoje;
-                document.getElementById('rel-fim').value = hoje;
-            }
-        }, 1000);
+        window.exportarExcel = function() {
+            const tabOrig = document.getElementById("tabela-relatorio");
+            const tabClone = tabOrig.cloneNode(true);
+            const thVisual = tabClone.querySelector('.col-visual'); if(thVisual) thVisual.remove();
+            const thExcel = tabClone.querySelector('.apenas-excel'); if(thExcel) thExcel.style.display = 'table-cell';
+            tabClone.querySelectorAll('tbody tr').forEach(tr => {
+                const tdVisual = tr.querySelector('.col-visual'); if(tdVisual) tdVisual.remove();
+                const tdExcel = tr.querySelector('.apenas-excel'); if(tdExcel) tdExcel.style.display = 'table-cell';
+            });
+            const html = tabClone.outerHTML;
+            const uri = 'data:application/vnd.ms-excel;base64,';
+            const template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body><table>{table}</table></body></html>';
+            const base64 = (s) => window.btoa(unescape(encodeURIComponent(s)));
+            const link = document.createElement("a");
+            link.download = "Relatorio.xls";
+            link.href = uri + base64(template.replace('{table}', html));
+            link.click();
+        };
+
+        // --- SISTEMA DE IMPRESSÃO VISUAL (MODAL) ---
+        
+        // 1. Abre o modal e preenche os dados
+        window.imprimirCupom = function(dados) {
+            document.getElementById('cupom-data').innerText = new Date().toLocaleDateString('pt-BR');
+            document.getElementById('cupom-hora').innerText = dados.hora;
+            document.getElementById('cupom-cliente').innerText = dados.cliente || "Balcão";
+            document.getElementById('cupom-pgto').innerText = dados.pgto || "-";
+            
+            let valorTotal = dados.total;
+            if(typeof valorTotal === 'number') valorTotal = valorTotal.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+            document.getElementById('cupom-total').innerText = valorTotal;
+            
+            let htmlItens = '';
+            dados.itens.forEach(i => htmlItens += `<div class="cupom-row"><span>${i}</span></div>`);
+            document.getElementById('cupom-itens').innerHTML = htmlItens;
+            
+            // Exibe o modal
+            document.getElementById('modal-cupom').style.display = 'flex';
+        };
+
+        // 2. Botão "IMPRIMIR" (Chama o navegador)
+        window.realizarImpressao = function() {
+            window.print();
+        };
+
+        // 3. Botão "FECHAR" (Esconde o modal)
+        window.fecharModalCupom = function() {
+            document.getElementById('modal-cupom').style.display = 'none';
+        };
+
+        init();
     </script>
 </body>
 </html>
-
