@@ -25,6 +25,12 @@
         .profile-link { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; transition: 0.3s; }
         .profile-link:hover { opacity: 0.8; }
         .profile-icon { width: 38px; height: 38px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.2); overflow: hidden; }
+
+        /* Estilo para ocultar coluna do Excel na tela */
+        .apenas-excel { display: none; }
+
+        /* Tooltip simples para ver detalhes ao passar o mouse */
+        .tooltip-item { cursor: help; border-bottom: 1px dotted #999; }
         
         /* --- MAIN CONTENT --- */
         main { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
@@ -470,21 +476,41 @@
         };
 
         window.exportarExcel = function() {
-            const tabela = document.getElementById("tabela-relatorio");
-            let html = tabela.outerHTML;
+            // 1. Clona a tabela original para não bagunçar a tela do usuário
+            const tabelaOriginal = document.getElementById("tabela-relatorio");
+            const tabelaClone = tabelaOriginal.cloneNode(true);
 
-            // Ajuste para acentos (UTF-8)
+            // 2. Manipula o Clone: Remove a coluna visual e mostra a oculta
+            // Remove cabeçalhos visuais
+            const thVisual = tabelaClone.querySelector('.col-visual');
+            if(thVisual) thVisual.remove();
+            
+            const thExcel = tabelaClone.querySelector('.apenas-excel');
+            if(thExcel) thExcel.style.display = 'table-cell'; // Mostra o cabeçalho oculto
+
+            // Manipula as linhas do corpo
+            const linhas = tabelaClone.querySelectorAll('tbody tr');
+            linhas.forEach(tr => {
+                const tdVisual = tr.querySelector('.col-visual');
+                if(tdVisual) tdVisual.remove(); // Remove o resumo
+
+                const tdExcel = tr.querySelector('.apenas-excel');
+                if(tdExcel) tdExcel.style.display = 'table-cell'; // Mostra o completo
+            });
+
+            // 3. Gera o arquivo Excel a partir do Clone modificado
+            let html = tabelaClone.outerHTML;
+
+            // Corrige acentuação
             const uri = 'data:application/vnd.ms-excel;base64,';
             const template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body><table>{table}</table></body></html>';
             
             const base64 = (s) => window.btoa(unescape(encodeURIComponent(s)));
             const format = (s, c) => s.replace(/{(\w+)}/g, (m, p) => c[p]);
 
-            const ctx = { worksheet: 'Relatorio', table: html };
-            
             const link = document.createElement("a");
-            link.download = "Relatorio_Vendas.xls";
-            link.href = uri + base64(format(template, ctx));
+            link.download = "Relatorio_Completo.xls";
+            link.href = uri + base64(format(template, { worksheet: 'Relatorio', table: html }));
             link.click();
         };
 
@@ -806,26 +832,22 @@
 
             if (!inicioInput || !fimInput) return alert("Selecione a data de início e fim!");
 
-            // Converter inputs para data (zerando horas para comparação correta)
-            // Criamos datas "UTC" ou ajustamos o fuso para garantir que pegue o dia todo
-            const dtInicio = new Date(inicioInput + 'T00:00:00'); 
+            const dtInicio = new Date(inicioInput + 'T00:00:00');
             const dtFim = new Date(fimInput + 'T23:59:59');
 
             let totalFaturado = 0;
             let qtdVendas = 0;
             let html = '';
 
-            // Filtrar o histórico
             const vendasFiltradas = historico.filter(venda => {
-                const dataVenda = new Date(venda.id); // O ID é o timestamp
+                const dataVenda = new Date(venda.id);
                 return dataVenda >= dtInicio && dataVenda <= dtFim;
             });
 
-            // Ordenar da mais recente para a mais antiga
             vendasFiltradas.sort((a, b) => b.id - a.id);
 
             if (vendasFiltradas.length === 0) {
-                document.querySelector('#tabela-relatorio tbody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Nenhuma venda encontrada neste período.</td></tr>';
+                document.querySelector('#tabela-relatorio tbody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">Nenhuma venda encontrada.</td></tr>';
                 document.getElementById('rel-total-fat').innerText = "R$ 0,00";
                 document.getElementById('rel-total-qtd').innerText = "0";
                 document.getElementById('rel-ticket-medio').innerText = "R$ 0,00";
@@ -837,26 +859,59 @@
                 totalFaturado += val;
                 qtdVendas++;
 
-                // Formatar Data legível
                 const dataObj = new Date(v.id);
                 const diaMes = dataObj.toLocaleDateString('pt-BR');
-                const itensStr = Array.isArray(v.itens) ? v.itens.join('<br>') : v.itens;
+                
+                // --- LÓGICA DE SIMPLIFICAÇÃO ---
+                const listaItens = Array.isArray(v.itens) ? v.itens : [v.itens];
+                
+                // Texto Completo (para Excel) - separado por quebra de linha
+                const textoCompleto = listaItens.join('<br>');
+                
+                // Texto Resumido (para Tela)
+                let textoResumido = listaItens[0]; // Pega o primeiro item
+                // Limpa o nome para ficar curto (tira adicionais visuais se quiser)
+                textoResumido = textoResumido.split('+')[0].trim(); 
+                
+                if (listaItens.length > 1) {
+                    textoResumido += ` <span style="color:var(--secondary); font-weight:bold; font-size:0.8rem;">(+ ${listaItens.length - 1} itens)</span>`;
+                }
 
                 html += `
                     <tr>
                         <td>${diaMes} <small style="color:#777;">${v.hora}</small></td>
                         <td>${v.tipo}</td>
-                        <td style="font-size: 0.85rem; color:#555;">${itensStr}</td>
+                        
+                        <td class="col-visual" title="${listaItens.join(', ')}">
+                            <div class="tooltip-item">${textoResumido}</div>
+                        </td>
+                        
+                        <td class="apenas-excel">${textoCompleto}</td>
+                        
                         <td>${v.pgto || '-'}</td>
                         <td style="font-weight:bold; color: var(--accent);">R$ ${val.toFixed(2)}</td>
                     </tr>
                 `;
             });
 
-            // Atualizar Tela
-            const ticketMedio = totalFaturado / qtdVendas;
+            const ticketMedio = qtdVendas > 0 ? totalFaturado / qtdVendas : 0;
             
-            document.querySelector('#tabela-relatorio tbody').innerHTML = html;
+            // Atualiza cabeçalho da tabela para comportar a lógica (embora visualmente pareça igual)
+            const headerHTML = `
+                <thead>
+                    <tr>
+                        <th>Data/Hora</th>
+                        <th>Tipo</th>
+                        <th class="col-visual">Itens (Resumo)</th>
+                        <th class="apenas-excel">Itens (Detalhado)</th> <th>Pgto</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>${html}</tbody>
+            `;
+
+            document.getElementById('tabela-relatorio').innerHTML = headerHTML;
+            
             document.getElementById('rel-total-fat').innerText = totalFaturado.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById('rel-total-qtd').innerText = qtdVendas;
             document.getElementById('rel-ticket-medio').innerText = ticketMedio.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
