@@ -46,7 +46,7 @@
         
         /* DELIVERY STYLES */
         .delivery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
-        .delivery-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--delivery); position: relative; transition: 0.3s; }
+        .delivery-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; transition: 0.3s; }
         .delivery-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .del-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .del-time { background: #eee; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; color: #666; display: flex; align-items: center; gap: 5px; }
@@ -54,16 +54,21 @@
         .del-info { margin-bottom: 15px; font-size: 0.95rem; color: #444; }
         .del-info strong { display: block; color: var(--primary); margin-bottom: 3px; }
         .del-itens { background: #fff8e1; padding: 10px; border-radius: 8px; font-size: 0.9rem; color: #555; margin-bottom: 15px; border: 1px dashed var(--delivery); }
-        .del-actions { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
-        .btn-confirm { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
-        .btn-confirm:hover { background: #219150; }
-        .btn-cancel { background: transparent; color: #e74c3c; border: 1px solid #e74c3c; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        
+        /* Novos Estilos Delivery & Status */
+        .badge-status { padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: white; margin-bottom: 10px; display: inline-block; }
+        .st-pendente { background: #e74c3c; animation: pulse 2s infinite; }
+        .st-preparo { background: #f39c12; }
+        .st-entrega { background: #3498db; }
+        .st-retorno { background: #8e44ad; animation: pulse 2s infinite; }
+        
+        .motoboy-input { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 0.9rem; }
+        .actions-row { display: flex; gap: 5px; margin-top: 10px; }
+        .btn-step { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; color: white; font-weight: bold; transition: 0.2s; }
+        .btn-step:hover { opacity: 0.9; }
+        .btn-cancel { background: transparent; color: #e74c3c; border: 1px solid #e74c3c; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-cancel:hover { background: #e74c3c; color: white; }
         
-        /* Botão Retorno Motoboy */
-        .btn-return { background: #f39c12; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; grid-column: span 2; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-return:hover { background: #d35400; }
-
         /* Botão Whatsapp */
         .btn-wpp { text-decoration: none; background: #e8f5e9; color: var(--whatsapp); padding: 5px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 5px; border: 1px solid var(--whatsapp); width: fit-content; margin-top: 5px; transition: 0.2s; }
         .btn-wpp:hover { background: var(--whatsapp); color: white; }
@@ -102,15 +107,6 @@
         .btn-action { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 5px; transition: 0.2s; }
         .btn-action.edit { color: var(--primary); }
         .btn-action.delete { color: var(--danger); }
-        
-        /* Estilos Relatório */
-        .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .report-box { padding: 15px; border-radius: 8px; background: #f8f9fa; border: 1px solid #ddd; text-align: center; }
-        .report-box h4 { font-size: 0.85rem; color: #7f8c8d; margin-bottom: 5px; text-transform: uppercase; }
-        .report-box span { font-size: 1.3rem; font-weight: bold; color: var(--dark); }
-        .report-list { list-style: none; margin-top: 10px; }
-        .report-list li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.9rem; }
-
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; width: 500px; max-width: 90%; animation: zoomIn 0.3s; }
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -150,23 +146,15 @@
 
     <main>
         <section id="view-dashboard" class="view-section active">
-            <header>
-                <div>
-                    <h1>Visão Geral</h1>
-                    <div style="font-size: 0.9rem; color: #666;">Hoje: <span id="data-hoje"></span></div>
-                </div>
-                <button onclick="abrirRelatorio()" style="background: var(--dark); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                    <i class="material-icons">assessment</i> Relatório
-                </button>
-            </header>
+            <header><h1>Visão Geral</h1><div style="font-size: 0.9rem; color: #666;">Hoje: <span id="data-hoje"></span></div></header>
             <div class="kpi-grid">
                 <div class="kpi-card purple"><div class="kpi-info"><h3>Faturamento</h3><span id="kpi-vendas">R$ 0,00</span></div><i class="material-icons kpi-icon">attach_money</i></div>
-                <div class="kpi-card green"><div class="kpi-info"><h3>Vendas Reais</h3><span id="kpi-pedidos">0</span></div><i class="material-icons kpi-icon">receipt</i></div>
+                <div class="kpi-card green"><div class="kpi-info"><h3>Total Pedidos</h3><span id="kpi-pedidos">0</span></div><i class="material-icons kpi-icon">receipt</i></div>
                 <div class="kpi-card blue"><div class="kpi-info"><h3>Mesas Ocupadas</h3><span id="kpi-mesas">0 / 12</span></div><i class="material-icons kpi-icon">table_restaurant</i></div>
                 <div class="kpi-card orange"><div class="kpi-info"><h3>Delivery Ativo</h3><span id="kpi-delivery">0</span></div><i class="material-icons kpi-icon">moped</i></div>
             </div>
             <div style="background: white; padding: 20px; border-radius: 10px;">
-                <h3 style="margin-bottom: 15px; color: var(--dark);">Últimas Movimentações</h3>
+                <h3 style="margin-bottom: 15px; color: var(--dark);">Últimas Vendas Realizadas</h3>
                 <div style="overflow-x: auto;"><table id="tabela-historico"><thead><tr><th>Hora</th><th>Tipo</th><th>Valor</th><th>Pagamento</th></tr></thead><tbody></tbody></table></div>
             </div>
         </section>
@@ -175,7 +163,18 @@
             <header><h1>Frente de Caixa (PDV)</h1></header>
             <div class="pdv-container">
                 <div class="pdv-products">
-                    <input type="text" placeholder="🔍 Buscar produto..." onkeyup="filtrarPDV(this.value)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px;">
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <select id="filtro-pdv-cat" onchange="renderPDVGrid()" style="padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa;">
+                            <option value="Todos">Todas Categorias</option>
+                            <option value="Copo">Copo de Açaí</option>
+                            <option value="Adicional">Adicional</option>
+                            <option value="Bebida">Bebida</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                        <input type="text" id="busca-pdv-texto" placeholder="🔍 Buscar produto..." onkeyup="renderPDVGrid()" style="flex:1; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+
                     <div class="product-grid" id="pdv-grid"></div>
                 </div>
                 <div class="pdv-cart">
@@ -256,42 +255,6 @@
     <div class="modal-overlay" id="modal-produto"><div class="modal-content"><div class="modal-header"><h2 id="titulo-modal-prod">Novo Produto</h2><button onclick="fecharModalProduto()" style="border:none; background:transparent; font-size: 1.5rem; cursor: pointer;">&times;</button></div><form onsubmit="salvarProduto(event)" style="display: grid; gap: 15px;"><input type="hidden" id="prod-id"><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Nome do Produto</label><input type="text" id="prod-nome" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;"><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Preço (R$)</label><input type="number" step="0.01" id="prod-preco" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"><small style="color:#666; font-size:0.75rem;">(Coloque 0 para Grátis)</small></div><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Estoque</label><input type="number" id="prod-estoque" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></div></div><div><label style="display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem;">Categoria</label><select id="prod-cat" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"><option value="Copo">Copo de Açaí (Tamanho)</option><option value="Adicional">Adicional (Grátis ou Pago)</option><option value="Bebida">Bebida</option><option value="Outros">Outros</option></select></div><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="submit" style="flex: 1; background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">💾 Salvar</button></div></form></div></div>
     <div class="modal-overlay" id="modal-ingredientes"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><div class="modal-header"><h2>Gerenciar Adicionais</h2><button onclick="fecharModalIngredientes()" style="border:none; background:transparent; font-size: 1.5rem; cursor: pointer;">&times;</button></div><p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Clique para bloquear um item no cardápio.</p><h3 style="font-size: 1rem; color: var(--secondary); margin-bottom: 10px; border-bottom: 1px solid #ddd;">Grátis (Preço R$ 0,00)</h3><div id="lista-ingred-gratis"></div><h3 style="font-size: 1rem; color: var(--secondary); margin: 20px 0 10px 0; border-bottom: 1px solid #ddd;">Pagos</h3><div id="lista-ingred-pagos"></div><div style="margin-top: 20px;"><button onclick="fecharModalIngredientes()" style="width:100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">Fechar</button></div></div></div>
 
-    <div class="modal-overlay" id="modal-relatorio">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>💰 Relatório Financeiro</h2>
-                <button onclick="document.getElementById('modal-relatorio').style.display='none'" style="border:none; background:transparent; font-size: 1.5rem; cursor: pointer;">&times;</button>
-            </div>
-            
-            <div class="report-grid">
-                <div class="report-box" style="border-left: 4px solid #27ae60;">
-                    <h4>Faturamento Real</h4>
-                    <span id="rel-total" style="color: #27ae60;">R$ 0,00</span>
-                </div>
-                <div class="report-box" style="border-left: 4px solid #c0392b;">
-                    <h4>Perda (Devoluções)</h4>
-                    <span id="rel-perdas" style="color: #c0392b;">R$ 0,00</span>
-                </div>
-            </div>
-
-            <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 10px;">Por Forma de Pagamento</h3>
-            <ul class="report-list" id="lista-pagamentos">
-                </ul>
-
-            <h3 style="font-size: 1rem; color: var(--primary); margin: 20px 0 10px 0;">Resumo Operacional</h3>
-            <div style="display: flex; gap: 10px; font-size: 0.9rem; color: #555;">
-                <div style="flex: 1; background: #eee; padding: 10px; border-radius: 5px;">
-                    ✅ Vendas: <strong id="qtd-vendas">0</strong>
-                </div>
-                <div style="flex: 1; background: #ffebee; padding: 10px; border-radius: 5px;">
-                    🚫 Devolvidos: <strong id="qtd-devolvidos">0</strong>
-                </div>
-            </div>
-
-            <button onclick="document.getElementById('modal-relatorio').style.display='none'" style="width:100%; margin-top: 20px; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">Fechar</button>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
@@ -314,6 +277,10 @@
         let pedidosAtivos = [];
         let bloqueados = [];
         let carrinhoPDV = [];
+        
+        // VARIÁVEIS DO SOM
+        const audioCampainha = new Audio('img/bell.mp3');
+        let totalPedidosAnterior = 0;
 
         // INICIALIZAÇÃO
         function init() {
@@ -327,6 +294,12 @@
 
             onValue(ref(db, 'pedidosAtivos'), (snapshot) => {
                 pedidosAtivos = snapshot.val() || [];
+                
+                if (pedidosAtivos.length > totalPedidosAnterior) {
+                    audioCampainha.play().catch(e => console.log("Clique na tela para habilitar o som do navegador"));
+                }
+                totalPedidosAnterior = pedidosAtivos.length;
+
                 renderMesas();
                 renderDelivery();
                 renderDashboard();
@@ -351,108 +324,123 @@
             event.currentTarget.classList.add('active');
         };
 
-        // RENDERIZADORES
+        // RENDERIZADORES SEPARADOS
         function renderDelivery() {
             const container = document.getElementById('delivery-container');
-            const listaDelivery = pedidosAtivos.filter(p => p.mesa === 'DELIVERY');
-            const badge = document.getElementById('badge-delivery');
+            const listaDelivery = pedidosAtivos
+                .filter(p => p.mesa === 'DELIVERY')
+                .sort((a, b) => {
+                    const ordem = { 'PENDENTE': 1, 'RETORNO': 2, 'PREPARO': 3, 'ENTREGA': 4 };
+                    const sA = a.status || 'PENDENTE';
+                    const sB = b.status || 'PENDENTE';
+                    return ordem[sA] - ordem[sB];
+                });
 
+            const badge = document.getElementById('badge-delivery');
             badge.innerText = listaDelivery.length;
             badge.style.display = listaDelivery.length > 0 ? 'inline-block' : 'none';
 
             if(listaDelivery.length === 0) {
-                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px; font-size: 1.1rem;"><i class="material-icons" style="font-size:3rem; display:block; margin-bottom:10px; opacity:0.3;">moped</i>Sem pedidos de delivery no momento.</p>';
-            } else {
-                container.innerHTML = listaDelivery.map(p => {
-                    const dadosCliente = p.cliente.split('(');
-                    const nome = dadosCliente[0];
-                    let contatoHtml = '';
-                    
-                    if(dadosCliente.length > 1) {
-                        const rawNum = dadosCliente[1].replace(/\D/g, ''); 
-                        if(rawNum.length >= 10) {
-                            contatoHtml = `<a href="https://wa.me/55${rawNum}" target="_blank" class="btn-wpp"><i class="material-icons" style="font-size:1rem;">chat</i> (${dadosCliente[1].replace(')', '')}</a>`;
-                        } else {
-                            contatoHtml = `<small style="color:#666;">(${dadosCliente[1]}</small>`;
-                        }
-                    }
-
-                    return `
-                    <div class="delivery-card">
-                        <div class="del-header">
-                            <div><h3 style="color:var(--dark); font-size:1.1rem;">${nome}</h3>${contatoHtml}</div>
-                            <div class="del-time"><i class="material-icons" style="font-size:0.9rem;">schedule</i> ${p.hora}</div>
-                        </div>
-                        
-                        <div class="del-itens">
-                            <strong>${p.tamanho.split('-')[0]}</strong>
-                            <div style="font-size:0.8rem; margin-top:5px; color:#777;">${p.itens.join(', ')}</div>
-                        </div>
-
-                        <div class="del-info"><strong>📍 Endereço:</strong> ${p.tamanho.split('Entregar em:')[1] ? p.tamanho.split('Entregar em:')[1].split('- Pagamento:')[0] : 'Não informado'}</div>
-                        <div class="del-info"><strong>💰 Pagamento:</strong> ${p.tamanho.split('Pagamento:')[1] ? p.tamanho.split('Pagamento:')[1] : 'Não informado'}</div>
-
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-top:1px solid #eee; padding-top:10px;">
-                            <span style="color:#777; font-size:0.9rem;">Total do Pedido:</span>
-                            <span class="del-total">${p.total}</span>
-                        </div>
-
-                        <div class="del-actions">
-                            <button class="btn-confirm" onclick="finalizarDelivery(${p.id})"><i class="material-icons">check_circle</i> ENTREGUE</button>
-                            <button class="btn-cancel" onclick="cancelarDelivery(${p.id})">CANCELAR</button>
-                            <button class="btn-return" onclick="retornoDelivery(${p.id})"><i class="material-icons">no_transfer</i> NÃO ENCONTROU</button>
-                        </div>
-                    </div>
-                `}).join('');
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px; font-size: 1.1rem;"><i class="material-icons" style="font-size:3rem; display:block; margin-bottom:10px; opacity:0.3;">moped</i>Sem pedidos ativos.</p>';
+                return;
             }
+
+            container.innerHTML = listaDelivery.map(p => {
+                const status = p.status || 'PENDENTE'; 
+                const motoboy = p.motoboy || '';
+                const dadosCliente = p.cliente.split('(');
+                const nome = dadosCliente[0];
+                let contatoHtml = '';
+                let zapLink = '';
+                
+                if(dadosCliente.length > 1) {
+                    const rawNum = dadosCliente[1].replace(/\D/g, '');
+                    if(rawNum.length >= 10) zapLink = `https://wa.me/55${rawNum}`;
+                    contatoHtml = zapLink 
+                        ? `<a href="${zapLink}" target="_blank" class="btn-wpp"><i class="material-icons" style="font-size:1rem;">chat</i> WhatsApp</a>`
+                        : `<small>(${dadosCliente[1]}</small>`;
+                }
+
+                let htmlBotoes = '';
+                let badgeClass = '';
+                let badgeTexto = '';
+                let corBorda = '';
+
+                if(status === 'PENDENTE') {
+                    badgeClass = 'st-pendente'; badgeTexto = '🔔 Aguardando Aprovação'; corBorda = 'var(--danger)';
+                    htmlBotoes = `<div class="actions-row"><button class="btn-step" style="background: #f39c12;" onclick="mudarStatusDelivery(${p.id}, 'PREPARO')">👨‍🍳 INICIAR PREPARO</button><button class="btn-cancel" onclick="cancelarDelivery(${p.id})"><i class="material-icons">close</i></button></div>`;
+                } 
+                else if(status === 'PREPARO') {
+                    badgeClass = 'st-preparo'; badgeTexto = '👨‍🍳 Em Preparação'; corBorda = 'var(--delivery)';
+                    htmlBotoes = `<input type="text" id="moto-${p.id}" class="motoboy-input" placeholder="Nome do Motoboy..." value="${motoboy}"><div class="actions-row"><button class="btn-step" style="background: #3498db;" onclick="mudarStatusDelivery(${p.id}, 'ENTREGA')">🏍️ SAIU P/ ENTREGA</button><button class="btn-step" style="background: #95a5a6;" onclick="mudarStatusDelivery(${p.id}, 'PENDENTE')">↩️ Voltar</button></div>`;
+                } 
+                else if(status === 'ENTREGA') {
+                    badgeClass = 'st-entrega'; badgeTexto = `🏍️ Na rua: ${motoboy}`; corBorda = '#3498db';
+                    htmlBotoes = `<div style="margin-bottom:10px; font-size:0.85rem; color:#666; text-align:center;">${zapLink ? `<a href="${zapLink}?text=Olá ${nome.trim()}, seu pedido saiu para entrega!" target="_blank" style="color:#2ecc71; text-decoration:none; font-weight:bold;">📲 Avisar que saiu</a>` : ''}</div><div class="actions-row"><button class="btn-step" style="background: #27ae60;" onclick="finalizarDelivery(${p.id})">✅ ENTREGUE (MANUAL)</button><button class="btn-step" style="background: #95a5a6;" onclick="mudarStatusDelivery(${p.id}, 'PREPARO')">↩️ Voltar</button></div>`;
+                }
+                else if(status === 'RETORNO') {
+                    badgeClass = 'st-retorno'; badgeTexto = `🏁 Retornou: ${motoboy}`; corBorda = '#8e44ad';
+                    htmlBotoes = `<div style="background: #e8f5e9; padding: 10px; border-radius: 5px; margin-bottom: 10px; color: #2ecc71; font-weight: bold; text-align: center; border: 1px dashed #2ecc71;"><i class="material-icons" style="vertical-align:middle;">paid</i> PAGAMENTO RECEBIDO?</div><div class="actions-row"><button class="btn-step" style="background: #27ae60; padding: 15px;" onclick="finalizarDelivery(${p.id})">💰 CONFIRMAR E ARQUIVAR</button></div>`;
+                }
+
+                return `
+                <div class="delivery-card" style="border-left: 6px solid ${corBorda};">
+                    <div class="del-header">
+                        <div><span class="badge-status ${badgeClass}">${badgeTexto}</span><h3 style="color:var(--dark); font-size:1.1rem; margin-top:5px;">${nome}</h3>${contatoHtml}</div>
+                        <div class="del-time"><i class="material-icons" style="font-size:0.9rem;">schedule</i> ${p.hora}</div>
+                    </div>
+                    <div class="del-itens"><strong>${p.tamanho.split('-')[0]}</strong><div style="font-size:0.8rem; margin-top:5px; color:#777;">${p.itens.join(', ')}</div></div>
+                    <div class="del-info"><strong>📍 Local:</strong> ${p.tamanho.split('Entregar em:')[1]?.split('- Pagamento:')[0] || '...'}</div>
+                    <div class="del-info"><strong>💰 Pgto:</strong> ${p.tamanho.split('Pagamento:')[1] || '...'}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px solid #eee; padding-top:10px;"><span style="color:#777;">Total:</span><span class="del-total">${p.total}</span></div>
+                    <div style="margin-top: 15px;">${htmlBotoes}</div>
+                </div>
+            `}).join('');
         }
 
         function renderMesas() {
             const container = document.getElementById('mesas-container');
             const badge = document.getElementById('badge-mesas');
             container.innerHTML = '';
-            
             let mesasOcupadas = 0;
 
             for(let i=1; i<=12; i++) {
                 const numMesa = i.toString().padStart(2, '0');
                 const pedidosDaMesa = pedidosAtivos.filter(p => p.mesa === numMesa);
                 const isOcupada = pedidosDaMesa.length > 0;
-                
                 if(isOcupada) mesasOcupadas++;
-
                 let totalAcumulado = 0;
                 pedidosDaMesa.forEach(p => { totalAcumulado += parseValor(p.total); });
 
-                container.innerHTML += `
-                    <div class="mesa-box ${isOcupada ? 'ocupada' : 'livre'}" onclick="${isOcupada ? `abrirComanda('${numMesa}')` : ''}">
-                        <div class="mesa-badge ${isOcupada ? 'bg-ocupada' : 'bg-livre'}">${isOcupada ? 'OCUPADA' : 'LIVRE'}</div>
-                        <i class="material-icons" style="font-size: 3rem; color: var(--dark); margin: 15px 0;">table_restaurant</i>
-                        <h3>Mesa ${numMesa}</h3>
-                        ${isOcupada ? `<div style="margin-top:5px;"><strong style="color:var(--danger); font-size:1.1rem;">R$ ${totalAcumulado.toFixed(2).replace('.', ',')}</strong></div>` : ''}
-                    </div>
-                `;
+                container.innerHTML += `<div class="mesa-box ${isOcupada ? 'ocupada' : 'livre'}" onclick="${isOcupada ? `abrirComanda('${numMesa}')` : ''}"><div class="mesa-badge ${isOcupada ? 'bg-ocupada' : 'bg-livre'}">${isOcupada ? 'OCUPADA' : 'LIVRE'}</div><i class="material-icons" style="font-size: 3rem; color: var(--dark); margin: 15px 0;">table_restaurant</i><h3>Mesa ${numMesa}</h3>${isOcupada ? `<div style="margin-top:5px;"><strong style="color:var(--danger); font-size:1.1rem;">R$ ${totalAcumulado.toFixed(2).replace('.', ',')}</strong></div>` : ''}</div>`;
             }
-            
             badge.style.display = mesasOcupadas > 0 ? 'inline-block' : 'none';
         }
 
-        // FUNÇÕES AUXILIARES
         function parseValor(valorStr) {
             if(typeof valorStr === 'number') return valorStr;
             return parseFloat(valorStr.toString().replace('R$', '').replace('.', '').replace(',', '.').trim());
         }
 
-        // AÇÕES DELIVERY
+        window.mudarStatusDelivery = function(id, novoStatus) {
+            const index = pedidosAtivos.findIndex(p => p.id === id);
+            if (index === -1) return;
+            let pedidoAtualizado = { ...pedidosAtivos[index] };
+            pedidoAtualizado.status = novoStatus;
+            if (novoStatus === 'ENTREGA') {
+                const inputMoto = document.getElementById(`moto-${id}`);
+                if (inputMoto && inputMoto.value.trim() !== "") { pedidoAtualizado.motoboy = inputMoto.value.trim(); } else { alert("Por favor, informe o nome do entregador!"); return; }
+            }
+            const novosAtivos = [...pedidosAtivos];
+            novosAtivos[index] = pedidoAtualizado;
+            set(ref(db, 'pedidosAtivos'), novosAtivos).catch(err => alert("Erro ao atualizar status: " + err.message));
+        };
+
         window.finalizarDelivery = function(id) {
             if(!confirm("O pedido foi entregue e o pagamento recebido?")) return;
             const pedido = pedidosAtivos.find(p => p.id === id);
             if(pedido) {
-                const novaVenda = {
-                    id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
-                    tipo: 'Delivery', itens: [`${pedido.cliente}: ${pedido.tamanho}`], 
-                    total: parseValor(pedido.total), pgto: 'Delivery'
-                };
+                const novaVenda = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), tipo: 'Delivery', itens: [`${pedido.cliente} (Entregue por: ${pedido.motoboy || 'N/A'}): ${pedido.tamanho}`], total: parseValor(pedido.total), pgto: 'Delivery' };
                 set(ref(db, 'historico'), [...historico, novaVenda]);
                 const novosAtivos = pedidosAtivos.filter(p => p.id !== id);
                 set(ref(db, 'pedidosAtivos'), novosAtivos);
@@ -465,53 +453,18 @@
             set(ref(db, 'pedidosAtivos'), novosAtivos);
         };
 
-        // --- NOVA FUNÇÃO: Motoboy voltou com o pedido ---
-        window.retornoDelivery = function(id) {
-            if(!confirm("O motoboy NÃO encontrou o cliente e o produto voltou?")) return;
-            
-            const pedido = pedidosAtivos.find(p => p.id === id);
-            if(pedido) {
-                const vendaCancelada = {
-                    id: Date.now(), 
-                    hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
-                    tipo: 'Devolução Delivery', 
-                    itens: [`${pedido.cliente}: CLIENTE NÃO ENCONTRADO`], 
-                    total: parseValor(pedido.total), // Mantém o valor para registro de perda
-                    pgto: 'Devolvido', // Marcador para não somar no faturamento
-                    status: 'cancelado' 
-                };
-                
-                set(ref(db, 'historico'), [...historico, vendaCancelada]);
-                const novosAtivos = pedidosAtivos.filter(p => p.id !== id);
-                set(ref(db, 'pedidosAtivos'), novosAtivos);
-            }
-        };
-
-        // AÇÕES MESAS (COMANDA)
         window.abrirComanda = function(mesaNum) {
             const pedidosDaMesa = pedidosAtivos.filter(p => p.mesa === mesaNum);
             if(pedidosDaMesa.length === 0) return;
-            
             document.getElementById('modal-titulo').innerText = `Mesa ${mesaNum}`;
             document.getElementById('modal-mesa').setAttribute('data-mesa-atual', mesaNum);
-            
             let htmlPedidos = '';
             let totalGeral = 0;
-            
             pedidosDaMesa.forEach((pedido) => {
                 const valorPedido = parseValor(pedido.total);
                 totalGeral += valorPedido;
-                htmlPedidos += `
-                    <div style="background: #f1f2f6; border-radius: 8px; padding: 10px; margin-bottom: 10px; border-left: 4px solid var(--secondary);">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:5px; border-bottom:1px solid #ddd; padding-bottom:5px;">
-                            <strong>👤 ${pedido.cliente}</strong><small>${pedido.hora}</small>
-                        </div>
-                        <div style="font-size: 0.95rem;"><strong>${pedido.tamanho}</strong>${pedido.itens.map(item => `<small>+${item}</small>`).join(' ')}</div>
-                        <div style="text-align:right; font-weight:bold; margin-top:5px; color: var(--dark);">R$ ${valorPedido.toFixed(2)}</div>
-                    </div>
-                `;
+                htmlPedidos += `<div style="background: #f1f2f6; border-radius: 8px; padding: 10px; margin-bottom: 10px; border-left: 4px solid var(--secondary);"><div style="display:flex; justify-content:space-between; margin-bottom:5px; border-bottom:1px solid #ddd; padding-bottom:5px;"><strong>👤 ${pedido.cliente}</strong><small>${pedido.hora}</small></div><div style="font-size: 0.95rem;"><strong>${pedido.tamanho}</strong>${pedido.itens.map(item => `<small>+${item}</small>`).join(' ')}</div><div style="text-align:right; font-weight:bold; margin-top:5px; color: var(--dark);">R$ ${valorPedido.toFixed(2)}</div></div>`;
             });
-            
             document.getElementById('modal-itens').innerHTML = htmlPedidos;
             document.getElementById('modal-total').innerText = totalGeral.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             document.getElementById('modal-mesa').style.display = 'flex';
@@ -523,122 +476,35 @@
             if(!confirm("Fechar a conta e liberar a mesa?")) return;
             const mesaNum = document.getElementById('modal-mesa').getAttribute('data-mesa-atual');
             const pedidosDaMesa = pedidosAtivos.filter(p => p.mesa === mesaNum);
-            
             let totalFinal = 0;
             let itensConsolidados = [];
-            
-            pedidosDaMesa.forEach(p => { 
-                totalFinal += parseValor(p.total); 
-                itensConsolidados.push(`${p.cliente}: ${p.tamanho}`); 
-            });
-            
-            const novaVenda = {
-                id: Date.now(), 
-                hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
-                tipo: `Mesa ${mesaNum}`, 
-                itens: itensConsolidados, 
-                total: totalFinal, 
-                pgto: 'Caixa'
-            };
-            
+            pedidosDaMesa.forEach(p => { totalFinal += parseValor(p.total); itensConsolidados.push(`${p.cliente}: ${p.tamanho}`); });
+            const novaVenda = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), tipo: `Mesa ${mesaNum}`, itens: itensConsolidados, total: totalFinal, pgto: 'Caixa' };
             set(ref(db, 'historico'), [...historico, novaVenda]);
             set(ref(db, 'pedidosAtivos'), pedidosAtivos.filter(p => p.mesa !== mesaNum));
-            
             fecharModalMesa();
         };
 
-        // DASHBOARD E RELATÓRIO
         window.renderDashboard = function() {
-            // Filtra para KPIs apenas o que NÃO foi cancelado/devolvido
-            const vendasReais = historico.filter(h => h.status !== 'cancelado' && h.pgto !== 'Devolvido');
-            
-            const totalVendas = vendasReais.reduce((acc, h) => {
-                return acc + (typeof h.total === 'number' ? h.total : parseValor(h.total));
-            }, 0);
-
+            const totalVendas = historico.reduce((acc, h) => { return acc + (typeof h.total === 'number' ? h.total : parseValor(h.total)); }, 0);
             const deliveryCount = pedidosAtivos.filter(p => p.mesa === 'DELIVERY').length;
             const mesasCount = pedidosAtivos.filter(p => p.mesa !== 'DELIVERY' && parseInt(p.mesa) > 0).length;
-
             document.getElementById('kpi-vendas').innerText = totalVendas.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            document.getElementById('kpi-pedidos').innerText = vendasReais.length;
+            document.getElementById('kpi-pedidos').innerText = historico.length;
             document.getElementById('kpi-mesas').innerText = `${mesasCount} / 12`;
             document.getElementById('kpi-delivery').innerText = deliveryCount;
-
             const tabela = document.querySelector('#tabela-historico tbody');
             const recentes = historico.slice().reverse().slice(0, 5);
-            if(recentes.length === 0) {
-                tabela.innerHTML = '<tr><td colspan="4" style="text-align:center;">Sem vendas</td></tr>';
-            } else {
-                tabela.innerHTML = recentes.map(h => {
-                    const val = typeof h.total === 'number' ? h.total : parseValor(h.total);
-                    const isCancelado = h.status === 'cancelado' || h.pgto === 'Devolvido';
-                    const corValor = isCancelado ? '#c0392b' : 'var(--accent)';
-                    const textoTipo = isCancelado ? `<span style="text-decoration:line-through">${h.tipo}</span>` : h.tipo;
-
-                    return `<tr><td>${h.hora}</td><td>${textoTipo}</td><td style="color: ${corValor};">R$ ${val.toFixed(2)}</td><td>${h.pgto}</td></tr>`;
-                }).join('');
-            }
+            if(recentes.length === 0) { tabela.innerHTML = '<tr><td colspan="4" style="text-align:center;">Sem vendas</td></tr>'; } 
+            else { tabela.innerHTML = recentes.map(h => { const val = typeof h.total === 'number' ? h.total : parseValor(h.total); return `<tr><td>${h.hora}</td><td>${h.tipo}</td><td style="color: var(--accent);">R$ ${val.toFixed(2)}</td><td>${h.pgto}</td></tr>`; }).join(''); }
         };
 
-        window.abrirRelatorio = function() {
-            let faturamentoTotal = 0;
-            let perdaTotal = 0;
-            let qtdVendas = 0;
-            let qtdDevolvidos = 0;
-            let pagamentos = { 'Pix': 0, 'Dinheiro': 0, 'Cartão': 0, 'Outros': 0 };
-
-            historico.forEach(h => {
-                const valor = typeof h.total === 'number' ? h.total : parseValor(h.total);
-                
-                if (h.status === 'cancelado' || h.pgto === 'Devolvido') {
-                    perdaTotal += valor;
-                    qtdDevolvidos++;
-                } else {
-                    faturamentoTotal += valor;
-                    qtdVendas++;
-                    
-                    let pgtoTexto = h.pgto || 'Outros';
-                    if(pgtoTexto.includes('Pix')) pagamentos['Pix'] += valor;
-                    else if(pgtoTexto.includes('Dinheiro')) pagamentos['Dinheiro'] += valor;
-                    else if(pgtoTexto.includes('Cartão')) pagamentos['Cartão'] += valor;
-                    else pagamentos['Outros'] += valor;
-                }
-            });
-
-            document.getElementById('rel-total').innerText = faturamentoTotal.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            document.getElementById('rel-perdas').innerText = perdaTotal.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            document.getElementById('qtd-vendas').innerText = qtdVendas;
-            document.getElementById('qtd-devolvidos').innerText = qtdDevolvidos;
-
-            const listaPgto = document.getElementById('lista-pagamentos');
-            listaPgto.innerHTML = '';
-            for (let [tipo, valor] of Object.entries(pagamentos)) {
-                if(valor > 0) {
-                    listaPgto.innerHTML += `
-                        <li>
-                            <span>${tipo}</span>
-                            <strong>${valor.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</strong>
-                        </li>
-                    `;
-                }
-            }
-            document.getElementById('modal-relatorio').style.display = 'flex';
-        };
-
-        // ESTOQUE E MODAIS ADICIONAIS
-        window.abrirModalIngredientes = function() {
-            renderListaIngredientes();
-            document.getElementById('modal-ingredientes').style.display = 'flex';
-        };
+        window.abrirModalIngredientes = function() { renderListaIngredientes(); document.getElementById('modal-ingredientes').style.display = 'flex'; };
         window.fecharModalIngredientes = function() { document.getElementById('modal-ingredientes').style.display = 'none'; };
 
         window.toggleBloqueio = function(nome) {
             let novosBloqueios = [...bloqueados];
-            if (novosBloqueios.includes(nome)) {
-                novosBloqueios = novosBloqueios.filter(i => i !== nome);
-            } else {
-                novosBloqueios.push(nome);
-            }
+            if (novosBloqueios.includes(nome)) { novosBloqueios = novosBloqueios.filter(i => i !== nome); } else { novosBloqueios.push(nome); }
             set(ref(db, 'bloqueios'), novosBloqueios);
         };
 
@@ -647,21 +513,9 @@
             const containerPagos = document.getElementById('lista-ingred-pagos');
             const gratis = estoque.filter(p => p.cat === 'Adicional' && p.preco === 0);
             const pagos = estoque.filter(p => p.cat === 'Adicional' && p.preco > 0);
-
             const gerarHTML = (lista) => {
                 if(lista.length === 0) return '<p style="color:#999;font-size:0.8rem;">Nenhum item cadastrado.</p>';
-                return lista.map(item => {
-                    const isBloq = bloqueados.includes(item.nome);
-                    return `
-                        <div class="ingrediente-row">
-                            <span>${item.nome}</span>
-                            <span class="ingrediente-status ${isBloq ? 'status-off' : 'status-on'}" 
-                                  onclick="toggleBloqueio('${item.nome}')">
-                                ${isBloq ? 'ESGOTADO 🚫' : 'DISPONÍVEL ✅'}
-                            </span>
-                        </div>
-                    `;
-                }).join('');
+                return lista.map(item => { const isBloq = bloqueados.includes(item.nome); return `<div class="ingrediente-row"><span>${item.nome}</span><span class="ingrediente-status ${isBloq ? 'status-off' : 'status-on'}" onclick="toggleBloqueio('${item.nome}')">${isBloq ? 'ESGOTADO 🚫' : 'DISPONÍVEL ✅'}</span></div>`; }).join('');
             };
             containerGratis.innerHTML = gerarHTML(gratis);
             containerPagos.innerHTML = gerarHTML(pagos);
@@ -675,17 +529,9 @@
             document.getElementById('prod-preco').value = '';
             document.getElementById('prod-estoque').value = '';
             document.getElementById('prod-cat').value = 'Copo';
-
             if (id) {
                 const produto = estoque.find(p => p.id === id);
-                if (produto) {
-                    titulo.innerText = "Editar Produto";
-                    document.getElementById('prod-id').value = produto.id;
-                    document.getElementById('prod-nome').value = produto.nome;
-                    document.getElementById('prod-preco').value = produto.preco;
-                    document.getElementById('prod-estoque').value = produto.estoque;
-                    document.getElementById('prod-cat').value = produto.cat;
-                }
+                if (produto) { titulo.innerText = "Editar Produto"; document.getElementById('prod-id').value = produto.id; document.getElementById('prod-nome').value = produto.nome; document.getElementById('prod-preco').value = produto.preco; document.getElementById('prod-estoque').value = produto.estoque; document.getElementById('prod-cat').value = produto.cat; }
             } else { titulo.innerText = "Novo Produto"; }
             modal.style.display = 'flex';
         };
@@ -699,86 +545,63 @@
             const qtd = parseInt(document.getElementById('prod-estoque').value);
             const cat = document.getElementById('prod-cat').value;
             let novoEstoque = [...estoque];
-
-            if (id) {
-                const index = novoEstoque.findIndex(p => p.id == id);
-                if (index > -1) novoEstoque[index] = { ...novoEstoque[index], nome, preco, estoque: qtd, cat };
-            } else {
-                novoEstoque.push({ id: Date.now(), nome, preco, estoque: qtd, cat });
-            }
+            if (id) { const index = novoEstoque.findIndex(p => p.id == id); if (index > -1) novoEstoque[index] = { ...novoEstoque[index], nome, preco, estoque: qtd, cat }; } 
+            else { novoEstoque.push({ id: Date.now(), nome, preco, estoque: qtd, cat }); }
             set(ref(db, 'estoque'), novoEstoque);
             fecharModalProduto();
         };
 
-        window.removerProduto = function(id) {
-            if (confirm("Tem certeza que deseja excluir?")) {
-                const novoEstoque = estoque.filter(p => p.id !== id);
-                set(ref(db, 'estoque'), novoEstoque);
-            }
-        };
+        window.removerProduto = function(id) { if (confirm("Tem certeza que deseja excluir?")) { const novoEstoque = estoque.filter(p => p.id !== id); set(ref(db, 'estoque'), novoEstoque); } };
 
         window.renderEstoque = function() {
             const tbody = document.querySelector('#estoque-tabela tbody');
             const filtro = document.getElementById('filtro-categoria') ? document.getElementById('filtro-categoria').value : 'Todos';
             let listaFiltrada = estoque;
-            if(filtro !== 'Todos') {
-                listaFiltrada = estoque.filter(p => p.cat === filtro);
-            }
+            if(filtro !== 'Todos') { listaFiltrada = estoque.filter(p => p.cat === filtro); }
             if(listaFiltrada.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Vazio</td></tr>'; return; }
-            
-            tbody.innerHTML = listaFiltrada.map((p) => `
-                <tr>
-                    <td><strong>${p.nome}</strong></td>
-                    <td><span style="background:#eee;padding:2px 6px;border-radius:4px;font-size:0.8rem;">${p.cat}</span></td>
-                    <td>R$ ${p.preco.toFixed(2)}</td>
-                    <td>${p.estoque}</td>
-                    <td>
-                        <button class="btn-action edit" onclick="abrirModalProduto(${p.id})"><i class="material-icons">edit</i></button>
-                        <button class="btn-action delete" onclick="removerProduto(${p.id})"><i class="material-icons">delete</i></button>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = listaFiltrada.map((p) => `<tr><td><strong>${p.nome}</strong></td><td><span style="background:#eee;padding:2px 6px;border-radius:4px;font-size:0.8rem;">${p.cat}</span></td><td>R$ ${p.preco.toFixed(2)}</td><td>${p.estoque}</td><td><button class="btn-action edit" onclick="abrirModalProduto(${p.id})"><i class="material-icons">edit</i></button><button class="btn-action delete" onclick="removerProduto(${p.id})"><i class="material-icons">delete</i></button></td></tr>`).join('');
         };
 
-        // PDV LOGIC
+        // PDV LOGIC (ATUALIZADO COM FILTRO)
         window.alternarBotaoPDV = function() {
             const destino = document.getElementById('pdv-destino').value;
             const btn = document.getElementById('btn-finalizar');
             const boxPagamento = document.getElementById('pdv-pagamento-box');
-            if(destino === 'balcao') {
-                btn.innerText = "✅ FINALIZAR VENDA";
-                btn.style.background = "var(--accent)";
-                boxPagamento.style.display = "block";
-            } else {
-                btn.innerText = `📋 LANÇAR NA MESA ${destino}`;
-                btn.style.background = "var(--secondary)"; 
-                boxPagamento.style.display = "none"; 
-            }
+            if(destino === 'balcao') { btn.innerText = "✅ FINALIZAR VENDA"; btn.style.background = "var(--accent)"; boxPagamento.style.display = "block"; } 
+            else { btn.innerText = `📋 LANÇAR NA MESA ${destino}`; btn.style.background = "var(--secondary)"; boxPagamento.style.display = "none"; }
         };
 
-        window.filtrarPDV = function(texto) {
-            const termo = texto.toLowerCase();
-            const filtrados = estoque.filter(p => p.nome.toLowerCase().includes(termo));
-            document.getElementById('pdv-grid').innerHTML = filtrados.map(p => `
-                <div class="prod-item" onclick="addPDV(${p.id})">
-                    <h4>${p.nome}</h4>
-                    <span>R$ ${p.preco.toFixed(2)}</span>
-                    <small>Estoque: ${p.estoque}</small>
-                </div>
-            `).join('');
-        };
-
-        function renderPDVGrid() {
+        // FUNÇÃO ATUALIZADA PARA O FILTRO
+        window.renderPDVGrid = function() {
+            const cat = document.getElementById('filtro-pdv-cat').value;
+            const termo = document.getElementById('busca-pdv-texto').value.toLowerCase();
             const grid = document.getElementById('pdv-grid');
-            if(!grid) return;
-            grid.innerHTML = estoque.map(p => `
+            
+            let filtrados = estoque;
+
+            if (cat !== 'Todos') {
+                filtrados = filtrados.filter(p => p.cat === cat);
+            }
+            if (termo) {
+                filtrados = filtrados.filter(p => p.nome.toLowerCase().includes(termo));
+            }
+
+            if(filtrados.length === 0) {
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#999;">Nada encontrado.</p>';
+                return;
+            }
+
+            grid.innerHTML = filtrados.map(p => `
                 <div class="prod-item" onclick="addPDV(${p.id})">
                     <h4>${p.nome}</h4>
                     <span>R$ ${p.preco.toFixed(2)}</span>
                     <small>Estoque: ${p.estoque}</small>
                 </div>
             `).join('');
-        }
+        };
+        
+        // Mantém a função antiga redirecionando para a nova, caso algo chame ela
+        window.filtrarPDV = window.renderPDVGrid;
 
         window.addPDV = function(id) {
             const produto = estoque.find(p => p.id === id);
@@ -787,24 +610,13 @@
             atualizarCarrinhoPDV();
         };
 
-        window.rmPDV = function(idx) {
-            carrinhoPDV.splice(idx, 1); atualizarCarrinhoPDV();
-        };
+        window.rmPDV = function(idx) { carrinhoPDV.splice(idx, 1); atualizarCarrinhoPDV(); };
 
         function atualizarCarrinhoPDV() {
             const lista = document.getElementById('pdv-carrinho-lista');
             const totalEl = document.getElementById('pdv-total');
-            if(carrinhoPDV.length === 0) {
-                lista.innerHTML = '<p style="text-align: center; color: #999; margin-top: 20px;">Cesta vazia</p>';
-                totalEl.innerText = "R$ 0,00";
-                return;
-            }
-            lista.innerHTML = carrinhoPDV.map((item, idx) => `
-                <div class="cart-row">
-                    <span>${item.nome}</span>
-                    <div style="display:flex; gap:10px;"><b>R$ ${item.preco.toFixed(2)}</b><i class="material-icons" style="font-size:1rem; color:red; cursor:pointer;" onclick="rmPDV(${idx})">delete</i></div>
-                </div>
-            `).join('');
+            if(carrinhoPDV.length === 0) { lista.innerHTML = '<p style="text-align: center; color: #999; margin-top: 20px;">Cesta vazia</p>'; totalEl.innerText = "R$ 0,00"; return; }
+            lista.innerHTML = carrinhoPDV.map((item, idx) => `<div class="cart-row"><span>${item.nome}</span><div style="display:flex; gap:10px;"><b>R$ ${item.preco.toFixed(2)}</b><i class="material-icons" style="font-size:1rem; color:red; cursor:pointer;" onclick="rmPDV(${idx})">delete</i></div></div>`).join('');
             const total = carrinhoPDV.reduce((acc, i) => acc + i.preco, 0);
             totalEl.innerText = total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
         }
@@ -814,27 +626,15 @@
             const destino = document.getElementById('pdv-destino').value;
             const total = carrinhoPDV.reduce((acc, i) => acc + i.preco, 0);
             let novoEstoque = [...estoque];
-
-            carrinhoPDV.forEach(itemCart => {
-                const prodIndex = novoEstoque.findIndex(p => p.id === itemCart.id);
-                if(prodIndex > -1) novoEstoque[prodIndex].estoque--;
-            });
-
+            carrinhoPDV.forEach(itemCart => { const prodIndex = novoEstoque.findIndex(p => p.id === itemCart.id); if(prodIndex > -1) novoEstoque[prodIndex].estoque--; });
             if (destino === 'balcao') {
                 const tipoPgto = document.getElementById('pagamento-tipo').value;
-                const novaVenda = {
-                    id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
-                    tipo: 'Balcão', itens: carrinhoPDV.map(p => p.nome), total: total, pgto: tipoPgto
-                };
+                const novaVenda = { id: Date.now(), hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), tipo: 'Balcão', itens: carrinhoPDV.map(p => p.nome), total: total, pgto: tipoPgto };
                 set(ref(db, 'estoque'), novoEstoque);
                 set(ref(db, 'historico'), [...historico, novaVenda]);
                 alert("✅ Venda Registrada!");
             } else {
-                const novoPedidoMesa = {
-                    id: Date.now(), mesa: destino, cliente: "Caixa/Garçom", tamanho: "Pedido Balcão",
-                    itens: carrinhoPDV.map(p => p.nome), total: total,
-                    hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})
-                };
+                const novoPedidoMesa = { id: Date.now(), mesa: destino, cliente: "Caixa/Garçom", tamanho: "Pedido Balcão", itens: carrinhoPDV.map(p => p.nome), total: total, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) };
                 set(ref(db, 'estoque'), novoEstoque);
                 set(ref(db, 'pedidosAtivos'), [...pedidosAtivos, novoPedidoMesa]);
                 alert(`📋 Pedido lançado na Mesa ${destino}!`);
