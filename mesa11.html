@@ -152,20 +152,17 @@
             // 1. TAMANHOS (Categoria 'Copo')
             const tamanhos = estoque.filter(p => p.cat === 'Copo');
             document.getElementById('grid-sizes').innerHTML = tamanhos.map(p => {
-                let imgNome = "";
+                let imgNome = "default-copo.webp"; 
                 const nomeLower = p.nome.toLowerCase();
 
-                // Lógica de identificação aprimorada
-                if (nomeLower.includes("300")) {
-                    imgNome = "300ml.webp";
-                } else if (nomeLower.includes("500")) {
-                    imgNome = "500ml.webp";
-                } else if (nomeLower.includes("700")) {
-                    imgNome = "700ml.webp";
-                } else if (nomeLower.includes("1l") || nomeLower.includes("1 l") || nomeLower.includes("1litro") || nomeLower.includes("1 litro") || nomeLower.includes("1000")) {
-                    imgNome = "1l.webp";
+                // Lógica nova: Usa imagem salva ou tenta adivinhar
+                if (p.imagem && p.imagem !== "") {
+                    imgNome = p.imagem;
                 } else {
-                    imgNome = "default-copo.webp"; 
+                    if (nomeLower.includes("300")) imgNome = "300ml.webp";
+                    else if (nomeLower.includes("500")) imgNome = "500ml.webp";
+                    else if (nomeLower.includes("700")) imgNome = "700ml.webp";
+                    else if (nomeLower.includes("1l") || nomeLower.includes("1 l") || nomeLower.includes("1000")) imgNome = "1l.webp";
                 }
 
                 return `

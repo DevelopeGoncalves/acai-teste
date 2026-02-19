@@ -187,18 +187,22 @@
         function renderCardapio() {
         const tamanhos = estoque.filter(p => p.cat === 'Copo');
         document.getElementById('grid-sizes').innerHTML = tamanhos.map(p => {
-            let imgNome = "";
+            let imgNome = "default-copo.webp";
             const nomeLower = p.nome.toLowerCase();
 
-            if (nomeLower.includes("300")) imgNome = "300ml.webp";
-            else if (nomeLower.includes("500")) imgNome = "500ml.webp";
-            else if (nomeLower.includes("700")) imgNome = "700ml.webp";
-            else if (nomeLower.includes("1l") || nomeLower.includes("1 l") || nomeLower.includes("1litro") || nomeLower.includes("1 litro") || nomeLower.includes("1000")) imgNome = "1l.webp";
-            else imgNome = "default-copo.webp";
+            // Lógica nova: Usa imagem salva ou tenta adivinhar
+            if (p.imagem && p.imagem !== "") {
+                imgNome = p.imagem;
+            } else {
+                if (nomeLower.includes("300")) imgNome = "300ml.webp";
+                else if (nomeLower.includes("500")) imgNome = "500ml.webp";
+                else if (nomeLower.includes("700")) imgNome = "700ml.webp";
+                else if (nomeLower.includes("1l") || nomeLower.includes("1 l") || nomeLower.includes("1000")) imgNome = "1l.webp";
+            }
 
             return `
             <div class="size-card" onclick="selectSize('${p.nome}', ${p.preco})">
-                <div style="width: 100%; height: 140px; overflow: hidden;">
+                <div style="width: 100%; height: 140px; overflow: hidden; border-radius: 15px 15px 0 0;">
                     <img src="img/${imgNome}" 
                         alt="${p.nome}" 
                         style="width: 100%; height: 100%; object-fit: cover; display: block;" 

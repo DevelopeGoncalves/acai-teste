@@ -578,56 +578,63 @@
     </div>
 
     <div class="modal-overlay" id="modal-mesa"><div class="modal-content"><div class="modal-header"><h2 id="modal-titulo">Mesa 00</h2><button onclick="fecharModalMesa()" style="border:none; background:transparent; font-size: 1.5rem;">&times;</button></div><div class="comanda-list" id="modal-itens"></div><div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-weight: bold; padding-top: 15px; border-top: 1px solid #eee;"><span>Total:</span><span id="modal-total" style="color: var(--secondary);">R$ 0,00</span></div><div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><button onclick="fecharContaMesa()" style="background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold;">✅ Fechar</button><button onclick="fecharModalMesa()" style="background: #e74c3c; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold;">Voltar</button></div></div></div>
+    
     <div class="modal-overlay" id="modal-produto">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="titulo-modal-prod">Produto</h2>
-                <button onclick="fecharModalProduto()"
-                    style="border:none; background:transparent; font-size: 1.5rem;">&times;</button>
+                <button onclick="fecharModalProduto()" style="border:none; background:transparent; font-size: 1.5rem;">&times;</button>
             </div>
             <form onsubmit="salvarProduto(event)" style="display: grid; gap: 15px;">
                 <input type="hidden" id="prod-id">
                 <div>
-                    <label>Nome</label>
-                    <input type="text" id="prod-nome" required
-                        style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <label>Nome do Produto</label>
+                    <input type="text" id="prod-nome" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" placeholder="Ex: Açaí 500ml">
                 </div>
+                
+                <div>
+                    <label>Imagem (Aparece no Cardápio)</label>
+                    <select id="prod-img" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: white;">
+                        <option value="">Automático (Tenta ler o nome)</option>
+                        <option value="300ml.webp">Copo 300ml (Pequeno)</option>
+                        <option value="500ml.webp">Copo 500ml (Médio)</option>
+                        <option value="700ml.webp">Copo 700ml (Grande)</option>
+                        <option value="1l.webp">Copo 1 Litro (Gigante)</option>
+                        <option value="default-copo.webp">Padrão (Genérico)</option>
+                    </select>
+                </div>
+            
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div>
                         <label>Preço (Un ou Kg)</label>
-                        <input type="number" step="0.01" id="prod-preco" required
-                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <input type="number" step="0.01" id="prod-preco" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                     </div>
                     <div>
                         <label>Qtd Estoque</label>
-                        <input type="number" id="prod-estoque" required
-                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <input type="number" id="prod-estoque" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                     </div>
                 </div>
                 <div>
                     <label>Categoria</label>
                     <select id="prod-cat" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                        <option value="Copo">Copo</option>
+                        <option value="Copo">Copo (Aparece no Menu)</option>
                         <option value="Adicional">Adicional</option>
                         <option value="Bebida">Bebida</option>
                         <option value="Balança">Balança</option>
                         <option value="Outros">Outros</option>
                     </select>
                 </div>
-    
-                <div
-                    style="background: #f1f2f6; padding: 10px; border-radius: 5px; display: flex; align-items: center; gap: 10px;">
+            
+                <div style="background: #f1f2f6; padding: 10px; border-radius: 5px; display: flex; align-items: center; gap: 10px;">
                     <input type="checkbox" id="prod-is-kg" style="width: 20px; height: 20px; cursor: pointer;">
-                    <label for="prod-is-kg" style="cursor: pointer; font-weight: 600; color: var(--primary);">Vender por KG
-                        (Balança)?</label>
+                    <label for="prod-is-kg" style="cursor: pointer; font-weight: 600; color: var(--primary);">Vender por KG (Balança)?</label>
                 </div>
-    
-                <button type="submit"
-                    style="background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px;">💾
-                    Salvar</button>
+            
+                <button type="submit" style="background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px;">💾 Salvar</button>
             </form>
         </div>
     </div>
+
     <div class="modal-overlay" id="modal-ingredientes"><div class="modal-content"><div class="modal-header"><h2>Adicionais</h2><button onclick="fecharModalIngredientes()" style="border:none; background:transparent; font-size: 1.5rem;">&times;</button></div><div style="max-height:60vh; overflow-y:auto;"><h3 style="font-size:1rem;color:var(--secondary);">Grátis</h3><div id="lista-ingred-gratis"></div><h3 style="font-size:1rem;color:var(--secondary);margin-top:15px;">Pagos</h3><div id="lista-ingred-pagos"></div></div><button onclick="fecharModalIngredientes()" style="width:100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 20px;">Fechar</button></div></div>
     
     <div class="modal-overlay" id="modal-abrir-caixa"><div class="modal-content"><div class="modal-header"><h2>Abrir Caixa</h2><button onclick="document.getElementById('modal-abrir-caixa').style.display='none'" style="border:none;background:transparent;font-size:1.5rem;">&times;</button></div><div style="margin-bottom:20px;"><label>Valor Inicial (Fundo de Troco)</label><input type="number" id="cx-valor-inicial" step="0.01" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;margin-top:5px;"></div><button onclick="confirmarAberturaCaixa()" style="width:100%;background:var(--accent);color:white;padding:12px;border:none;border-radius:6px;font-weight:bold;">CONFIRMAR ABERTURA</button></div></div>
@@ -773,7 +780,10 @@
             document.getElementById('prod-preco').value = p ? p.preco : ''; 
             document.getElementById('prod-estoque').value = p ? p.estoque : ''; 
             document.getElementById('prod-cat').value = p ? p.cat : 'Copo'; 
-            // Carrega o checkbox
+            
+            // LINHA NOVA: Carrega a imagem salva ou deixa vazio
+            document.getElementById('prod-img').value = p ? (p.imagem || '') : '';
+
             document.getElementById('prod-is-kg').checked = p ? (p.isKg || false) : false;
             document.getElementById('modal-produto').style.display = 'flex'; 
         };
@@ -787,7 +797,11 @@
                 preco: parseFloat(document.getElementById('prod-preco').value), 
                 estoque: parseInt(document.getElementById('prod-estoque').value), 
                 cat: document.getElementById('prod-cat').value,
-                isKg: document.getElementById('prod-is-kg').checked // Salva se é KG
+                
+                // LINHA NOVA: Salva a imagem escolhida
+                imagem: document.getElementById('prod-img').value,
+
+                isKg: document.getElementById('prod-is-kg').checked 
             }; 
             let nE = [...estoque]; 
             if(id) { 
